@@ -204,7 +204,7 @@ class PluginManager(metaclass=Singleton):
                 apps.app_configs
             ))
     @staticmethod
-    def collect_urls():
+    def collect_urls() -> list:
         """Loads all plugins' urls.py and collects their urlpatterns.
 
         This is maybe not the best approach, but it allows plugins to
