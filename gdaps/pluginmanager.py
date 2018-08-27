@@ -62,13 +62,6 @@ class PluginManager(metaclass=Singleton):
     It provides methods to load submodules of all available plugins
     dynamically."""
 
-    _plugin_dir = ''
-
-    @classmethod
-    def set_plugin_dir(cls, dir: str) -> None:
-        # TODO check if dir exists
-        cls._plugin_dir = dir
-
     @classmethod
     def find_plugins(cls, group: str= '') -> List[str]:
         """Finds plugins in the plugin directory, or from setuptools entrypoints
@@ -89,12 +82,6 @@ class PluginManager(metaclass=Singleton):
         if group:
             for entry_point in iter_entry_points(group=group, name=None):
                 found_apps.append(entry_point.module_name)
-
-        # if there is no plugin_dir set, just ignore it and return yet found
-        # plugins from pkg_resources entrypoints
-        if not os.path.isdir(cls._plugin_dir):
-            # this is an invalid directory
-            return found_apps
 
         return found_apps
 
