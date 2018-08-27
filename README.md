@@ -31,12 +31,23 @@ from gdaps.pluginmanager import PluginManager
 # ...
 
 INSTALLED_APPS = [
-    # ... 
+    # ... standard Django apps
+    
+    # and put "static" plugins here too:
+    'myproject.plugins.fooplugin', 
 ]
 
 # load all plugins from setuptools entry points named 'myproject.plugins' 
-INSTALLED_APPS += PluginManager.find_plugins('myproject.plugins')
+PLUGINS = PluginManager.find_plugins('myproject.plugins')
+INSTALLED_APPS += PLUGINS
+
 ```
+
+We recommend that you use 'myproject.**plugins**' as entrypoint, this way you can
+use myproject.plugins.fooplugin as dotted appname, no matter whether you put the app
+into your real `myproject/plugins/fooplugin` folder, or provide it vie PyPi.
+You can use anything you want, but don't forget to use that name as folder name 
+within your project too, so that the Python path names are the same.
 
 This is all you really need so far, for a minimum working GDAPS-enabled Django application.
 
@@ -65,7 +76,7 @@ urlpatterns =  [
 urlpatterns += PluginManager.collect_urls()
 ```
 GDAPS then loads and imports all available plugins' urls.py files, collects
-their urlpatterns and merges them into the global one.
+their `urlpatterns` variables and merges them into the global one.
 
 
 ## Contributing
