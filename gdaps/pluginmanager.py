@@ -74,8 +74,8 @@ class PluginManager(metaclass=Singleton):
         """Finds plugins in the plugin directory, or from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
-        INSTALLED_APPS variable. Therefor it can not use global variables from
-        settings.
+        INSTALLED_APPS variable. Therefore it can not use global variables from
+        settings, to prevent circle imports.
 
         :param group: A string with the (dotted) group name, which the site
             packages are searched for. Matching plugins are found and added to
