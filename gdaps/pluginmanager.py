@@ -96,29 +96,6 @@ class PluginManager(metaclass=Singleton):
             # this is an invalid directory
             return found_apps
 
-        for item in os.listdir(cls._plugin_dir):
-
-            plugin_dir = os.path.join(cls._plugin_dir, item);
-            if not os.path.isdir(plugin_dir) or \
-                    item.startswith('_'):
-                continue
-
-            # FIXME: plugins import path should be made configurable
-            # and does not reflect the `plugin_dir` parameter. In order to
-            # support more plugin directories (user-local, global?) this has
-            # to be adapted. The other possibility would be to hadrcode this
-            # path completely, as it is only needed here.
-            # If this is going to be a general plugin system,
-            # we could make this more flexible
-            app_name = 'medux.plugins.%s' % item
-
-            if not os.path.isfile(os.path.join(plugin_dir, 'apps.py')):
-                logger.warning("Plugin directory {} contains no 'apps.py' "
-                               "file. Ignoring this plugin.".format(plugin_dir))
-                continue
-
-            found_apps.append(app_name)
-
         return found_apps
 
     @staticmethod

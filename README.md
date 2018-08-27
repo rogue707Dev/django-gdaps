@@ -34,9 +34,6 @@ INSTALLED_APPS = [
     # ... 
 ]
 
-# set plugins directory
-PluginManager.set_plugin_dir(os.path.join(BASE_DIR, 'myproject', 'plugins'))
-
 # load all plugins from setuptools entry points named 'myproject.plugins' 
 INSTALLED_APPS += PluginManager.find_plugins('myproject.plugins')
 ```
