@@ -9,9 +9,8 @@ like being distributed and "plugged" into a Django main application without modi
     It could eat your dog, or create wormholes below your bed.
     Use it at your own risk. You have been warned.
 
-If you are creating a Django application that makes use of "plugins" that the application
-maybe isn't aware of at server start, this library is right for you. It consists of
-a few bells and twistles where Django lacks "automagic":
+If you want to create a Django application that makes use of "plugins" that can extend your project later,
+this library is right for you. It consists of a few bells and twistles where Django lacks "automagic":
 
 * Apps are automatically found using pkgtools' entry points
 * Apps can use their own URLs (they are included automatically)
@@ -31,9 +30,10 @@ from gdaps.pluginmanager import PluginManager
 # ...
 
 INSTALLED_APPS = [
-    # ... standard Django apps
+    # ... standard Django apps and GDAPS
+    'gdaps',
     
-    # and put "static" plugins here too:
+    # put "static" plugins here too:
     'myproject.plugins.fooplugin', 
 ]
 
@@ -45,7 +45,7 @@ INSTALLED_APPS += PLUGINS
 
 We recommend that you use 'myproject.**plugins**' as entrypoint, this way you can
 use myproject.plugins.fooplugin as dotted appname, no matter whether you put the app
-into your real `myproject/plugins/fooplugin` folder, or provide it vie PyPi.
+into your real "static" `myproject/plugins/fooplugin` folder, or provide it vie PyPi.
 You can use anything you want, but don't forget to use that name as folder name 
 within your project too, so that the Python path names are the same.
 
@@ -63,7 +63,7 @@ There are other things you can tweak:
 
 ### URLs
 
-To let your plugin define some URLs, you have to add some code to the global urls.py file:
+To let your plugin define some URLs that are automatically detected, you have to add some code to the global urls.py file:
 
 ```python
 from gdaps.pluginmanager import PluginManager 
@@ -78,6 +78,17 @@ urlpatterns += PluginManager.collect_urls()
 GDAPS then loads and imports all available plugins' urls.py files, collects
 their `urlpatterns` variables and merges them into the global one.
 
+A typical `fooplugin/urls.py` would look like this:
+
+    from . import views
+    
+    app_name = fooplugin
+
+    urlpatterns =  [
+        path('/fooplugin/myurl', views.MyUrlView.as_view()),g
+    ]
+
+GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc.
 
 ## Contributing
 
