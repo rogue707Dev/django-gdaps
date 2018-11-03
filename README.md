@@ -45,7 +45,7 @@ INSTALLED_APPS += PLUGINS
 
 We recommend that you use 'myproject.**plugins**' as entrypoint, this way you can
 use myproject.plugins.fooplugin as dotted appname, no matter whether you put the app
-into your real "static" `myproject/plugins/fooplugin` folder, or provide it vie PyPi.
+into your real "static" `myproject/plugins/fooplugin` folder, or provide it via PyPi.
 You can use anything you want, but don't forget to use that name as folder name 
 within your project too, so that the Python path names are the same.
 
