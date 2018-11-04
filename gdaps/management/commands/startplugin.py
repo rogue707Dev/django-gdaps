@@ -23,7 +23,7 @@ def _snake_case_to_spaces(name):
 
 def get_user_data(key):
     if reader:
-        return reader.get_value('user', key) or ''
+        return reader.get_value('user', key, default='')
     else:
         return ''
 
