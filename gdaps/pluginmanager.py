@@ -62,8 +62,11 @@ class PluginManager(metaclass=Singleton):
     It provides methods to load submodules of all available plugins
     dynamically."""
 
+    plugin_path = ''
+    group = ''
+
     @classmethod
-    def find_plugins(cls, group: str= '') -> List[str]:
+    def find_plugins(cls, group: str) -> List[str]:
         """Finds plugins in the plugin directory, or from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
@@ -78,10 +81,20 @@ class PluginManager(metaclass=Singleton):
         """
 
         found_apps = []
+        cls.group = group
+
+        # save a relative import path for plugins, derived from the "group" dotted plugin path
+        cls.plugin_path = os.path.join(*group.split('.'))
 
         if group:
             for entry_point in iter_entry_points(group=group, name=None):
-                found_apps.append(entry_point.module_name)
+                appname = entry_point.module_name
+                if entry_point.attrs:
+                    # FIXME: adding an AppConfig does not work yet
+                    appname += '.' + '.'.join(entry_point.attrs)
+
+                found_apps.append(appname)
+                logger.debug('Added \'{}\' to INSTALLED_APPS.'.format(appname))
 
         return found_apps
 
@@ -180,8 +193,10 @@ class PluginManager(metaclass=Singleton):
 
         # FIXME: the order the plugins are loaded is not deterministic. This can lead to serious problems,
         # as apps could use the same URL namespace, and depending on which one was loaded first, it may mask the other
-        # URL. This has to be fixed. See [Issue #22](https://gitlab.com/nerdocs/medux/MedUX/issues/22)
-        # Another unmanaged problem is 'dependencies' - a dependency manager must be implemented into the PluginManager
+        # URL. This has to be fixed.
+        #
+        # Another unmanaged problem is 'dependencies':
+        # FIXME: a dependency manager must be implemented into the PluginManager
         urlpatterns = []
         for module in PluginManager.load_plugin_submodule('urls'):
             pattern = getattr(module, 'urlpatterns', None)

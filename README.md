@@ -20,27 +20,40 @@ this library is right for you. It consists of a few bells and twistles where Dja
 
 Just create a normal Django application, e.g. using `manage.py startproject myproject`.
 
-All the GDAPS plugins you create should be loaded *after* the (statically defined) INSTALLED_APPS.
-So add the plugin directory to the global settings, after INSTALLED_APPS, and load all
-the plugins:
+Now install `gdaps` as usual:
 
 ```python
 from gdaps.pluginmanager import PluginManager
 
+INSTALLED_APPS = [
+    # ... standard Django apps and GDAPS
+    'gdaps',
+]
+
+# Load all plugins from setuptools entry points named 'myproject.plugins'
+PLUGINS = PluginManager.find_plugins('myproject.plugins')
+INSTALLED_APPS += PLUGINS
+```
+Basically, this is all you really need so far, for a minimum working GDAPS-enabled Django application.
+
+However, we recommend that you use 'myproject.**plugins**' as entrypoint, see [Static plugins](#static-plugins) below.
+
+
+### Static plugins
+
+In most of the cases, you will ship your application with a few "standard" plugins that are statically installed.
+These plugins should be loaded *after* the `gdaps` app.
+
+```python
 # ...
 
 INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
     'gdaps',
-    
-    # put "static" plugins here too:
-    'myproject.plugins.fooplugin', 
+
+    # just put "static" plugins here too:
+    'myproject.plugins.fooplugin',
 ]
-
-# load all plugins from setuptools entry points named 'myproject.plugins' 
-PLUGINS = PluginManager.find_plugins('myproject.plugins')
-INSTALLED_APPS += PLUGINS
-
 ```
 
 We recommend that you use 'myproject.**plugins**' as entrypoint, this way you can
@@ -49,19 +62,64 @@ into your real "static" `myproject/plugins/fooplugin` folder, or provide it via 
 You can use anything you want, but don't forget to use that name as folder name 
 within your project too, so that the Python path names are the same.
 
-This is all you really need so far, for a minimum working GDAPS-enabled Django application.
+### Creating plugins
+
+It is recommended to create plugins in your *plugins* directory of your Django app, as explained in the
+[Static plugins](#static-plugins) section. To ease this task, GDAPS provides a Django management command named
+`startplugin`:
+
+    ./manage.py startplugin fooplugin
+
+This command asks a few questions, and creates a basic Django app in `myproject/plugins/`, and provides useful defaults as well as a setup.py
+file.
+If you use git in your project, and have the `gitpython` module installed (`pip install gitpython`), it will determine
+your git user name and email automatically and use it for the setup.py file.
+
+You now can add this plugin statically to `INSTALLED_APPS` (using the dotted name: `'myproject.plugins.fooplugin'`) - or
+you can make use of the dynamic loading by cd'ing into that directory and installing it locally with pip:
+
+```bash
+cd fooplugin
+pip install -e .
+```
+
+This installs the plugin as python module into the site-packages and makes it discoverable using setuptools. From
+this moment on it should be already registered and loaded after a Django server restart.
 
 
-### Interfaces
+### Using GDAPS apps
 
-Plugins can define interfaces, which can then be implemented by other plugins.
+#### Interfaces
 
-```TODO: Interfaces example```
+Plugins can define interfaces, which can then be implemented by other plugins. If you create a plugin using 
+`./manage.py startplugin`, it will create a `<app_name>/api/interfaces.py` file automatically. You can create interfaces 
+there.
 
-There are other things you can tweak:
+```python
+from gdaps import Interface
+
+class IMySpecialFoopluginInterface(Interface):   
+    """Documentation of the interface"""
+    
+    def do_something(self):
+        pass
+```
+
+You can then easily implement this interface in any other file (in this plugin or in another plugin) using the 
+`implements` decorator syntax:
+
+```python
+from myproject.plugins.fooplugin.api.interfaces import IMySpecialFoopluginInterface
+from gdaps import implements
+
+@implements(IMySpecialFoopluginInterface)
+class OtherPluginClass:
+    def do_something(self):
+        print('I did something!')
+```
 
 
-### URLs
+#### URLs
 
 To let your plugin define some URLs that are automatically detected, you have to add some code to the global urls.py file:
 
@@ -75,6 +133,7 @@ urlpatterns =  [
 # just add this line after the urlpatterns definition:
 urlpatterns += PluginManager.collect_urls()
 ```
+
 GDAPS then loads and imports all available plugins' urls.py files, collects
 their `urlpatterns` variables and merges them into the global one.
 
@@ -85,7 +144,7 @@ A typical `fooplugin/urls.py` would look like this:
     app_name = fooplugin
 
     urlpatterns =  [
-        path('/fooplugin/myurl', views.MyUrlView.as_view()),g
+        path('/fooplugin/myurl', views.MyUrlView.as_view()),
     ]
 
 GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc.

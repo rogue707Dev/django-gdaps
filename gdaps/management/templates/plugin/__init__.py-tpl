@@ -1,0 +1,3 @@
+default_app_config = '{{ project_name }}.plugins.{{ app_name }}.apps.{{ camel_case_app_name }}Config'
+
+

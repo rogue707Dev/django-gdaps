@@ -19,8 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import logging
 from typing import List
 
-
-__all__ = [ "PluginError", "Interface", "implements"]
+__all__ = ["PluginError", "Interface", "implements"]
 
 logger = logging.getLogger(__name__)
 
@@ -35,16 +34,16 @@ class InterfaceMeta(type):
     This class assigns a new empty implementations and permissions list to each
     Interface at creation time.
     """
-    def __new__(mcs, name, bases, dict):
+    def __new__(mcs, name, bases, dct):
         """Creates a new Interface class"""
-        interface = type.__new__(mcs, name, bases, dict)
+        interface = type.__new__(mcs, name, bases, dct)
         interface._implementations = []
         interface._permissions = []
         return interface
 
-    def __iter__(mcls):
+    def __iter__(mcs):
         """Makes Interface iterable."""
-        return iter(mcls._implementations)
+        return iter(mcs._implementations)
 
 
 class Interface(metaclass=InterfaceMeta):
