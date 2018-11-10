@@ -49,7 +49,7 @@ Basically, this is all you really need so far, for a minimal working GDAPS-enabl
 
 ### Creating plugins
 
-Create a plugin using, a Django management command:
+Create plugins using a Django management command:
 
     ./manage.py startplugin fooplugin
 
