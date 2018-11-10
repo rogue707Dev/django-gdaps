@@ -29,20 +29,39 @@ INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
     'gdaps',
 ]
+```
+
+The configuration of GDAPS is bundled in one variable:
+
+```python
+GDAPS = {
+  'PLUGIN_PATH': 'myproject.plugins',
+}
 
 # Load all plugins from setuptools entry points named 'myproject.plugins'
-PLUGINS = PluginManager.find_plugins('myproject.plugins')
-INSTALLED_APPS += PLUGINS
+INSTALLED_APPS += PluginManager.find_plugins()
+
 ```
 Basically, this is all you really need so far, for a minimum working GDAPS-enabled Django application.
 
-However, we recommend that you use 'myproject.**plugins**' as entrypoint, see [Static plugins](#static-plugins) below.
 
+### Creating plugins
+
+You can create plugins in any directory of your Django app. However, we recommend that you choose a folder named *plugins*, for convenience.
+As explained in the [Static plugins](#static-plugins) section, you can refer to these plugins then directly in the `INSTALLED_APPS` settings variable. 
+
+To ease the task of creating plugins, GDAPS provides a Django management command named `startplugin`:
+
+    ./manage.py startplugin fooplugin
+
+This command asks a few questions, creates a basic Django app in the `PLUGIN_PATH` you chose before, and provides useful defaults as well as a setup.py file. If you use git in your project, and have the `gitpython` module installed (`pip install gitpython`), it will determine your git user name and email automatically and use it for the setup.py file.
+
+You now can add this plugin statically to `INSTALLED_APPS` - see [Static plugins](#static-plugins). Or you can make use of the dynamic loading - see [Dynamic plugins](#dynamic-plugins).
 
 ### Static plugins
 
 In most of the cases, you will ship your application with a few "standard" plugins that are statically installed.
-These plugins should be loaded *after* the `gdaps` app.
+These plugins should be loaded *after* the `gdaps` app. Use the PLUGIN_PATH you created before.
 
 ```python
 # ...
@@ -62,30 +81,18 @@ into your real "static" `myproject/plugins/fooplugin` folder, or provide it via 
 You can use anything you want, but don't forget to use that name as folder name 
 within your project too, so that the Python path names are the same.
 
-### Creating plugins
 
-It is recommended to create plugins in your *plugins* directory of your Django app, as explained in the
-[Static plugins](#static-plugins) section. To ease this task, GDAPS provides a Django management command named
-`startplugin`:
-
-    ./manage.py startplugin fooplugin
-
-This command asks a few questions, and creates a basic Django app in `myproject/plugins/`, and provides useful defaults as well as a setup.py
-file.
-If you use git in your project, and have the `gitpython` module installed (`pip install gitpython`), it will determine
-your git user name and email automatically and use it for the setup.py file.
-
-You now can add this plugin statically to `INSTALLED_APPS` (using the dotted name: `'myproject.plugins.fooplugin'`) - or
-you can make use of the dynamic loading by cd'ing into that directory and installing it locally with pip:
+### Dynamic plugins
+By cd'ing into the `plugins` directory and installing it locally with pip/pipenv, you can make your application aware of that plugin:
 
 ```bash
 cd fooplugin
-pip install -e .
+pipenv install -e .
 ```
 
 This installs the plugin as python module into the site-packages and makes it discoverable using setuptools. From
 this moment on it should be already registered and loaded after a Django server restart.
-
+Of course this also works when plugins are installed standalone, they don't have to be in the `plugins` folder. You can conveniently start developing plugins in there, and later upload them as separate plugins to PyPi, making them installable easily.
 
 ### Using GDAPS apps
 
@@ -109,8 +116,8 @@ You can then easily implement this interface in any other file (in this plugin o
 `implements` decorator syntax:
 
 ```python
-from myproject.plugins.fooplugin.api.interfaces import IMySpecialFoopluginInterface
 from gdaps import implements
+from myproject.plugins.fooplugin.api.interfaces import IMySpecialFoopluginInterface
 
 @implements(IMySpecialFoopluginInterface)
 class OtherPluginClass:
@@ -149,6 +156,80 @@ A typical `fooplugin/urls.py` would look like this:
 
 GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc.
 
+## Settings
+
+GDAPS settings are bundled in a `GDAPS` variable you can add to your settings.py. The defaults are:
+```python
+GDAPS = {
+    'PLUGIN_PATH': 'plugins'
+}
+```
+
+Explanations of the settings:
+
+##### PLUGIN_PATH
+
+This is the (dotted) plugin path used as directory within your main application, and as entry point for setuptools' plugins. The default is 'plugins', so if you name your project "my_project", there will be a `my_project/plugins/` directory where e.g. `./manage.py startplugin` will create its content.
+
+
+### Custom per-plugin settings
+
+GDAPS allows your application to have own settings for each plugin easily, which provide defaults, and can be overridden in the global `settings.py` file. Look at an example conf.py file (created by `./manage.py startplugin fooplugin`):
+
+```python
+from django.test.signals import setting_changed
+from gdaps.conf import PluginSettings
+
+NAMESPACE = 'FOOPLUGIN'
+
+# Optional defaults. Leave empty if not needed.
+DEFAULTS = {
+    'MY_SETTING': 'somevalue',
+    'FOO_PATH': 'django.blah.foo',
+    'BAR': [
+        'baz',
+        'buh',
+    ],
+}
+
+# Optional list of settings that are allowed to be in 'string import' notation. Leave empty if not needed.
+IMPORT_STRINGS = (
+    'myproject.plugins.fooplugin.models.FooModel'
+)
+
+# Optional list of settings that have been removed. Leave empty if not needed.
+REMOVED_SETTINGS = ( 'FOO_SETTING' )
+
+
+fooplugin_settings = PluginSettings('FOOPLUGIN', None, DEFAULTS, IMPORT_STRINGS)
+
+
+def reload_fooplugin_settings(*args, **kwargs):
+    setting = kwargs['setting']
+    if setting == 'FOOPLUGIN':
+        fooplugin_settings.reload()
+
+
+setting_changed.connect(reload_fooplugin_settings)
+``` 
+
+Detailed explanation:
+
+##### `DEFAULTS`
+The `DEFAULTS` are, as the name says, a default array of settings. If `fooplugin_setting.BLAH is not set by the user, this default value is used.
+
+##### `IMPORT_STRINGS`
+Settings in a *dotted* notation are evaluated, they return not the string, but the object they point to.
+If it does not exist, an `ImportError` is raised.
+ 
+##### `REMOVED_SETTINGS`
+A list of settings that are forbidden to use. If accessed, an `RuntimeError` is raised.
+
+
+This allows very flexible settings - as dependant plugins can easily import the `fooplugin_settings` from your `conf.py`.
+
+However, the created conf.py file is not needed, so if you don't use custom settings at all, just delete the file.
+
 ## Contributing
 
 If you want to contribute, feel free and write a PR, or contact me.
@@ -168,3 +249,4 @@ I was majorly influenced by other plugin systems when writing this code, big tha
 * The [PyUtilib](https://github.com/PyUtilib/pyutilib) library
 * [The Pretix ecosystem](https://pretix.eu/)
 * [Yapsy](http://yapsy.sourceforge.net/)
+* [Django-Rest-Framework](https://www.django-rest-framework.org/)

@@ -1,0 +1,49 @@
+from django.test.signals import setting_changed
+from gdaps.conf import PluginSettings
+
+# This is a default conf file for a GDAPS plugin.
+# You can use settings anywhere in your plugin using this syntax:
+#
+#     from .conf import {{ app_name }}_settings
+#     # or:
+#     # from {{ project_name }}.plugins.{{ app_name }}.conf import {{ app_name }}_settings
+#
+#     foo = {{ app_name }}_settings.FOO_SETTING
+#
+# This way you can use custom (plugin-default) settings, that can be overridden globally if needed.
+
+
+# required parameter.
+NAMESPACE = '{{ upper_cased_app_name }}'
+
+# Optional defaults. Leave empty if not needed.
+DEFAULTS = {
+    # 'MY_SETTING': 'somevalue',
+    # 'FOO_PATH': '{{ project_name}}.plugins.{{ app_name }}.models.FooModel',
+    # 'BAR': [
+    #     'baz',
+    #     'buh',
+    # ],
+}
+
+# Optional list of settings keys that are allowed to be in 'string import' notation. Leave empty if not needed.
+IMPORT_STRINGS = (
+    # 'FOO_PATH',
+)
+
+# Optional list of settings that have been removed. Leave empty if not needed.
+REMOVED_SETTINGS = ()
+
+
+{{ app_name }}_settings = PluginSettings('{{ upper_cased_app_name }}', DEFAULTS, IMPORT_STRINGS)
+
+
+def reload_{{ app_name }}_settings(*args, **kwargs):
+    setting = kwargs['setting']
+    if setting == '{{ upper_cased_app_name }}':
+        {{ app_name }}_settings.reload()
+
+
+setting_changed.connect(reload_{{ app_name }}_settings)
+
+

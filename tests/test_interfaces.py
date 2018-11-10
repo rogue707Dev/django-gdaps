@@ -21,7 +21,6 @@ class TestPlugin3(TestPlugin):
     pass
 
 
-
 def test_try_instanciate_interface():
     """Try to instantiate an interface directly. Should be forbidden"""
     with pytest.raises(PluginError):

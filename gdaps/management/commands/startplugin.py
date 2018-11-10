@@ -1,13 +1,15 @@
 import os
 import string
+import logging
 
 from django.conf import settings
+from gdaps.conf import gdaps_settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
 from django.core.management.templates import TemplateCommand
 from django.apps import apps
 
-from gdaps.pluginmanager import PluginManager
+logger = logging.getLogger(__name__)
 
 try:
     # if git is available, make use of git username/email config data
@@ -29,16 +31,23 @@ def get_user_data(key):
 
 
 class Command(TemplateCommand):
-    help = "Creates a basic GDAPS plugin structure in the " \
-           "'plugins/' directory from a template."
+    _django_root = settings.ROOT_URLCONF.split('.')[0]
 
-    missing_args_message = "You must provide a plugin name."
+    help = "Creates a basic GDAPS plugin structure in the " \
+           "'{plugins}/' directory from a template.".format(
+        plugins=os.path.join('BASE_DIR/', *gdaps_settings.PLUGIN_PATH.split('.')))
+
+    missing_args_message = "You must provide a plugin _name."
 
     def handle(self, name, **options):
         from django.core.validators import validate_email
 
+        plugin_path = gdaps_settings.PLUGIN_PATH
+
+        logger.debug('Using plugin directory: {}'.format(plugin_path))
+
         # override target directory
-        target = os.path.join(PluginManager.plugin_path, name)
+        target = os.path.join(*plugin_path.split('.'), name)
 
         if os.path.exists(target):
             raise CommandError("'{}' already exists".format(target))
@@ -48,13 +57,16 @@ class Command(TemplateCommand):
         template = os.path.join(apps.get_app_config('gdaps').path, 'management', 'templates', 'plugin')
         #options['files'] += ['README.md']
 
+        options['upper_cased_app_name'] = name.upper()
+
+        # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
+        # If there is a better way to do that - please let me know.
+        options['project_name'] = self._django_root
+
         parameters = [
             # key, value, default, validator/None
 
-            # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's name.
-            # If there is a better way to do that - please let me know.
-            ('project_name', 'Django project name', settings.ROOT_URLCONF.split('.')[0], None),
-            ('project_title', 'Django project title', '', None),
+            ('project_title', 'Human readable Django project title', '', None),
             ('author', 'Author', get_user_data('name'), None),
             ('author_email', 'Email', get_user_data('email'), validate_email),
         ]

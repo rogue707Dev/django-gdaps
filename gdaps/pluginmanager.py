@@ -62,11 +62,10 @@ class PluginManager(metaclass=Singleton):
     It provides methods to load submodules of all available plugins
     dynamically."""
 
-    plugin_path = ''
     group = ''
 
     @classmethod
-    def find_plugins(cls, group: str) -> List[str]:
+    def find_plugins(cls) -> List[str]:
         """Finds plugins in the plugin directory, or from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
@@ -81,13 +80,14 @@ class PluginManager(metaclass=Singleton):
         """
 
         found_apps = []
-        cls.group = group
+        from gdaps.conf import gdaps_settings
+        cls.group = gdaps_settings.PLUGIN_PATH
 
         # save a relative import path for plugins, derived from the "group" dotted plugin path
-        cls.plugin_path = os.path.join(*group.split('.'))
+        cls.plugin_path = os.path.join(*cls.group.split('.'))
 
-        if group:
-            for entry_point in iter_entry_points(group=group, name=None):
+        if cls.group:
+            for entry_point in iter_entry_points(group=cls.group, name=None):
                 appname = entry_point.module_name
                 if entry_point.attrs:
                     # FIXME: adding an AppConfig does not work yet
@@ -119,7 +119,7 @@ class PluginManager(metaclass=Singleton):
                 try:
                     dotted_name = "%s.%s" % (appconfig.name, submodule)
                     module = importlib.import_module(dotted_name)
-                    logger.debug('Successfully loaded submodule {}'.format(
+                    logger.info('Successfully loaded submodule {}'.format(
                         dotted_name))
                     modules.append(module)
                 except ImportError as e:
@@ -204,6 +204,3 @@ class PluginManager(metaclass=Singleton):
                 urlpatterns.append(pattern)
 
         return urlpatterns
-
-
-

@@ -5,6 +5,7 @@ def pytest_configure():
         DATABASES={
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
+                'NAME': ':memory:',
             }
         },
         INSTALLED_APPS=[
@@ -12,5 +13,7 @@ def pytest_configure():
             "django.contrib.contenttypes",
             "django.contrib.sessions",
             "django.contrib.admin",
+            'gdaps',
+            'gdaps.test.plugins.plugin1'
         ],
-)
+    )
