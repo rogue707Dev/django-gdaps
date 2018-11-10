@@ -3,15 +3,19 @@ from gdaps import Interface
 # You can place your interfaces here, to be included from dependent plugins
 
 # from gdaps import Interface
-# class IMySpecial{{ camel_case_app_name }}(Interface):
+# class IMySpecial{{ camel_case_app_name }}Interface(Interface):
 #     """Please provide a detailed documentation of the interface."""
 #
-#     Use this interface with any class in another, dependant plugin:
+#     def do_something(self):
+#         """Documentation of method"""
+#
+#
+#     Then implement this interface in another, dependent plugin:
 #
 #     from gdaps import implements
-#     from {{ project_name }}.plugins.{{ app_name }}.api.interfaces import IMySpecial{{ camel_case_app_name }}
+#     from {{ project_name }}.plugins.{{ app_name }}.api.interfaces import IMySpecial{{ camel_case_app_name }}Interface
 #
-#     @implements(IMySpecial{{ camel_case_app_name }})
+#     @implements(IMySpecial{{ camel_case_app_name }}Interface)
 #     class OtherPluginClass:
 #        pass
 #
