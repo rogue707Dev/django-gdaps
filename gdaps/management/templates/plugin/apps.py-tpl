@@ -5,9 +5,9 @@ from django.utils.translation import gettext_lazy as _
 class {{ camel_case_app_name }}Config(AppConfig):
     """ This configuration is the introspection data for plugins."""
 
-    # Dotted Python path to the application, e.g. '{{ project_name }}.plugins.fooplugin'
-    # It has to start with '{{ project_name }}.plugins' to be recognized as {{ camel_case_project_name }} plugin.
-    name = '{{ project_name }}.plugins.{{ app_name }}'
+    # Dotted Python path to the application, e.g. '{{ plugin_path }}.fooplugin'
+    # It has to start with '{{ plugin_path }}' to be recognized as {{ camel_case_project_name }} plugin.
+    name = '{{ plugin_path }}.{{ app_name }}'
 
     def ready(self):
         # This function is called after the app and all models are loaded.

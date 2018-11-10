@@ -31,7 +31,7 @@ def get_user_data(key):
 
 
 class Command(TemplateCommand):
-    _django_root = settings.ROOT_URLCONF.split('.')[0]
+    _django_root:str = settings.ROOT_URLCONF.split('.')[0]
 
     help = "Creates a basic GDAPS plugin structure in the " \
            "'{plugins}/' directory from a template.".format(
@@ -55,18 +55,19 @@ class Command(TemplateCommand):
         # override plugin template directory
         del options['template']
         template = os.path.join(apps.get_app_config('gdaps').path, 'management', 'templates', 'plugin')
-        #options['files'] += ['README.md']
+        options['files'] += ['README.md']
 
         options['upper_cased_app_name'] = name.upper()
 
         # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
         # If there is a better way to do that - please let me know.
         options['project_name'] = self._django_root
+        options['plugin_path'] = plugin_path
+        options['project_title'] = self._django_root.capitalize()
 
         parameters = [
             # key, value, default, validator/None
 
-            ('project_title', 'Human readable Django project title', '', None),
             ('author', 'Author', get_user_data('name'), None),
             ('author_email', 'Email', get_user_data('email'), validate_email),
         ]
@@ -97,4 +98,4 @@ class Command(TemplateCommand):
 
         super().handle('app', name, target, template=template, **options)
 
-        print('Please adapt \'setup.py\' to your needs.')
+        print("Please adapt '%s' to your needs." % os.path.join(settings.BASE_DIR, target, 'setup.py'))

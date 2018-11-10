@@ -6,7 +6,7 @@ from gdaps.conf import PluginSettings
 #
 #     from .conf import {{ app_name }}_settings
 #     # or:
-#     # from {{ project_name }}.plugins.{{ app_name }}.conf import {{ app_name }}_settings
+#     # from {{ plugin_path }}.{{ app_name }}.conf import {{ app_name }}_settings
 #
 #     foo = {{ app_name }}_settings.FOO_SETTING
 #
@@ -19,7 +19,7 @@ NAMESPACE = '{{ upper_cased_app_name }}'
 # Optional defaults. Leave empty if not needed.
 DEFAULTS = {
     # 'MY_SETTING': 'somevalue',
-    # 'FOO_PATH': '{{ project_name}}.plugins.{{ app_name }}.models.FooModel',
+    # 'FOO_PATH': '{{ plugin_path }}.{{ app_name }}.models.FooModel',
     # 'BAR': [
     #     'baz',
     #     'buh',

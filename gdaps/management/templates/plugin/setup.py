@@ -5,8 +5,8 @@ setup(
     name='{{ app_name }}',
     description='{{ project_title }}',
     entry_points={
-        '{{ project_name }}.plugins': [
-            '{{ app_name }} = {{ project_name }}.plugins.{{ app_name }}'
+        '{{ plugin_path }}': [
+            '{{ app_name }} = {{ plugin_path }}.{{ app_name }}'
         ]
     }
 
