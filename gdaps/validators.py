@@ -17,7 +17,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 import os
 import re
-import semver
 from django.core.exceptions import ValidationError
 
 plugin_components_directory_name = 'components'
