@@ -38,11 +38,11 @@ GDAPS = {
   'PLUGIN_PATH': 'myproject.plugins',
 }
 
-# Load all plugins from setuptools entry points named 'myproject.plugins'
+# Load all plugins from setuptools entry points and from the directory named 'myproject.plugins'
 INSTALLED_APPS += PluginManager.find_plugins()
 
 ```
-Basically, this is all you really need so far, for a minimum working GDAPS-enabled Django application.
+Basically, this is all you really need so far, for a minimal working GDAPS-enabled Django application.
 
 
 ### Creating plugins
