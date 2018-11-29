@@ -120,6 +120,24 @@ class OtherPluginClass:
         print('I did something!')
 ```
 
+#### ExtensionPoints
+
+An ExtensionPoint (EP) is a plugin hook that refers to an Interface. An EP can be defined anywhere in code.
+You can then get all the plugins that implement that interface by just iterating over that ExtensionPoint:
+
+ ```python
+from gdaps import ExtensionPoint
+from myproject.plugins.fooplugin.api.interfaces import IFooInterface
+
+class MyPlugin:
+    ep = ExtensionPoint(IFooInterface)
+    
+    def foo_method(self):
+        for plugin in ep:
+            print plugin().do_domething()
+```
+
+Keep in mind that iterating over an ExtensionPoint **does not return instances** of plugins. It just returns the **class** that was decorated with *@implements*. This might be improved in the future (auto-instantiated plugins).
 
 
 #### URLs
