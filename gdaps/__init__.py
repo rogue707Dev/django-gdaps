@@ -41,9 +41,9 @@ class InterfaceMeta(type):
         interface._permissions = []
         return interface
 
-    def __iter__(mcs):
-        """Makes Interface iterable."""
-        return iter(mcs._implementations)
+    # def __iter__(mcs):
+    #     """Makes Interface iterable."""
+    #     return iter(mcs._implementations)
 
 
 class Interface(metaclass=InterfaceMeta):
@@ -53,29 +53,75 @@ class Interface(metaclass=InterfaceMeta):
             cls.__class__.__name__))
 
 
+class ExtensionPoint:
+    """Marker class for Extension points in plugins"""
+    # shamelessly copied (and adapted) from PyUtilib
+
+    def __init__(self, interface: Interface) -> None:
+        """Creates the extension point.
+
+        @param interface: The interface that is referred to.
+        """
+
+        if interface is None:
+            raise PluginError('An ExtensionPoint must point to an Interface. Please specify one.')
+        self._interface = interface
+        self.__doc__ =  'List of plugins that implement %s' % interface.__name__
+
+    def __iter__(self):
+        """Returns an iterator to a set of plugins that match the interface of this extension point."""
+
+        return self.extensions().__iter__()
+
+    def __call__(self, key=None, all=False) -> list:
+        """Return a set of plugins that match the interface of this extension point."""
+
+        if type(key) in (int, int):
+            raise PluginError("Access of the n-th extension point is "
+                              "disallowed.  This is not well-defined, since "
+                              "ExtensionPoints are stored as unordered sets.")
+        return self.extensions(all=all, key=key)
+
+    def __len__(self):
+        """Return the number of plugins that match the interface of this extension point."""
+
+        return len(self.extensions())
+
+    def extensions(self, all=False):
+        """Return a set of plugins that match the interface of this extension point.
+        This tacitly filters out disabled extension points.
+        """
+
+        return(self._interface._implementations)
+
+
 class Implements:
     """Decorator class for implementing interfaces.
 
     Just decorate a class with *@implements(IMyInterface)*
+    You can also implement more than one interface: *@implements(IAInterface, IBInterface)*
     """
 
     def __init__(self, *interfaces: List[Interface]):
         """Called at declaration if the decorator (with following class).
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
+        :param service: if True the implementations will get instanciated immediately.
         """
-        # memoize a list of *Interface*s the decorated class is going to
-        # implement
+        # memoize a list of *Interface*s the decorated class is going to implement
+        self._interfaces = []  # type: List[Interface]
         if not interfaces:
             raise PluginError('You have to specify an <Interface>'
-                              ' to @implements.')
-        for iface in interfaces:
-            if iface.__name__ == 'Interface':
+                              ' to the @implements decorator.')
+        for interface in interfaces:
+            #FIXME this should not test for str, but compare to the class using type()
+            if interface.__name__ == 'Interface':
                 raise PluginError('You can\'t directly implement <Interface>.'
                                   'Please subclass <Interface> and use that'
                                   'class as parameter for @implements().')
 
-        self._interfaces = interfaces
+            # get all methods of interface and look for implementations
+            self._interfaces.append(interface)
 
     def __call__(self, cls):
         """Called at decoration
@@ -83,8 +129,12 @@ class Implements:
         """
         # add the decorated class to each Interface's internal
         # implementation list
-        for iface in self._interfaces:
-            iface._implementations.append(cls)
+        for interface in self._interfaces:  # type: Interface
+            for method in [m for m in dir(interface) if callable(getattr(interface, m)) and not m.startswith('_')]:
+                if not hasattr(cls, method):
+                    raise PluginError("Class '%s' does not implement method '%s' of Interface '%s'" %
+                                      (cls.__name__, method, interface.__name__))
+            interface._implementations.append(cls)
 
         return cls
 

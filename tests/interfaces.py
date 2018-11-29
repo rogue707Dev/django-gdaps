@@ -7,8 +7,14 @@ class ITestInterface1(Interface):
 
 
 class ITestInterface2(Interface):
+    mes = 2
+
+    def required_method(self):
+        pass
+
     def get_item(self):
         pass
+
 
 class TestPlugin:
     pass

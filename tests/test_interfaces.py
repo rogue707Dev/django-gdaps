@@ -1,7 +1,7 @@
 
 import pytest
 
-from gdaps import Interface, PluginError, implements
+from gdaps import Interface, PluginError, implements, ExtensionPoint
 from tests.interfaces import ITestInterface1, ITestInterface2, TestPlugin
 
 
@@ -10,10 +10,14 @@ class TestPlugin1(TestPlugin):
     pass
 
 
-@implements(ITestInterface2)
-class TestPlugin2(TestPlugin):
-    def get_item(self):
-        return "something"
+with pytest.raises(PluginError):
+    @implements(ITestInterface2)
+    class TestPlugin2(TestPlugin):
+        def get_item(self):
+            return "something"
+
+        # does not implement required_method()
+        # this must raise an error at declaration time!
 
 
 @implements(ITestInterface1)
@@ -35,11 +39,19 @@ def test_dont_implement_interface_directly():
             pass
 
 
-def test_iterable():
-    # raises an Error if ITestInterface1 is not iterable:
-    for plugin in ITestInterface1:
+def test_iterable_extensionpoint():
+    """raises an Error if ITestInterface1 is not iterable:"""
+    ep = ExtensionPoint(ITestInterface1)
+    for plugin in ep:
         pass
 
     # make sure that it iterates over the right classes
-    assert TestPlugin1 in ITestInterface1
-    assert TestPlugin3 in ITestInterface1
+    assert TestPlugin1 in ep
+    assert TestPlugin3 in ep
+
+
+def test_call_method():
+    """Raises an error if the implemented method is not callable"""
+    ep = ExtensionPoint(ITestInterface2)
+    for i in ep:
+        dummy = i().get_item()
