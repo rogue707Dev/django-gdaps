@@ -1,8 +1,7 @@
 
-import pytest
 
 from gdaps import Interface, PluginError, implements, ExtensionPoint
-from tests.plugins import FirstInterface
+from .plugins import FirstInterface
 
 
 def test_plugin1():

@@ -2,7 +2,7 @@
 import pytest
 
 from gdaps import Interface, PluginError, implements, ExtensionPoint
-from tests.interfaces import ITestInterface1, ITestInterface2, TestPlugin
+from .interfaces import ITestInterface1, ITestInterface2, TestPlugin
 
 
 @implements(ITestInterface1)

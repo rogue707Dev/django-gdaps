@@ -2,8 +2,8 @@ import pytest
 
 from gdaps import InterfaceMeta
 from gdaps.conf import PluginSettings
-from tests.plugins.plugin1.conf import plugin1_settings, NAMESPACE, DEFAULTS, IMPORT_STRINGS, REMOVED_SETTINGS
-from tests.plugins.plugin1.api.interfaces import FirstInterface
+from .plugins.plugin1.conf import plugin1_settings, NAMESPACE, DEFAULTS, IMPORT_STRINGS, REMOVED_SETTINGS
+from .plugins.plugin1.api.interfaces import FirstInterface
 
 
 def test_simple_default_value():
