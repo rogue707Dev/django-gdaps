@@ -82,7 +82,7 @@ class ExtensionPoint:
             raise PluginError("Access of the n-th extension point is "
                               "disallowed.  This is not well-defined, since "
                               "ExtensionPoints are stored as unordered sets.")
-        return self.extensions(all=all, key=key)
+        return self.extensions(all=all)
 
     def __len__(self):
         """Return the number of plugins that match the interface of this extension point."""
@@ -104,8 +104,8 @@ class Implements:
     You can also implement more than one interface: *@implements(IAInterface, IBInterface)*
     """
 
-    def __init__(self, *interfaces: List[Interface]):
-        """Called at declaration if the decorator (with following class).
+    def __init__(self, *interfaces: List[Interface]) -> None:
+        """Called at declaration of the decorator (with following class).
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
         :param service: if True the implementations will get instanciated immediately.
@@ -121,7 +121,6 @@ class Implements:
                                   'Please subclass <Interface> and use that'
                                   'class as parameter for @implements().')
 
-            # get all methods of interface and look for implementations
             self._interfaces.append(interface)
 
     def __call__(self, cls) -> object:
