@@ -39,19 +39,19 @@ def test_dont_implement_interface_directly():
             pass
 
 
-def test_iterable_extensionpoint():
-    """raises an Error if ITestInterface1 is not iterable:"""
-    ep = ExtensionPoint(ITestInterface1)
-    for plugin in ep:
-        pass
+def test_multiple_interfaces():
+    """Try to implement mora than one interfaces in one implementation"""
 
-    # make sure that it iterates over the right classes
-    assert TestPlugin1 in ep
-    assert TestPlugin3 in ep
+    @implements(ITestInterface1, ITestInterface2)
+    class Dummy:
+        def required_method(self):
+            pass
 
+        def get_item(self):
+            pass
 
-def test_call_method():
-    """Raises an error if the implemented method is not callable"""
-    ep = ExtensionPoint(ITestInterface2)
-    for i in ep:
-        dummy = i().get_item()
+    ep1 = ExtensionPoint(ITestInterface1)
+    assert Dummy in ep1
+
+    ep2 = ExtensionPoint(ITestInterface2)
+    assert Dummy in ep2

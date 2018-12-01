@@ -64,7 +64,9 @@ class ExtensionPoint:
         """
 
         if interface is None:
-            raise PluginError('An ExtensionPoint must point to an Interface. Please specify one.')
+            raise PluginError('An <ExtensionPoint> must point to an <Interface>. Please specify one.')
+        if interface is Interface:
+            raise PluginError("An extension point can't directly refer to <Interface>. Use an <Interface> subclass.")
         self._interface = interface
         self.__doc__ =  'List of plugins that implement %s' % interface.__name__
 
@@ -74,7 +76,7 @@ class ExtensionPoint:
         return self.extensions().__iter__()
 
     def __call__(self, key=None, all=False) -> list:
-        """Return a set of plugins that match the interface of this extension point."""
+        """Returns a set of plugins that match the interface of this extension point."""
 
         if type(key) in (int, int):
             raise PluginError("Access of the n-th extension point is "
@@ -84,12 +86,12 @@ class ExtensionPoint:
 
     def __len__(self):
         """Return the number of plugins that match the interface of this extension point."""
-
         return len(self.extensions())
 
     def extensions(self, all=False):
-        """Return a set of plugins that match the interface of this extension point.
-        This tacitly filters out disabled extension points.
+        """Returns a set of plugins that match the interface of this extension point.
+
+        TODO: filter out disabled extension points.
         """
 
         return(self._interface._implementations)
@@ -114,8 +116,7 @@ class Implements:
             raise PluginError('You have to specify an <Interface>'
                               ' to the @implements decorator.')
         for interface in interfaces:
-            #FIXME this should not test for str, but compare to the class using type()
-            if interface.__name__ == 'Interface':
+            if interface is Interface:
                 raise PluginError('You can\'t directly implement <Interface>.'
                                   'Please subclass <Interface> and use that'
                                   'class as parameter for @implements().')
@@ -123,8 +124,8 @@ class Implements:
             # get all methods of interface and look for implementations
             self._interfaces.append(interface)
 
-    def __call__(self, cls):
-        """Called at decoration
+    def __call__(self, cls) -> object:
+        """Called at decoration time
         :param cls: decorated class
         """
         # add the decorated class to each Interface's internal
