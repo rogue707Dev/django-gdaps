@@ -40,7 +40,7 @@ def test_dont_implement_interface_directly():
 
 
 def test_multiple_interfaces():
-    """Try to implement mora than one interfaces in one implementation"""
+    """Try to implement more than one interfaces in one implementation"""
 
     @implements(ITestInterface1, ITestInterface2)
     class Dummy:
