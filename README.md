@@ -95,7 +95,7 @@ Of course this also works when plugins are installed from PyPi, they don't have 
 
 #### Interfaces
 
-Plugins can define interfaces, which can then be implemented by other plugins. The `startplugin` command will create a `<app_name>/api/interfaces.py` file automatically. Interfaces must not be defined in that module, but it is a recommended coding style for GDAPS plugins:
+Plugins can define interfaces, which can then be implemented by other plugins. The `startplugin` command will create a `<app_name>/api/interfaces.py` file automatically. Interfaces don't have to be defined in that module, but it is a recommended coding style for GDAPS plugins:
 
 ```python
 from gdaps import Interface
