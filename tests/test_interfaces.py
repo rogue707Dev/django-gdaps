@@ -2,7 +2,22 @@
 import pytest
 
 from gdaps import Interface, PluginError, implements, ExtensionPoint
-from .interfaces import ITestInterface1, ITestInterface2, TestPlugin
+
+
+class ITestInterface1(Interface):
+    pass
+
+
+class ITestInterface2(Interface):
+    def required_method(self):
+        pass
+
+    def get_item(self):
+        pass
+
+
+class TestPlugin:
+    pass
 
 
 @implements(ITestInterface1)
@@ -10,19 +25,20 @@ class TestPlugin1(TestPlugin):
     pass
 
 
-with pytest.raises(PluginError):
-    @implements(ITestInterface2)
-    class TestPlugin2(TestPlugin):
-        def get_item(self):
-            return "something"
-
-        # does not implement required_method()
-        # this must raise an error at declaration time!
-
 
 @implements(ITestInterface1)
 class TestPlugin3(TestPlugin):
     pass
+
+
+def test_missing_method():
+    with pytest.raises(PluginError):
+        @implements(ITestInterface2)
+        class TestPlugin2(TestPlugin):
+            # does not implement required_method()
+            # this must raise an error at declaration time!
+            def get_item(self):
+                return "something"
 
 
 def test_try_instanciate_interface():

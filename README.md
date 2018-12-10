@@ -107,8 +107,10 @@ class IFooInterface(Interface):
         pass
 ```
 
+#### Implementations
+
 You can then easily implement this interface in any other file (in this plugin or in another plugin) using the 
-`implements` decorator syntax:
+`@implements` decorator syntax:
 
 ```python
 from gdaps import implements
@@ -116,9 +118,19 @@ from myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
 @implements(IFooInterface)
 class OtherPluginClass:
+
     def do_something(self):
         print('I did something!')
 ```
+
+I didn't want to force implementations to inherit a `Plugin` base class, like some other plugin systems do.
+This would mean that implementations won't be as flexible as I wanted them. When just using a decorator, you can easily
+use ANY, even your already existing, class and just ducktype-implement the methods the Interface demands. If you forget 
+to implement a method, GDAPS will complain instantly.  
+
+If you need a more "Plugin"-like class, just create a class that implements the `gdaps.IPlugin` interface, or use the
+included `gdaps.Plugin` class as parent for your convenience.
+
 
 #### ExtensionPoints
 
