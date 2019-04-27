@@ -45,5 +45,3 @@ def reload_{{ app_name }}_settings(*args, **kwargs):
 
 
 setting_changed.connect(reload_{{ app_name }}_settings)
-
-

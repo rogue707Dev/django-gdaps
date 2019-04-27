@@ -1,5 +1,10 @@
+import os
+
+from django.conf import settings
 from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
+
+from gdaps.conf import gdaps_settings
 
 
 class {{ camel_case_app_name }}Config(AppConfig):
@@ -23,3 +28,20 @@ class {{ camel_case_app_name }}Config(AppConfig):
             from . import signals
         except ImportError:
             pass
+
+        if os.path.exists(gdaps_settings.FRONTEND_PATH):
+
+            settings.WEBPACK_LOADER.update({
+                '{{ app_name }}': {
+                    'BUNDLE_DIR_NAME': '',
+                    'STATS_FILE': os.path.join(
+                        settings.BASE_DIR,
+                        '{}/frontend/webpack-stats.json'.format(
+                            os.path.abspath(os.path.dirname(__file__))
+                        )
+                    ),
+                    # 'POLL_INTERVAL': 0.1,
+                    # 'TIMEOUT': None,
+                    'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+                }
+            })

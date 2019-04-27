@@ -1,11 +1,24 @@
-from django.conf import settings
-
+import os
 from importlib import import_module
+
+from django.conf import settings
 from django.test.signals import setting_changed
+
 
 NAMESPACE = "GDAPS"
 
-DEFAULTS = {"PLUGIN_PATH": "plugins"}
+DEFAULTS = {
+    "PLUGIN_PATH": "plugins",
+    "FRONTEND_PATH": "frontend",
+    "FRONTEND_DIR": os.path.join(settings.BASE_DIR, "frontend"),
+    "WEBPACK_LOADER": {
+        "DEFAULTS": {
+            "BUNDLE_DIR_NAME": "/bundles/",
+            "CACHE": not settings.DEBUG,
+            "IGNORE": [r".+\.hot-update.js", r".+\.map"],
+        }
+    },
+}
 
 # List of settings that may be in string import notation.
 IMPORT_STRINGS = ()
