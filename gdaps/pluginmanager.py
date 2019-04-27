@@ -118,6 +118,7 @@ class PluginManager(metaclass=Singleton):
 
             # import all the sumbodules from all plugin apps
             if hasattr(appconfig, "PluginMeta"):
+                dotted_name = ""
                 try:
                     dotted_name = "%s.%s" % (appconfig.name, submodule)
                     module = importlib.import_module(dotted_name)
