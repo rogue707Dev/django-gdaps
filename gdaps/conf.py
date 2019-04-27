@@ -9,15 +9,8 @@ NAMESPACE = "GDAPS"
 
 DEFAULTS = {
     "PLUGIN_PATH": "plugins",
-    "FRONTEND_PATH": "frontend",
-    "FRONTEND_DIR": os.path.join(settings.BASE_DIR, "frontend"),
-    "WEBPACK_LOADER": {
-        "DEFAULTS": {
-            "BUNDLE_DIR_NAME": "/bundles/",
-            "CACHE": not settings.DEBUG,
-            "IGNORE": [r".+\.hot-update.js", r".+\.map"],
-        }
-    },
+    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
+    "FRONTEND_DIR": "frontend",
 }
 
 # List of settings that may be in string import notation.
