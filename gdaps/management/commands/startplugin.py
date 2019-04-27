@@ -84,7 +84,7 @@ class Command(TemplateCommand):
                 # don't let input string contain a "
                 if '"' in s:
                     self.stderr.write(
-                        "Error: The character '\"' is not allowed within the string."
+                        "Error: The character '\"' is not allowed within the string.\n"
                     )
                 if default and not s:
                     s = default
@@ -92,7 +92,7 @@ class Command(TemplateCommand):
                     try:
                         validator(s)
                     except ValidationError as e:
-                        self.stderr.write(e.message)
+                        self.stderr.write(e.message + "\n")
                         s = ""
 
             options[key] = s
@@ -100,7 +100,7 @@ class Command(TemplateCommand):
         try:
             os.makedirs(target)
             self.stdout.write(
-                "Successfully created plugin directory: {}".format(target)
+                "Successfully created plugin directory: {}\n".format(target)
             )
         except OSError as e:
             raise CommandError(e)
@@ -108,6 +108,6 @@ class Command(TemplateCommand):
         super().handle("app", name, target, template=template, **options)
 
         self.stdout.write(
-            "Please adapt '%s' to your needs."
+            "Please adapt '%s' to your needs.\n"
             % os.path.join(settings.BASE_DIR, target, "setup.py")
         )
