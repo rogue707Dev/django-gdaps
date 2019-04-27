@@ -7,10 +7,12 @@ from django.test.signals import setting_changed
 
 NAMESPACE = "GDAPS"
 
+frontend_dir_name = "frontend"
+
 DEFAULTS = {
     "PLUGIN_PATH": "plugins",
-    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
-    "FRONTEND_DIR": "frontend",
+    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, frontend_dir_name),
+    "FRONTEND_DIR": frontend_dir_name,
 }
 
 # List of settings that may be in string import notation.
