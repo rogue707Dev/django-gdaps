@@ -28,8 +28,13 @@ from gdaps.pluginmanager import PluginManager
 INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
     "gdaps",
+    # if you want frontend support, add:
+    "gdaps.frontend"
+    # ...
 ]
 ```
+For further frontend specific instructions, see [Frontend support](#frontend-support).
+
 
 The configuration of GDAPS is bundled in one variable:
 
@@ -255,6 +260,20 @@ A list of settings that are forbidden to use. If accessed, an `RuntimeError` is 
 This allows very flexible settings - as dependant plugins can easily import the `fooplugin_settings` from your `conf.py`.
 
 However, the created conf.py file is not needed, so if you don't use custom settings at all, just delete the file.
+
+## Frontend support
+
+GDAPS supports Javascript frontends for building e.g. SPA applications. ATM only Vue.js ist supported, but PRs are welcome to add more (Angular, React?).
+
+If you added `gdaps.frontend` to `INSTALLED_APPS`, there is a new management command available: `manage.py initfrontend`. It accepts one parameter `engine`, which ATM only can be "vue".
+    
+    ./manage.py initfrontend vue
+
+creates a /frontend/ directory in the project root. Change into that directory and run `npm install` once to install all the dependencies of Vue.js needed.
+
+Now you can start `npm run serve` in that directory to use the development server, and edit files in the /frontend/ directory.
+Remember, this only starts the frontend. You also need to start Django using `./manage.py runserver` to enable the backend, which most likely will be needed by your Vue frontend.
+
 
 ## Contributing
 

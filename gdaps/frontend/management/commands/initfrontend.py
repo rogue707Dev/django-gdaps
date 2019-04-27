@@ -1,17 +1,12 @@
 import os
-import string
 import logging
-import sys
-import importlib.util
 import subprocess
-import shutil
-
-from .startplugin import get_user_data
 
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
 from django.core.management.templates import TemplateCommand
 from django.apps import apps
+
 from gdaps.conf import gdaps_settings
 
 logger = logging.getLogger(__name__)
@@ -103,12 +98,9 @@ class Command(TemplateCommand):
                 )
                 # npm install vue
                 # FIXME: check if npm is available
-                # subprocess.check_call(
-                #     "npm install --prefix {frontend_path}".format(
-                #         frontend_path=frontend_path
-                #     ),
-                #     shell=True,
-                # )
+                subprocess.check_call(
+                    "npm install --prefix {}".format(frontend_path), shell=True
+                )
 
             except Exception as e:
                 os.rmdir(frontend_path)
