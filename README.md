@@ -27,7 +27,7 @@ from gdaps.pluginmanager import PluginManager
 
 INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
-    'gdaps',
+    "gdaps",
 ]
 ```
 
@@ -35,7 +35,7 @@ The configuration of GDAPS is bundled in one variable:
 
 ```python
 GDAPS = {
-    'PLUGIN_PATH': 'myproject.plugins',  # default: 'plugins'
+    "PLUGIN_PATH': 'myproject.plugins",  # default: 'plugins'
 }
 
 # Load all plugins from setuptools entry points and from the directory named 'myproject.plugins'
@@ -71,10 +71,10 @@ These plugins must be loaded *after* the `gdaps` app. Prepend it with the `PLUGI
 
 INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
-    'gdaps',
+    "gdaps",
 
     # put "static" plugins here too:
-    'myproject.plugins.fooplugin',
+    "myproject.plugins.fooplugin",
 ]
 ```
 
@@ -177,7 +177,7 @@ A typical `fooplugin/urls.py` would look like this:
     app_name = fooplugin
 
     urlpatterns =  [
-        path('/fooplugin/myurl', views.MyUrlView.as_view()),
+        path("/fooplugin/myurl", views.MyUrlView.as_view()),
     ]
 
 GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc.
@@ -187,7 +187,7 @@ GDAPS lets your plugin create global, root URLs, they are not namespaced. This i
 GDAPS settings are bundled in a `GDAPS` variable you can add to your settings.py. The defaults are:
 ```python
 GDAPS = {
-    'PLUGIN_PATH': 'plugins'
+    "PLUGIN_PATH": "plugins"
 }
 ```
 
@@ -206,33 +206,33 @@ GDAPS allows your application to have own settings for each plugin easily, which
 from django.test.signals import setting_changed
 from gdaps.conf import PluginSettings
 
-NAMESPACE = 'FOOPLUGIN'
+NAMESPACE = "FOOPLUGIN"
 
 # Optional defaults. Leave empty if not needed.
 DEFAULTS = {
-    'MY_SETTING': 'somevalue',
-    'FOO_PATH': 'django.blah.foo',
-    'BAR': [
-        'baz',
-        'buh',
+    "MY_SETTING": "somevalue",
+    "FOO_PATH": "django.blah.foo",
+    "BAR": [
+        "baz",
+        "buh",
     ],
 }
 
-# Optional list of settings that are allowed to be in 'string import' notation. Leave empty if not needed.
+# Optional list of settings that are allowed to be in "string import" notation. Leave empty if not needed.
 IMPORT_STRINGS = (
-    'myproject.plugins.fooplugin.models.FooModel'
+    "myproject.plugins.fooplugin.models.FooModel"
 )
 
 # Optional list of settings that have been removed. Leave empty if not needed.
-REMOVED_SETTINGS = ( 'FOO_SETTING' )
+REMOVED_SETTINGS = ( "FOO_SETTING" )
 
 
-fooplugin_settings = PluginSettings('FOOPLUGIN', None, DEFAULTS, IMPORT_STRINGS)
+fooplugin_settings = PluginSettings("FOOPLUGIN", None, DEFAULTS, IMPORT_STRINGS)
 
 
 def reload_fooplugin_settings(*args, **kwargs):
-    setting = kwargs['setting']
-    if setting == 'FOOPLUGIN':
+    setting = kwargs["setting"]
+    if setting == "FOOPLUGIN":
         fooplugin_settings.reload()
 
 
