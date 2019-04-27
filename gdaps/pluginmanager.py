@@ -24,7 +24,7 @@ from django.apps import apps, AppConfig
 from pkg_resources import iter_entry_points
 from typing import List
 
-__all__ = ['PluginManager']
+__all__ = ["PluginManager"]
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +49,7 @@ logger = logging.getLogger(__name__)
 
 class Singleton(type):
     _instances = {}
+
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
@@ -62,7 +63,7 @@ class PluginManager(metaclass=Singleton):
     It provides methods to load submodules of all available plugins
     dynamically."""
 
-    group = ''
+    group = ""
 
     @classmethod
     def find_plugins(cls) -> List[str]:
@@ -81,20 +82,21 @@ class PluginManager(metaclass=Singleton):
 
         found_apps = []
         from gdaps.conf import gdaps_settings
+
         cls.group = gdaps_settings.PLUGIN_PATH
 
         # save a relative import path for plugins, derived from the "group" dotted plugin path
-        cls.plugin_path = os.path.join(*cls.group.split('.'))
+        cls.plugin_path = os.path.join(*cls.group.split("."))
 
         if cls.group:
             for entry_point in iter_entry_points(group=cls.group, name=None):
                 appname = entry_point.module_name
                 if entry_point.attrs:
                     # FIXME: adding an AppConfig does not work yet
-                    appname += '.' + '.'.join(entry_point.attrs)
+                    appname += "." + ".".join(entry_point.attrs)
 
                 found_apps.append(appname)
-                logger.debug('Added \'{}\' to INSTALLED_APPS.'.format(appname))
+                logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
 
         return found_apps
 
@@ -115,18 +117,18 @@ class PluginManager(metaclass=Singleton):
         for appconfig in apps.get_app_configs():
 
             # import all the sumbodules from all plugin apps
-            if hasattr(appconfig, 'PluginMeta'):
+            if hasattr(appconfig, "PluginMeta"):
                 try:
                     dotted_name = "%s.%s" % (appconfig.name, submodule)
                     module = importlib.import_module(dotted_name)
-                    logger.info('Successfully loaded submodule {}'.format(
-                        dotted_name))
+                    logger.info("Successfully loaded submodule {}".format(dotted_name))
                     modules.append(module)
                 except ImportError as e:
                     # ignore non-existing <package_name>.py files
                     # in plugins
-                    logger.error("Error loading submodule '{}':\n   {}".format(
-                        dotted_name, e))
+                    logger.error(
+                        "Error loading submodule '{}':\n   {}".format(dotted_name, e)
+                    )
         return modules
 
     @staticmethod
@@ -177,9 +179,8 @@ class PluginManager(metaclass=Singleton):
                 app_config.ready()
 
             apps.ready = True
-            logger.debug('Django apps: {}'.format(
-                apps.app_configs
-            ))
+            logger.debug("Django apps: {}".format(apps.app_configs))
+
     @staticmethod
     def collect_urls() -> list:
         """Loads all plugins' urls.py and collects their urlpatterns.
@@ -198,8 +199,8 @@ class PluginManager(metaclass=Singleton):
         # Another unmanaged problem is 'dependencies':
         # FIXME: a dependency manager must be implemented into the PluginManager
         urlpatterns = []
-        for module in PluginManager.load_plugin_submodule('urls'):
-            pattern = getattr(module, 'urlpatterns', None)
+        for module in PluginManager.load_plugin_submodule("urls"):
+            pattern = getattr(module, "urlpatterns", None)
             if pattern:
                 urlpatterns.append(pattern)
 

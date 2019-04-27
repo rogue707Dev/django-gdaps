@@ -19,7 +19,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import logging
 from typing import List, Type
 
-__all__ = ["PluginError", "Interface", "implements", "ExtensionPoint", "IPlugin", "Plugin"]
+__all__ = [
+    "PluginError",
+    "Interface",
+    "implements",
+    "ExtensionPoint",
+    "IPlugin",
+    "Plugin",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -34,6 +41,7 @@ class InterfaceMeta(type):
     This class assigns a new empty implementations and permissions list to each
     Interface at creation time.
     """
+
     def __new__(mcs, name, bases, dct):
         """Creates a new Interface class"""
         interface = type.__new__(mcs, name, bases, dct)
@@ -48,13 +56,16 @@ class InterfaceMeta(type):
 
 class Interface(metaclass=InterfaceMeta):
     """Base class for interface definitions."""
+
     def __new__(cls, *args, **kwargs):
-        raise PluginError("<Interface> can't be instantiated directly".format(
-            cls.__class__.__name__))
+        raise PluginError(
+            "<Interface> can't be instantiated directly".format(cls.__class__.__name__)
+        )
 
 
 class ExtensionPoint:
     """Marker class for Extension points in plugins"""
+
     # shamelessly copied (and adapted) from PyUtilib
 
     def __init__(self, interface: Type[Interface]) -> None:
@@ -64,11 +75,15 @@ class ExtensionPoint:
         """
 
         if interface is None:
-            raise PluginError('An <ExtensionPoint> must point to an <Interface>. Please specify one.')
+            raise PluginError(
+                "An <ExtensionPoint> must point to an <Interface>. Please specify one."
+            )
         if interface is Interface:
-            raise PluginError("An extension point can't directly refer to <Interface>. Use an <Interface> subclass.")
+            raise PluginError(
+                "An extension point can't directly refer to <Interface>. Use an <Interface> subclass."
+            )
         self._interface = interface
-        self.__doc__ = 'List of plugins that implement %s' % interface.__name__
+        self.__doc__ = "List of plugins that implement %s" % interface.__name__
 
     def __iter__(self):
         """Returns an iterator to a set of plugins that match the interface of this extension point."""
@@ -79,9 +94,11 @@ class ExtensionPoint:
         """Returns a set of plugins that match the interface of this extension point."""
 
         if type(key) in (int, int):
-            raise PluginError("Access of the n-th extension point is "
-                              "disallowed.  This is not well-defined, since "
-                              "ExtensionPoints are stored as unordered sets.")
+            raise PluginError(
+                "Access of the n-th extension point is "
+                "disallowed.  This is not well-defined, since "
+                "ExtensionPoints are stored as unordered sets."
+            )
         return self.extensions()
 
     def __len__(self):
@@ -101,7 +118,7 @@ class ExtensionPoint:
 
             # either look for the 'enabled' attribute and just return the plugin instance, when it's enabled,
             # or, if there is no 'enabled' attribute, ignore it and just return the plugin instance
-            if hasattr(impl, 'enabled'):
+            if hasattr(impl, "enabled"):
                 if impl.enabled:
                     ext_set.add(impl)
             else:
@@ -120,7 +137,7 @@ class Implements:
     You can also implement more than one interface: *@implements(IAInterface, IBInterface)*
     """
 
-    def __init__(self, *interfaces:List[Interface], singleton:bool = False) -> None:
+    def __init__(self, *interfaces: List[Interface], singleton: bool = False) -> None:
         """Called at declaration of the decorator (with following class).
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
@@ -132,13 +149,16 @@ class Implements:
         self._singleton = singleton
 
         if not interfaces:
-            raise PluginError('You have to specify an <Interface>'
-                              ' to the @implements decorator.')
+            raise PluginError(
+                "You have to specify an <Interface>" " to the @implements decorator."
+            )
         for interface in interfaces:
             if interface is Interface:
-                raise PluginError('You can\'t directly implement <Interface>.'
-                                  'Please subclass <Interface> and use that'
-                                  'class as parameter for @implements().')
+                raise PluginError(
+                    "You can't directly implement <Interface>."
+                    "Please subclass <Interface> and use that"
+                    "class as parameter for @implements()."
+                )
 
             self._interfaces.append(interface)
 
@@ -155,10 +175,12 @@ class Implements:
             cls = cls()
 
         for interface in self._interfaces:  # type: Interface
-            for attr in [m for m in dir(interface) if not m.startswith('_')]:
-                if callable(getattr(interface, attr))and not hasattr(cls, attr):
-                    raise PluginError("Class '%s' does not implement method '%s' of Interface '%s'" %
-                                      (cls.__name__, attr, interface.__name__))
+            for attr in [m for m in dir(interface) if not m.startswith("_")]:
+                if callable(getattr(interface, attr)) and not hasattr(cls, attr):
+                    raise PluginError(
+                        "Class '%s' does not implement method '%s' of Interface '%s'"
+                        % (cls.__name__, attr, interface.__name__)
+                    )
             interface._implementations.append(cls)
 
         return cls

@@ -10,6 +10,7 @@ class IFoo(Interface):
 
 class IAttribute1(Interface):
     """Implementations should contain a 'foo' attribute: list of str"""
+
     foo = []
 
 
@@ -38,6 +39,7 @@ def test_service_method_call():
 
 def test_attribute_missing():
     with pytest.raises(PluginError):
+
         @implements(IAttribute1)
         class MissingAttr:
             pass
@@ -45,6 +47,7 @@ def test_attribute_missing():
 
 def test_empty_implements():
     with pytest.raises(PluginError):
+
         @implements()  # implements must have an Interface as argument
         class Foo:
             pass

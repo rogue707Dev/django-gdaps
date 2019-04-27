@@ -2,6 +2,7 @@ import pytest
 
 from gdaps import ExtensionPoint, Interface, PluginError, implements
 
+
 class ITestInterface1(Interface):
     pass
 
@@ -16,6 +17,7 @@ class ITestInterface2(Interface):
 
 class TestPlugin:
     pass
+
 
 # Test classes for interfaces and their implementations
 class ITestInterface3(Interface):
@@ -32,10 +34,12 @@ class ITestInterface5(Interface):
 
 class IAttribute1Interface(Interface):
     """Implementations should contain a 'foo' attribute: list of str"""
+
     foo = []
 
 
 # Test implementations
+
 
 @implements(ITestInterface3)
 class Foo:
@@ -54,7 +58,7 @@ class Baz:
 
 @implements(IAttribute1Interface)
 class Attribute2Class:
-    foo = ['first', 'second']
+    foo = ["first", "second"]
 
 
 @implements(ITestInterface1)
@@ -68,7 +72,6 @@ class TestPlugin3(TestPlugin):
 
 
 # Tests
-
 
 
 def test_empty_ep():
@@ -119,13 +122,7 @@ def test_ep_len():
     assert len(ep) == 2
 
 
-
-
-
-
-
 def test_attribute():
     # directly instantiate a class, which should contain an attribute.
     a = Attribute2Class()
-    assert a.foo == ['first', 'second']
-
+    assert a.foo == ["first", "second"]

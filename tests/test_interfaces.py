@@ -1,4 +1,3 @@
-
 import pytest
 
 from gdaps import Interface, PluginError, implements, ExtensionPoint
@@ -25,7 +24,6 @@ class TestPlugin1(TestPlugin):
     pass
 
 
-
 @implements(ITestInterface1)
 class TestPlugin3(TestPlugin):
     pass
@@ -33,6 +31,7 @@ class TestPlugin3(TestPlugin):
 
 def test_missing_method():
     with pytest.raises(PluginError):
+
         @implements(ITestInterface2)
         class TestPlugin2(TestPlugin):
             # does not implement required_method()
@@ -50,6 +49,7 @@ def test_try_instanciate_interface():
 def test_dont_implement_interface_directly():
     """Try to implement an interface directly. Should be forbidden"""
     with pytest.raises(PluginError):
+
         @implements(Interface)
         class Dummy:
             pass

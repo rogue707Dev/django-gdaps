@@ -6,4 +6,3 @@ from tests.plugins.plugin1.api import FirstInterface
 class Foo:
     def first_method(self):
         return "first"
-

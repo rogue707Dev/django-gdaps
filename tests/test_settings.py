@@ -2,7 +2,13 @@ import pytest
 
 from gdaps import InterfaceMeta
 from gdaps.conf import PluginSettings
-from .plugins.plugin1.conf import plugin1_settings, NAMESPACE, DEFAULTS, IMPORT_STRINGS, REMOVED_SETTINGS
+from .plugins.plugin1.conf import (
+    plugin1_settings,
+    NAMESPACE,
+    DEFAULTS,
+    IMPORT_STRINGS,
+    REMOVED_SETTINGS,
+)
 from .plugins.plugin1.api.interfaces import FirstInterface
 
 
@@ -13,7 +19,7 @@ def test_simple_default_value():
 
 def test_correct_arrayimport():
     """Tests a settings default array value"""
-    assert plugin1_settings.ARRAY == [ 1, 2, 3 ]
+    assert plugin1_settings.ARRAY == [1, 2, 3]
 
 
 def test_correct_stringimport():
@@ -24,23 +30,25 @@ def test_correct_stringimport():
 
 
 def test_notallowed_stringimport():
-    defaults = { 'FOO': 'tests.plugins.plugin1.api.interfaces.FirstInterface'}
-    settings = PluginSettings(namespace=NAMESPACE, defaults=defaults, import_strings=IMPORT_STRINGS)
+    defaults = {"FOO": "tests.plugins.plugin1.api.interfaces.FirstInterface"}
+    settings = PluginSettings(
+        namespace=NAMESPACE, defaults=defaults, import_strings=IMPORT_STRINGS
+    )
 
     assert type(settings.FOO) is str
-    assert settings.FOO == 'tests.plugins.plugin1.api.interfaces.FirstInterface'
+    assert settings.FOO == "tests.plugins.plugin1.api.interfaces.FirstInterface"
 
 
 def test_notexisting_stringimport():
-    defaults = {'FOO': 'tests.plugins.plugin1.Blah'}
-    settings = PluginSettings(NAMESPACE, defaults, import_strings=('FOO'))
+    defaults = {"FOO": "tests.plugins.plugin1.Blah"}
+    settings = PluginSettings(NAMESPACE, defaults, import_strings=("FOO"))
 
     with pytest.raises(ImportError):
         foo = settings.FOO
 
 
 def test_notexisting_setting_access():
-    defaults = { 'FOO': 234 }
+    defaults = {"FOO": 234}
     settings = PluginSettings(NAMESPACE, defaults, IMPORT_STRINGS)
 
     with pytest.raises(AttributeError):
@@ -48,12 +56,14 @@ def test_notexisting_setting_access():
 
 
 def test_notallowed_removed_setting_access():
-    defaults = { 'FOO': 234 }
-    removed_settings = ( 'BAR' )
-    settings = PluginSettings(namespace=NAMESPACE,
-                              defaults=defaults,
-                              import_strings=IMPORT_STRINGS,
-                              removed_settings=removed_settings)
+    defaults = {"FOO": 234}
+    removed_settings = "BAR"
+    settings = PluginSettings(
+        namespace=NAMESPACE,
+        defaults=defaults,
+        import_strings=IMPORT_STRINGS,
+        removed_settings=removed_settings,
+    )
 
     with pytest.raises(AttributeError):
         settings.BAR

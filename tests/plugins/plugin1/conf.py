@@ -3,18 +3,18 @@ from gdaps.conf import PluginSettings
 
 
 # required parameter.
-NAMESPACE = 'PLUGIN1'
+NAMESPACE = "PLUGIN1"
 
 # Optional defaults. Leave empty if not needed.
 DEFAULTS = {
-    'FOO': 33,
-    'INTERFACE': 'tests.plugins.plugin1.api.FirstInterface',
-    'ARRAY': [ 1, 2, 3 ],
+    "FOO": 33,
+    "INTERFACE": "tests.plugins.plugin1.api.FirstInterface",
+    "ARRAY": [1, 2, 3],
 }
 
 # Optional list of settings that are allowed to be in 'string import' notation. Leave empty if not needed.
 # example: 'medux.plugins.fooplugin2.models.FooModel'
-IMPORT_STRINGS = ('INTERFACE')
+IMPORT_STRINGS = "INTERFACE"
 
 # Optional list of settings that have been removed. Leave empty if not needed.
 REMOVED_SETTINGS = ()
@@ -23,11 +23,9 @@ plugin1_settings = PluginSettings(NAMESPACE, DEFAULTS, IMPORT_STRINGS, REMOVED_S
 
 
 def reload_plugin1_settings(*args, **kwargs):
-    setting = kwargs['setting']
-    if setting == 'FOOPLUGIN2':
+    setting = kwargs["setting"]
+    if setting == "FOOPLUGIN2":
         plugin1_settings.reload()
 
 
 setting_changed.connect(reload_plugin1_settings)
-
-
