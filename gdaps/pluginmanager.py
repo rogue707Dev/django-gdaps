@@ -24,6 +24,8 @@ from django.apps import apps, AppConfig
 from pkg_resources import iter_entry_points
 from typing import List
 
+from gdaps.drf import urls as gdaps_urls
+
 __all__ = ["PluginManager"]
 
 logger = logging.getLogger(__name__)
@@ -65,9 +67,11 @@ class PluginManager(metaclass=Singleton):
 
     group = ""
 
+    found_apps = []
+
     @classmethod
     def find_plugins(cls) -> List[str]:
-        """Finds plugins in the plugin directory, or from setuptools entrypoints
+        """Finds plugins from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
         INSTALLED_APPS variable. Therefore it can not use global variables from
@@ -80,13 +84,10 @@ class PluginManager(metaclass=Singleton):
             INSTALLED_MODULES.
         """
 
-        found_apps = []
         from gdaps.conf import gdaps_settings
 
         cls.group = gdaps_settings.PLUGIN_PATH
-
-        # save a relative import path for plugins, derived from the "group" dotted plugin path
-        cls.plugin_path = os.path.join(*cls.group.split("."))
+        found_apps = []
 
         if cls.group:
             for entry_point in iter_entry_points(group=cls.group, name=None):
@@ -98,7 +99,28 @@ class PluginManager(metaclass=Singleton):
                 found_apps.append(appname)
                 logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
 
+            # save a relative import path for plugins, derived from the "group" dotted plugin path
+            # cls.plugin_path = os.path.join(*cls.group.split("."))
+
+        cls.found_apps = found_apps
         return found_apps
+
+    @classmethod
+    def plugins(cls) -> List[str]:
+        # TODO: test plugins() method
+        """Returns a list of installed plugin apps, either set in INSTALLED_APPS directly, or found via entrypoint"""
+        for app in apps.get_app_configs():
+            from gdaps.conf import gdaps_settings
+
+            try:
+                if (
+                    app.name.startswith(gdaps_settings.PLUGIN_PATH)
+                    and app.name not in cls.found_apps
+                ):
+                    cls.found_apps += [app.name]
+            except ValueError:
+                pass
+        return cls.found_apps
 
     @staticmethod
     def load_plugin_submodule(submodule: str) -> list:
@@ -114,23 +136,25 @@ class PluginManager(metaclass=Singleton):
         """
         modules = []
         importlib.invalidate_caches()
-        for appconfig in apps.get_app_configs():
+        for app_name in PluginManager.plugins():
 
-            # import all the sumbodules from all plugin apps
-            if hasattr(appconfig, "PluginMeta"):
-                print("Plugin {} hast PluginMeta.".format(appconfig.name))
+            # import all the subbodules from all plugin apps
+            from gdaps.conf import gdaps_settings
 
-            dotted_name = "%s.%s" % (appconfig.name, submodule)
-            try:
-                module = importlib.import_module(dotted_name)
-                logger.info("Successfully loaded submodule {}".format(dotted_name))
-                modules.append(module)
-            except ImportError as e:
-                # ignore non-existing <submodule>.py files
-                # in plugins
-                logger.error(
-                    "Error loading submodule '{}':\n   {}".format(dotted_name, e)
-                )
+            if app_name.startswith(gdaps_settings.PLUGIN_PATH):
+
+                dotted_name = "%s.%s" % (app_name, submodule)
+                try:
+                    module = importlib.import_module(dotted_name)
+                    logger.info("Successfully loaded submodule {}".format(dotted_name))
+                    modules.append(module)
+                    logger.info("Loading plugin {}".format(dotted_name))
+                except ImportError as e:
+                    # ignore non-existing <submodule>.py files
+                    # in plugins
+                    logger.error(
+                        "Error loading submodule '{}':\n   {}".format(dotted_name, e)
+                    )
         return modules
 
     @staticmethod
@@ -200,9 +224,16 @@ class PluginManager(metaclass=Singleton):
         #
         # Another unmanaged problem is 'dependencies':
         # FIXME: a dependency manager must be implemented into the PluginManager
+
+        # if gdaps.drf is installed, use its urlpatterns automatically
+        module_list = PluginManager.load_plugin_submodule("urls")
+        if "gdaps.drf" in [app.name for app in apps.get_app_configs()]:
+            module_list += [gdaps_urls]
+
         urlpatterns = []
-        for module in PluginManager.load_plugin_submodule("urls"):
+        for module in module_list:
             pattern = getattr(module, "urlpatterns", None)
+            print(module)
             if pattern:
                 urlpatterns.append(pattern)
 
