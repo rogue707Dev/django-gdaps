@@ -28,6 +28,8 @@ __all__ = [
     "Plugin",
 ]
 
+default_app_config = "gdaps.apps.GdapsConfig"
+
 logger = logging.getLogger(__name__)
 
 
