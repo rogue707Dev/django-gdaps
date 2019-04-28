@@ -118,18 +118,19 @@ class PluginManager(metaclass=Singleton):
 
             # import all the sumbodules from all plugin apps
             if hasattr(appconfig, "PluginMeta"):
-                dotted_name = ""
-                try:
-                    dotted_name = "%s.%s" % (appconfig.name, submodule)
-                    module = importlib.import_module(dotted_name)
-                    logger.info("Successfully loaded submodule {}".format(dotted_name))
-                    modules.append(module)
-                except ImportError as e:
-                    # ignore non-existing <package_name>.py files
-                    # in plugins
-                    logger.error(
-                        "Error loading submodule '{}':\n   {}".format(dotted_name, e)
-                    )
+                print("Plugin {} hast PluginMeta.".format(appconfig.name))
+
+            dotted_name = "%s.%s" % (appconfig.name, submodule)
+            try:
+                module = importlib.import_module(dotted_name)
+                logger.info("Successfully loaded submodule {}".format(dotted_name))
+                modules.append(module)
+            except ImportError as e:
+                # ignore non-existing <submodule>.py files
+                # in plugins
+                logger.error(
+                    "Error loading submodule '{}':\n   {}".format(dotted_name, e)
+                )
         return modules
 
     @staticmethod
