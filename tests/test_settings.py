@@ -5,9 +5,7 @@ from gdaps.conf import PluginSettings
 from .plugins.plugin1.conf import (
     plugin1_settings,
     NAMESPACE,
-    DEFAULTS,
     IMPORT_STRINGS,
-    REMOVED_SETTINGS,
 )
 from .plugins.plugin1.api.interfaces import FirstInterface
 
