@@ -1,8 +1,11 @@
+import os
+
 from django.conf import settings
 
 
 def pytest_configure():
     settings.configure(
+        BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
         DATABASES={
             "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
         },
