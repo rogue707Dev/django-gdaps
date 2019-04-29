@@ -81,6 +81,8 @@ class PluginSettings:
         :param namespace: settings namespace that should be used by this plugin
         :param help_url: An optional URL where to find information in the internet about these settings
         :param defaults: a dict of settings that are used as fallback when there are no user settings
+        :param import_strings: a list of settings that are allowed to be interpretet
+            as "dotted" paths
         """
         if not namespace == namespace.upper():
             raise RuntimeError("Django settings must be UPPERCASE.")
