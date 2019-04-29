@@ -155,5 +155,3 @@ def reload_gdaps_settings(*args, **kwargs):
 
 
 setting_changed.connect(reload_gdaps_settings)
-
-assert gdaps_settings.PLUGIN_PATH
