@@ -1,28 +1,35 @@
+"""
+Settings for GDAPS are all namespaced in the GDAPS setting.
+For example your project's `settings.py` file might look like this:
+GDAPS = {
+    "FRONTEND_PATH": "/tmp/frontend"
+    )
+}
+This module provides the `gdaps_settings` object, that is used to access
+GDAPS settings, checking for user settings first, then falling
+back to the defaults.
+"""
 import os
 from importlib import import_module
 
 from django.conf import settings
 from django.test.signals import setting_changed
 
+# Copied shamelessly from Graphene-Django, with little adaptions
+
+_frontend_dir_name = "frontend"
 
 NAMESPACE = "GDAPS"
 
-frontend_dir_name = "frontend"
-
 DEFAULTS = {
-    "PLUGIN_PATH": "plugins",
-    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, frontend_dir_name),
-    "FRONTEND_DIR": frontend_dir_name,
+    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, _frontend_dir_name),
 }
 
 # List of settings that may be in string import notation.
-IMPORT_STRINGS = ()
+IMPORT_STRINGS = []
 
 # List of settings that have been removed
 REMOVED_SETTINGS = ()
-
-
-# Shamelessly copied from Django Rest Framework...
 
 
 def perform_import(val, setting_name):
@@ -45,7 +52,8 @@ def import_from_string(val, setting_name):
     """
     try:
         # Nod to tastypie's use of importlib.
-        module_path, class_name = val.rsplit(".", 1)
+        parts = val.split(".")
+        module_path, class_name = ".".join(parts[:-1]), parts[-1]
         module = import_module(module_path)
         return getattr(module, class_name)
     except (ImportError, AttributeError) as e:
@@ -62,42 +70,28 @@ class PluginSettings:
     """
     A settings object, that allows app specific settings to be accessed as properties.
     For example:
-        from my_app.conf import settings
-        print(settings.MY_SETTING)
+        from gdaps.conf import gdaps_settings
+        print(settings.FRONTEND_PATH)
     Any setting with string import paths will be automatically resolved
     and return the class, rather than the string literal.
     """
 
-    def __init__(
-        self,
-        namespace: str,
-        defaults: list or tuple = None,
-        import_strings: list or tuple = None,
-        removed_settings: list or tuple = None,
-        help_url: str = None,
-    ):
-        """
+    def __init__(self,
+                 namespace:str=None,
+                 user_settings:list=None,
+                 defaults:list=None,
+                 import_strings=None):
 
-        :param namespace: settings namespace that should be used by this plugin
-        :param help_url: An optional URL where to find information in the internet about these settings
-        :param defaults: a dict of settings that are used as fallback when there are no user settings
-        :param import_strings: a list of settings that are allowed to be interpretet
-            as "dotted" paths
-        """
-        if not namespace == namespace.upper():
-            raise RuntimeError("Django settings must be UPPERCASE.")
-
-        self._namespace = namespace
-
-        self._removed_settings = removed_settings or REMOVED_SETTINGS
-        self._user_settings = self.__check_user_settings(
-            getattr(settings, self._namespace, {})
-        )
+        if user_settings:
+            self._user_settings = user_settings
         self.defaults = defaults or DEFAULTS
         self.import_strings = import_strings or IMPORT_STRINGS
-        self._cached_attrs = set()
 
-        self._url = help_url
+        if not namespace == namespace.upper():
+            raise RuntimeError("Django settings must be UPPERCASE.")
+        self._namespace = namespace or NAMESPACE
+
+        setting_changed.connect(self.reload)
 
     @property
     def user_settings(self):
@@ -123,35 +117,14 @@ class PluginSettings:
         if attr in self.import_strings:
             val = perform_import(val, attr)
 
-        # Cache the result
-        self._cached_attrs.add(attr)
         setattr(self, attr, val)
         return val
 
-    def __check_user_settings(self, user_settings):
-        for setting in self._removed_settings:
-            if setting in user_settings:
-                msg = "The '%s' setting has been removed." % setting
-                if self._url:
-                    msg += " Please refer to '%s' for available settings." % self._url
-                raise RuntimeError(msg)
-        return user_settings
-
-    def reload(self):
-        for attr in self._cached_attrs:
-            delattr(self, attr)
-        self._cached_attrs.clear()
-        if hasattr(self, "_user_settings"):
-            delattr(self, "_user_settings")
+    def reload(*args, **kwargs):
+        global gdaps_settings
+        setting, value = kwargs["setting"], kwargs["value"]
+        if setting == NAMESPACE:
+            gdaps_settings = PluginSettings(NAMESPACE, value, DEFAULTS, IMPORT_STRINGS)
 
 
-gdaps_settings = PluginSettings(NAMESPACE, DEFAULTS, IMPORT_STRINGS)
-
-
-def reload_gdaps_settings(*args, **kwargs):
-    setting = kwargs["setting"]
-    if setting == NAMESPACE:
-        gdaps_settings.reload()
-
-
-setting_changed.connect(reload_gdaps_settings)
+gdaps_settings = PluginSettings(NAMESPACE, None, DEFAULTS, IMPORT_STRINGS)
