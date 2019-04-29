@@ -37,7 +37,7 @@ class Command(TemplateCommand):
     help = (
         "Creates a basic GDAPS plugin structure in the "
         "'{plugins}/' directory from a template.".format(
-            plugins=os.path.join("BASE_DIR/", *gdaps_settings.PLUGIN_PATH.split("."))
+            plugins=os.path.join("BASE_DIR", *gdaps_settings.PLUGIN_PATH.split("."))
         )
     )
 
