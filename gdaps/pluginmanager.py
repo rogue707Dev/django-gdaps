@@ -235,7 +235,9 @@ class PluginManager(metaclass=Singleton):
         urlpatterns = []
         for module in module_list:
             pattern = getattr(module, "urlpatterns", None)
-            print(module)
+            logger.info("Added urlpatterns from module '{}' to global list.").format(
+                module.name
+            )
             if pattern:
                 urlpatterns.append(pattern)
 
