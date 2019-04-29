@@ -225,7 +225,7 @@ DEFAULTS = {
 
 # Optional list of settings that are allowed to be in "string import" notation. Leave empty if not needed.
 IMPORT_STRINGS = (
-    "myproject.plugins.fooplugin.models.FooModel"
+    "FOO_PATH"
 )
 
 # Optional list of settings that have been removed. Leave empty if not needed.
