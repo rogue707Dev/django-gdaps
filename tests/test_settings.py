@@ -15,6 +15,12 @@ def test_simple_default_value():
     assert plugin1_settings.FOO == 33
 
 
+def test_override_settings():
+    """Tests user overriding a default setting"""
+    # default = 10, override = 20
+    assert plugin1_settings.OVERRIDE == 20
+
+
 def test_correct_arrayimport():
     """Tests a settings default array value"""
     assert plugin1_settings.ARRAY == [1, 2, 3]

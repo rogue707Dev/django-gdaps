@@ -10,6 +10,7 @@ DEFAULTS = {
     "FOO": 33,
     "INTERFACE": "tests.plugins.plugin1.api.FirstInterface",
     "ARRAY": [1, 2, 3],
+    "OVERRIDE": 10,
 }
 
 # Optional list of settings that are allowed to be in 'string import' notation. Leave empty if not needed.
