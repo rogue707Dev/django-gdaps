@@ -24,6 +24,7 @@ from django.apps import apps, AppConfig
 from pkg_resources import iter_entry_points
 from typing import List
 
+from gdaps.exceptions import PluginError
 from gdaps.drf import urls as gdaps_urls
 
 __all__ = ["PluginManager"]
@@ -70,34 +71,38 @@ class PluginManager(metaclass=Singleton):
     found_apps = []
 
     @classmethod
-    def find_plugins(cls) -> List[str]:
+    def find_plugins(cls, group:str) -> List[str]:
         """Finds plugins from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
         INSTALLED_APPS variable. Therefore it can not use global variables from
         settings, to prevent circle imports.
 
+        :group: a dotted path where wo find plugin apps. This is used as
+            'group' for setuptools' entry points.
         :returns: A list of dotted app_names, which can be appended to
             INSTALLED_MODULES.
         """
-
         from gdaps.conf import gdaps_settings
 
-        cls.group = gdaps_settings.PLUGIN_PATH
+        if not group:
+            raise PluginError("You have to specify an entry points group "
+                              "where GDAPS can look for plugins.")
+        
+        cls.group = group
         found_apps = []
 
-        if cls.group:
-            for entry_point in iter_entry_points(group=cls.group, name=None):
-                appname = entry_point.module_name
-                if entry_point.attrs:
-                    # FIXME: adding an AppConfig does not work yet
-                    appname += "." + ".".join(entry_point.attrs)
+        for entry_point in iter_entry_points(group=group, name=None):
+            appname = entry_point.module_name
+            if entry_point.attrs:
+                # FIXME: adding an AppConfig does not work yet
+                appname += "." + ".".join(entry_point.attrs)
 
-                found_apps.append(appname)
-                logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
+            found_apps.append(appname)
+            logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
 
-            # save a relative import path for plugins, derived from the "group" dotted plugin path
-            # cls.plugin_path = os.path.join(*cls.group.split("."))
+        # save a relative import path for plugins, derived from the "group" dotted plugin path
+        # cls.plugin_path = os.path.join(*cls.group.split("."))
 
         cls.found_apps = found_apps
         return found_apps

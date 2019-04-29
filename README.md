@@ -20,7 +20,7 @@ this library is right for you. It consists of a few bells and twistles where Dja
 
 Just create a normal Django application, e.g. using `manage.py startproject myproject`.
 
-Now install `gdaps` as usual:
+Now install `gdaps` as usual app:
 
 ```python
 from gdaps.pluginmanager import PluginManager
@@ -28,29 +28,26 @@ from gdaps.pluginmanager import PluginManager
 INSTALLED_APPS = [
     # ... standard Django apps and GDAPS
     "gdaps",
-    # if you want frontend support, add:
-    "gdaps.frontend"
+    # if you also want frontend support, add:
+    #"gdaps.frontend"
     # ...
 ]
+# The following line is important: It loads all plugins from setuptools 
+# entry points and from the directory named 'myproject.plugins':
+INSTALLED_APPS += PluginManager.find_plugins("myproject.plugins")
 ```
+We recommend that you use 'myproject.**plugins**' or just '**plugins**'.
+
 For further frontend specific instructions, see [Frontend support](#frontend-support).
 
-
-The configuration of GDAPS is bundled in one variable:
+The configuration of GDAPS is bundled in one namespace `GDAPS`:
 
 ```python
 GDAPS = {
-    "PLUGIN_PATH': 'myproject.plugins",  # default: 'plugins'
+    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
 }
-
-# Load all plugins from setuptools entry points and from the directory named 'myproject.plugins'
-INSTALLED_APPS += PluginManager.find_plugins()
-
 ```
-
-We recommend that you use 'myproject.**plugins**' or just '**plugins**'.
-Basically, this is all you really need so far, for a minimal working GDAPS-enabled Django application.
-
+Also See [Settings](#settings])
 
 ### Creating plugins
 
@@ -69,7 +66,7 @@ You now have two choices for this plugin:
 ### Static plugins
 
 In most of the cases, you will ship your application with a few "standard" plugins that are statically installed.
-These plugins must be loaded *after* the `gdaps` app. Prepend it with the `PLUGIN_PATH` you created before.
+These plugins must be loaded *after* the `gdaps` app.
 
 ```python
 # ...
@@ -189,23 +186,24 @@ GDAPS lets your plugin create global, root URLs, they are not namespaced. This i
 
 ## Settings
 
-GDAPS settings are bundled in a `GDAPS` variable you can add to your settings.py. The defaults are:
+GDAPS settings are bundled in a `GDAPS` variable you can add to your settings: 
 ```python
 GDAPS = {
-    "PLUGIN_PATH": "plugins"
+    "PLUGIN_PATH": "/opt/plugins"
 }
 ```
 
-Explanations of the settings:
+##### `FRONTEND_PATH`
+The absolute path to the application wide frontend directory, where all plugin's frontend parts will be bundled later.
 
-##### PLUGIN_PATH
+*Defaults to:* `os.path.join(settings.BASE_DIR, "frontend")`
 
-This is the (dotted) plugin path used as directory within your main application, and as entry point for setuptools' plugins. The default is 'plugins', so if you name your project "my_project", there will be a `my_project/plugins/` directory where e.g. `./manage.py startplugin` will create its content.
+Basically, this is all you really need so far, for a minimal working GDAPS-enabled Django application.
 
 
 ### Custom per-plugin settings
 
-GDAPS allows your application to have own settings for each plugin easily, which provide defaults, and can be overridden in the global `settings.py` file. Look at an example conf.py file (created by `./manage.py startplugin fooplugin`):
+GDAPS allows your application to have own settings for each plugin easily, which provide defaults, and can be overridden in the global `settings.py` file. Look at the example conf.py file (created by `./manage.py startplugin fooplugin`), and adapt to your needs:
 
 ```python
 from django.test.signals import setting_changed
@@ -247,7 +245,7 @@ setting_changed.connect(reload_fooplugin_settings)
 Detailed explanation:
 
 ##### `DEFAULTS`
-The `DEFAULTS` are, as the name says, a default array of settings. If `fooplugin_setting.BLAH is not set by the user, this default value is used.
+The `DEFAULTS` are, as the name says, a default array of settings. If `fooplugin_setting.BLAH` is not set by the user in settings.py, this default value is used.
 
 ##### `IMPORT_STRINGS`
 Settings in a *dotted* notation are evaluated, they return not the string, but the object they point to.
