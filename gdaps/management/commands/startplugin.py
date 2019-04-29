@@ -34,10 +34,13 @@ def get_user_data(key):
 class Command(TemplateCommand):
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
+    # absolute path to internal plugins of application
+    plugin_path = os.path.join("BASE_DIR", *gdaps_settings.PLUGIN_PATH.split("."))
+
     help = (
         "Creates a basic GDAPS plugin structure in the "
         "'{plugins}/' directory from a template.".format(
-            plugins=os.path.join("BASE_DIR", *gdaps_settings.PLUGIN_PATH.split("."))
+            plugins=plugin_path
         )
     )
 
