@@ -1,6 +1,7 @@
 import pytest
 
-from gdaps import Interface, PluginError, implements, ExtensionPoint
+from gdaps import Interface, implements, ExtensionPoint
+from gdaps.exceptions import PluginError
 
 
 class ITestInterface1(Interface):

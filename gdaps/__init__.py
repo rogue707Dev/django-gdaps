@@ -19,8 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import logging
 from typing import List, Type
 
+from gdaps.exceptions import PluginError
+
 __all__ = [
-    "PluginError",
     "Interface",
     "implements",
     "ExtensionPoint",
@@ -31,10 +32,6 @@ __all__ = [
 default_app_config = "gdaps.apps.GdapsConfig"
 
 logger = logging.getLogger(__name__)
-
-
-class PluginError(Exception):
-    """An Exception that marks an error in a plugin specific setting."""
 
 
 class InterfaceMeta(type):
