@@ -83,12 +83,10 @@ class PluginManager(metaclass=Singleton):
         :returns: A list of dotted app_names, which can be appended to
             INSTALLED_MODULES.
         """
-        from gdaps.conf import gdaps_settings
-
         if not group:
             raise PluginError("You have to specify an entry points group "
                               "where GDAPS can look for plugins.")
-        
+
         cls.group = group
         found_apps = []
 
