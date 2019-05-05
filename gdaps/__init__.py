@@ -104,6 +104,9 @@ class ExtensionPoint:
         """Return the number of plugins that match the interface of this extension point."""
         return len(self.extensions())
 
+    def __contains__(self, item):
+        return item in self._interface._implementations
+
     def extensions(self):
         """Returns a set of plugin instances that match the interface of this extension point.
 
