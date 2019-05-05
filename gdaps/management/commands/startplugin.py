@@ -41,9 +41,7 @@ class Command(TemplateCommand):
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
-        "'{}/' directory from a template.".format(
-            plugin_path
-        )
+        "'{}/' directory from a template.".format(plugin_path)
     )
 
     missing_args_message = "You must provide a plugin _name."

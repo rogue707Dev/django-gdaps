@@ -2,11 +2,7 @@ import pytest
 
 from gdaps import InterfaceMeta
 from gdaps.conf import PluginSettings
-from .plugins.plugin1.conf import (
-    plugin1_settings,
-    NAMESPACE,
-    IMPORT_STRINGS,
-)
+from .plugins.plugin1.conf import plugin1_settings, NAMESPACE, IMPORT_STRINGS
 from .plugins.plugin1.api.interfaces import FirstInterface
 
 
@@ -36,9 +32,7 @@ def test_correct_stringimport():
 def test_notallowed_stringimport():
     defaults = {"FOO": "tests.plugins.plugin1.api.interfaces.FirstInterface"}
     settings = PluginSettings(
-        namespace=NAMESPACE,
-        defaults=defaults,
-        import_strings=IMPORT_STRINGS
+        namespace=NAMESPACE, defaults=defaults, import_strings=IMPORT_STRINGS
     )
 
     assert type(settings.FOO) is str
@@ -48,9 +42,7 @@ def test_notallowed_stringimport():
 def test_notexisting_stringimport():
     defaults = {"FOO": "tests.plugins.plugin1.Blah"}
     settings = PluginSettings(
-        namespace=NAMESPACE,
-        defaults=defaults,
-        import_strings=("FOO")
+        namespace=NAMESPACE, defaults=defaults, import_strings=("FOO")
     )
 
     with pytest.raises(ImportError):
@@ -60,9 +52,7 @@ def test_notexisting_stringimport():
 def test_notexisting_setting_access():
     defaults = {"FOO": 234}
     settings = PluginSettings(
-        namespace=NAMESPACE,
-        defaults=defaults,
-        import_strings=IMPORT_STRINGS
+        namespace=NAMESPACE, defaults=defaults, import_strings=IMPORT_STRINGS
     )
 
     with pytest.raises(AttributeError):

@@ -18,7 +18,5 @@ def pytest_configure():
             "gdaps.test.plugins.plugin1",
         ],
         # plugin1 specific settings
-        PLUGIN1= {
-            "OVERRIDE": 20,
-        }
+        PLUGIN1={"OVERRIDE": 20},
     )

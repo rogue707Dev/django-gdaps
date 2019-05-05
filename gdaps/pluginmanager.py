@@ -121,10 +121,7 @@ class PluginManager(metaclass=Singleton):
             from gdaps.conf import gdaps_settings
 
             try:
-                if (
-                    app.name.startswith(cls.group)
-                    and app.name not in cls.found_apps
-                ):
+                if app.name.startswith(cls.group) and app.name not in cls.found_apps:
                     cls.found_apps += [app.name]
             except ValueError:
                 pass
@@ -243,9 +240,11 @@ class PluginManager(metaclass=Singleton):
         for module in module_list:
             pattern = getattr(module, "urlpatterns", None)
             if pattern:
-                logger.info("Added urlpatterns from module '{}' to global list.".format(
-                    module.name
-                ))
+                logger.info(
+                    "Added urlpatterns from module '{}' to global list.".format(
+                        module.name
+                    )
+                )
                 urlpatterns.append(pattern)
 
         return urlpatterns

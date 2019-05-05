@@ -24,7 +24,7 @@ plugin1_settings = PluginSettings(
     namespace=NAMESPACE,
     defaults=DEFAULTS,
     import_strings=IMPORT_STRINGS,
-    removed_settings=REMOVED_SETTINGS
+    removed_settings=REMOVED_SETTINGS,
 )
 
 

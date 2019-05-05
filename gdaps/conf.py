@@ -19,9 +19,7 @@ from django.test.signals import setting_changed
 
 NAMESPACE = "GDAPS"
 
-DEFAULTS = {
-    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
-}
+DEFAULTS = {"FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend")}
 
 # List of settings that may be in string import notation.
 IMPORT_STRINGS = []
@@ -74,12 +72,14 @@ class PluginSettings:
     and return the class, rather than the string literal.
     """
 
-    def __init__(self,
-                 namespace: str=None,
-                 user_settings: list=None,
-                 defaults: list=None,
-                 import_strings=None,
-                 removed_settings=None):
+    def __init__(
+        self,
+        namespace: str = None,
+        user_settings: list = None,
+        defaults: list = None,
+        import_strings=None,
+        removed_settings=None,
+    ):
 
         if user_settings:
             self._user_settings = user_settings

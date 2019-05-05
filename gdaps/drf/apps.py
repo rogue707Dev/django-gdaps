@@ -13,4 +13,3 @@ class DrfConfig(AppConfig):
             raise PluginError(
                 "The 'gdaps.drf' module relies on Django REST Framework. Please add 'rest_framework' to your INSTALLED_APPS."
             )
-
