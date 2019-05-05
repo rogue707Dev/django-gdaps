@@ -71,7 +71,7 @@ class PluginManager(metaclass=Singleton):
     found_apps = []
 
     @classmethod
-    def find_plugins(cls, group:str) -> List[str]:
+    def find_plugins(cls, group: str) -> List[str]:
         """Finds plugins from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
@@ -84,8 +84,10 @@ class PluginManager(metaclass=Singleton):
             INSTALLED_MODULES.
         """
         if not group:
-            raise PluginError("You have to specify an entry points group "
-                              "where GDAPS can look for plugins.")
+            raise PluginError(
+                "You have to specify an entry points group "
+                "where GDAPS can look for plugins."
+            )
 
         cls.group = group
         found_apps = []

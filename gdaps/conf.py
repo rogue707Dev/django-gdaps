@@ -17,12 +17,10 @@ from django.test.signals import setting_changed
 
 # Copied shamelessly from Graphene-Django, with little adaptions
 
-_frontend_dir_name = "frontend"
-
 NAMESPACE = "GDAPS"
 
 DEFAULTS = {
-    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, _frontend_dir_name),
+    "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
 }
 
 # List of settings that may be in string import notation.

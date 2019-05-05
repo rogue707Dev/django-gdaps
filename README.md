@@ -47,7 +47,9 @@ GDAPS = {
     "FRONTEND_PATH": os.path.join(settings.BASE_DIR, "frontend"),
 }
 ```
-Also See [Settings](#settings])
+Also see [Settings](#settings]).
+
+Basically, this is all you really need so far, for a minimal working GDAPS-enabled Django application.
 
 ### Creating plugins
 
@@ -189,7 +191,7 @@ GDAPS lets your plugin create global, root URLs, they are not namespaced. This i
 GDAPS settings are bundled in a `GDAPS` variable you can add to your settings: 
 ```python
 GDAPS = {
-    "PLUGIN_PATH": "/opt/plugins"
+    "FRONTEND_PATH": "/absolute/path/to/frontend"
 }
 ```
 
@@ -197,8 +199,6 @@ GDAPS = {
 The absolute path to the application wide frontend directory, where all plugin's frontend parts will be bundled later.
 
 *Defaults to:* `os.path.join(settings.BASE_DIR, "frontend")`
-
-Basically, this is all you really need so far, for a minimal working GDAPS-enabled Django application.
 
 
 ### Custom per-plugin settings
