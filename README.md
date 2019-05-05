@@ -57,7 +57,7 @@ Create plugins using a Django management command:
 
     ./manage.py startplugin fooplugin
 
-This command asks a few questions, creates a basic Django app in the `PLUGIN_PATH` you chose before, and provides useful defaults as well as a setup.py file. 
+This command asks a few questions, creates a basic Django app in the `FRONTEND_PATH` you chose before, and provides useful defaults as well as a setup.py file. 
 
 If you use git in your project, install the `gitpython` module (`pip/pipenv install gitpython`). `startplugin` will determine your git user/email automatically and use it for the setup.py file.
 

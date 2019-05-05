@@ -21,6 +21,7 @@ import logging
 import importlib
 
 from django.apps import apps, AppConfig
+from django.conf import settings
 from pkg_resources import iter_entry_points
 from typing import List
 
@@ -71,6 +72,11 @@ class PluginManager(metaclass=Singleton):
     found_apps = []
 
     @classmethod
+    def plugin_path(cls):
+        assert cls.group != ""
+        return os.path.join(settings.BASE_DIR, *cls.group.split("."))
+
+    @classmethod
     def find_plugins(cls, group: str) -> List[str]:
         """Finds plugins from setuptools entrypoints
 
@@ -116,16 +122,17 @@ class PluginManager(metaclass=Singleton):
 
             try:
                 if (
-                    app.name.startswith(gdaps_settings.PLUGIN_PATH)
+                    app.name.startswith(cls.group)
                     and app.name not in cls.found_apps
                 ):
                     cls.found_apps += [app.name]
             except ValueError:
                 pass
+        # TODO: should we return a copy [:] of the list here?
         return cls.found_apps
 
-    @staticmethod
-    def load_plugin_submodule(submodule: str) -> list:
+    @classmethod
+    def load_plugin_submodule(cls, submodule: str) -> list:
         """
         Search plugin apps for specific submodules and load them.
 
@@ -143,7 +150,7 @@ class PluginManager(metaclass=Singleton):
             # import all the subbodules from all plugin apps
             from gdaps.conf import gdaps_settings
 
-            if app_name.startswith(gdaps_settings.PLUGIN_PATH):
+            if app_name.startswith(cls.group):
 
                 dotted_name = "%s.%s" % (app_name, submodule)
                 try:

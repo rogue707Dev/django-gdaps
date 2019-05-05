@@ -9,6 +9,8 @@ from django.core.management.base import CommandError
 from django.core.management.templates import TemplateCommand
 from django.apps import apps
 
+from gdaps.pluginmanager import PluginManager
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -39,8 +41,8 @@ class Command(TemplateCommand):
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
-        "'{plugins}/' directory from a template.".format(
-            plugins=plugin_path
+        "'{}/' directory from a template.".format(
+            plugin_path
         )
     )
 
@@ -49,7 +51,7 @@ class Command(TemplateCommand):
     def handle(self, name, **options):
         from django.core.validators import validate_email
 
-        plugin_path = gdaps_settings.PLUGIN_PATH
+        plugin_path = PluginManager.plugin_path
 
         logger.debug("Using plugin directory: {}".format(plugin_path))
 
