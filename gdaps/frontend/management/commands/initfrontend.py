@@ -64,7 +64,7 @@ class Command(TemplateCommand):
 
             # create files
             template = os.path.join(
-                apps.get_app_config("gdaps").path,
+                apps.get_app_config("gdaps.frontend").path,
                 "management",
                 "templates",
                 "frontend",
