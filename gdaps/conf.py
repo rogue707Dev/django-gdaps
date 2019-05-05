@@ -75,15 +75,17 @@ class PluginSettings:
     """
 
     def __init__(self,
-                 namespace:str=None,
-                 user_settings:list=None,
-                 defaults:list=None,
-                 import_strings=None):
+                 namespace: str=None,
+                 user_settings: list=None,
+                 defaults: list=None,
+                 import_strings=None,
+                 removed_settings=None):
 
         if user_settings:
             self._user_settings = user_settings
         self.defaults = defaults or DEFAULTS
         self.import_strings = import_strings or IMPORT_STRINGS
+        self.removed_settings = removed_settings or REMOVED_SETTINGS
 
         if not namespace == namespace.upper():
             raise RuntimeError("Django settings must be UPPERCASE.")
@@ -98,6 +100,11 @@ class PluginSettings:
         return self._user_settings
 
     def __getattr__(self, attr):
+        if attr in self.removed_settings:
+            raise AttributeError(
+                "Invalid access - Plugin settings attribute '%s' has invalid (removed) key: '%s'."
+                % (self._namespace, attr)
+            )
         if attr not in self.defaults:
             raise AttributeError(
                 "Invalid access - Plugin settings attribute '%s' has missing key: '%s'"

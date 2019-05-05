@@ -20,7 +20,12 @@ IMPORT_STRINGS = "INTERFACE"
 # Optional list of settings that have been removed. Leave empty if not needed.
 REMOVED_SETTINGS = ()
 
-plugin1_settings = PluginSettings(NAMESPACE, DEFAULTS, IMPORT_STRINGS, REMOVED_SETTINGS)
+plugin1_settings = PluginSettings(
+    namespace=NAMESPACE,
+    defaults=DEFAULTS,
+    import_strings=IMPORT_STRINGS,
+    removed_settings=REMOVED_SETTINGS
+)
 
 
 def reload_plugin1_settings(*args, **kwargs):

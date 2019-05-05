@@ -36,7 +36,9 @@ def test_correct_stringimport():
 def test_notallowed_stringimport():
     defaults = {"FOO": "tests.plugins.plugin1.api.interfaces.FirstInterface"}
     settings = PluginSettings(
-        namespace=NAMESPACE, defaults=defaults, import_strings=IMPORT_STRINGS
+        namespace=NAMESPACE,
+        defaults=defaults,
+        import_strings=IMPORT_STRINGS
     )
 
     assert type(settings.FOO) is str
@@ -45,7 +47,11 @@ def test_notallowed_stringimport():
 
 def test_notexisting_stringimport():
     defaults = {"FOO": "tests.plugins.plugin1.Blah"}
-    settings = PluginSettings(NAMESPACE, defaults, import_strings=("FOO"))
+    settings = PluginSettings(
+        namespace=NAMESPACE,
+        defaults=defaults,
+        import_strings=("FOO")
+    )
 
     with pytest.raises(ImportError):
         foo = settings.FOO
@@ -53,7 +59,11 @@ def test_notexisting_stringimport():
 
 def test_notexisting_setting_access():
     defaults = {"FOO": 234}
-    settings = PluginSettings(NAMESPACE, defaults, IMPORT_STRINGS)
+    settings = PluginSettings(
+        namespace=NAMESPACE,
+        defaults=defaults,
+        import_strings=IMPORT_STRINGS
+    )
 
     with pytest.raises(AttributeError):
         settings.BLAHFOO

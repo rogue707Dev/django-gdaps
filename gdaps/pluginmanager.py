@@ -235,10 +235,10 @@ class PluginManager(metaclass=Singleton):
         urlpatterns = []
         for module in module_list:
             pattern = getattr(module, "urlpatterns", None)
-            logger.info("Added urlpatterns from module '{}' to global list.").format(
-                module.name
-            )
             if pattern:
+                logger.info("Added urlpatterns from module '{}' to global list.".format(
+                    module.name
+                ))
                 urlpatterns.append(pattern)
 
         return urlpatterns
