@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     "gdaps",
     # if you also want frontend support, add:
     #"gdaps.frontend"
-    # ...
+    # "myproject.plugins.fooplugin",
+    # "webpack_loader",
 ]
 # The following line is important: It loads all plugins from setuptools 
 # entry points and from the directory named 'myproject.plugins':
