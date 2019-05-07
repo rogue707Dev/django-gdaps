@@ -31,6 +31,7 @@ class Command(TemplateCommand):
         parser.add_argument(
             "--frontend_dir",
             type=str,
+            default="frontend",
             help="Specify custom frontend directory within project",
         )
 
@@ -50,8 +51,6 @@ class Command(TemplateCommand):
         options["project_title"] = self._django_root.title().replace("_", " ")
         options["files"] = []
         options["extensions"] = []
-        if options["frontend_dir"] == "":
-            options["frontend_dir"] = "frontend"
 
         # create a frontend/ directory in the drupal root
         frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
@@ -59,7 +58,7 @@ class Command(TemplateCommand):
         if os.path.exists(frontend_path):
             raise CommandError(
                 "There already seems to be a frontend with that name in project '{project}'. "
-                "Please delete the '{frontend}' directory if you want to create a new one, or choose another name.".format(
+                "Please delete the '{frontend}' directory if you want to create a new one, or choose another name using --frontend_dir.".format(
                     project=options["project_name"], frontend=options["frontend_dir"]
                 )
             )
