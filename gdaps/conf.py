@@ -125,6 +125,7 @@ class PluginSettings:
         setattr(self, attr, val)
         return val
 
+    @staticmethod
     def reload(*args, **kwargs):
         global gdaps_settings
         setting, value = kwargs["setting"], kwargs["value"]
