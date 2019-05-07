@@ -267,9 +267,11 @@ If you added `gdaps.frontend` to `INSTALLED_APPS`, there is a new management com
     
     ./manage.py initfrontend vue
 
-creates a /frontend/ directory in the project root. Change into that directory and run `npm install` once to install all the dependencies of Vue.js needed.
+creates a /frontend/ directory in the project root. Change into that directory and run `yarn install` once to install all the dependencies of Vue.js needed.
 
-Now you can start `npm run serve` in that directory to use the development server, and edit files in the /frontend/ directory.
+It is recommended to install vue globally, you can do that with `yarn global add @vue/cli @vue/cli-service-global`.
+
+Now you can start `vue serve` in the frontend directory to use the development server, edit files, and see changes directly.
 Remember, this only starts the frontend. You also need to start Django using `./manage.py runserver` to enable the backend, which most likely will be needed by your Vue frontend.
 
 
