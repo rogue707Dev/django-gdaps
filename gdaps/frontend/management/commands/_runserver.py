@@ -3,6 +3,7 @@ import logging
 import subprocess
 import threading
 
+from django.conf import settings
 from django.contrib.staticfiles.management.commands.runserver import (
     Command as RunserverCommand,
 )
@@ -15,7 +16,9 @@ logger = logging.getLogger(__name__)
 class Npm(threading.Thread):
     def run(self):
         subprocess.run(
-            "npm run serve --prefix {}".format(gdaps_settings.FRONTEND_PATH),
+            "npm run serve --prefix {}".format(
+                os.path.join(settings.BASE_DIR, gdaps_settings.FRONTEND_DIR)
+            ),
             shell=True,
             check=True,
         )

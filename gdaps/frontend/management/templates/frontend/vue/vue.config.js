@@ -12,7 +12,7 @@ module.exports = {
         config
             .plugin('BundleTracker')
             .use(BundleTracker, [{
-                filename: '../frontend/webpack-stats.json'
+                filename: '../{{ frontend_dir }}/webpack-stats.json'
             }])
 
         config.resolve.alias
@@ -31,11 +31,12 @@ module.exports = {
                 "Access-Control-Allow-Origin": ["\*"]
             })
             .proxy({
+                // Forward frontend dev server request for /api to django dev server
                 '/api*': {
                     target: 'http://localhost:8000/',
                 },
                 '/admin*': {
-                    // Forward frontend dev server request for /api to django dev server
+                    // Forward frontend dev server request for /admin to django dev server
                     target: 'http://localhost:8000/',
                 }
              })

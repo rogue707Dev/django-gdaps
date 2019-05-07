@@ -28,6 +28,11 @@ class Command(TemplateCommand):
             help="Specify Javascript framework that should be added to a GDAPS application.\n"
             "Available engines are: {}.".format(", ".join(_engines)),
         )
+        parser.add_argument(
+            "--frontend_dir",
+            type=str,
+            help="Specify custom frontend directory within project",
+        )
 
     def handle(self, *args, **options):
 
@@ -35,7 +40,9 @@ class Command(TemplateCommand):
         # TODO: allow dynamic engines
         if options["engine"] not in _engines:
             raise CommandError(
-                "'{}' is not supported as frontend engine.".format(options["engine"])
+                "'{}' is not supported as frontend engine. Available engines are: {} ".format(
+                    options["engine"], _engines
+                )
             )
 
         # preparation
@@ -43,15 +50,17 @@ class Command(TemplateCommand):
         options["project_title"] = self._django_root.title().replace("_", " ")
         options["files"] = []
         options["extensions"] = []
+        if options["frontend_dir"] = "":
+            options["frontend_dir"] =  "frontend"
 
         # create a frontend/ directory in the drupal root
-        frontend_path = os.path.join(gdaps_settings.FRONTEND_PATH)
+        frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
 
         if os.path.exists(frontend_path):
             raise CommandError(
-                "There already seems to be a frontend in project '{}'. "
-                "Please delete the 'frontend' directory if you want to create a new one.".format(
-                    options["project_name"]
+                "There already seems to be a frontend with that name in project '{project}'. "
+                "Please delete the '{frontend}' directory if you want to create a new one, or choose another name.".format(
+                    project=options["project_name"], frontend=options["frontend_dir"]
                 )
             )
 
@@ -65,7 +74,7 @@ class Command(TemplateCommand):
 
             # create files
             template = os.path.join(
-                apps.get_app_config("gdaps.frontend").path,
+                apps.get_app_config("frontend").path,
                 "management",
                 "templates",
                 "frontend",

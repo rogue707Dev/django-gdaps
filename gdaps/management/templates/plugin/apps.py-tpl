@@ -29,16 +29,15 @@ class {{ camel_case_app_name }}Config(AppConfig):
         except ImportError:
             pass
 
-        if os.path.exists(gdaps_settings.FRONTEND_PATH):
+        if os.path.exists(os.path.join(settings.BASE_DIR, gdaps_settings.FRONTEND_DIR)):
 
             settings.WEBPACK_LOADER.update({
                 '{{ app_name }}': {
                     'BUNDLE_DIR_NAME': '',
                     'STATS_FILE': os.path.join(
-                        settings.BASE_DIR,
-                        '{}/frontend/webpack-stats.json'.format(
-                            os.path.abspath(os.path.dirname(__file__))
-                        )
+                        os.path.abspath(os.path.dirname(__file__)),
+                        "frontend",
+                        "webpack-stats.json"
                     ),
                     # 'POLL_INTERVAL': 0.1,
                     # 'TIMEOUT': None,
