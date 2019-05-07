@@ -1,5 +1,6 @@
 import os
 import logging
+import shutil
 import subprocess
 
 from django.conf import settings
@@ -91,19 +92,18 @@ class Command(TemplateCommand):
                 )
 
                 print(
-                    "A 'frontend/' directory was created in {}. "
-                    "Please run 'npm install' in that directory to install the Vue components".format(
+                    "A 'frontend/' directory was created in {}. ".format(
                         settings.BASE_DIR
                     )
                 )
                 # npm install vue
                 # FIXME: check if npm is available
                 subprocess.check_call(
-                    "npm install --prefix {}".format(frontend_path), shell=True
+                    "yarn install --cwd {}".format(frontend_path), shell=True
                 )
 
             except Exception as e:
-                os.rmdir(frontend_path)
+                shutil.rmtree(frontend_path)
                 raise e
 
             # build
