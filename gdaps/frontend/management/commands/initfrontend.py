@@ -50,8 +50,8 @@ class Command(TemplateCommand):
         options["project_title"] = self._django_root.title().replace("_", " ")
         options["files"] = []
         options["extensions"] = []
-        if options["frontend_dir"] = "":
-            options["frontend_dir"] =  "frontend"
+        if options["frontend_dir"] == "":
+            options["frontend_dir"] = "frontend"
 
         # create a frontend/ directory in the drupal root
         frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
