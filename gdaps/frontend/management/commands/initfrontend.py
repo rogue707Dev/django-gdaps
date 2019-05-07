@@ -103,7 +103,7 @@ class Command(TemplateCommand):
                 )
 
             except Exception as e:
-                os.rmdir(frontend_path)
+                shutil.rmtree(frontend_path)
                 raise e
 
             # build
