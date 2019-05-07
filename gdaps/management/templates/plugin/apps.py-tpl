@@ -41,6 +41,6 @@ class {{ camel_case_app_name }}Config(AppConfig):
                     ),
                     # 'POLL_INTERVAL': 0.1,
                     # 'TIMEOUT': None,
-                    'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+                    # 'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
                 }
             })
