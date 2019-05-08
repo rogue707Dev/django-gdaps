@@ -146,7 +146,7 @@ class Implements:
 
         if not interfaces:
             raise PluginError(
-                "You have to specify an <Interface>" " to the @implements decorator."
+                "You have to specify an <Interface> to the @implements decorator."
             )
         for interface in interfaces:
             if interface is Interface:
