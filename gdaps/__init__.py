@@ -192,28 +192,28 @@ class Implements:
 implements = Implements
 
 
-class IPlugin(Interface):
-    """A basic interface that provides some useful methods for plugin interaction."""
-
-    def enable(self):
-        pass
-
-    def disable(self):
-        pass
-
-    def enabled(self):
-        pass
-
-
-@implements(IPlugin)
-class Plugin:
-    __enabled__ = True
-
-    def enable(self):
-        self.__enabled__ = True
-
-    def disable(self):
-        self.__enabled__ = False
-
-    def enabled(self):
-        return self.__enabled__
+# class IPlugin(Interface):
+#     """A basic interface that provides some useful methods for plugin interaction."""
+#
+#     def enable(self):
+#         pass
+#
+#     def disable(self):
+#         pass
+#
+#     def enabled(self):
+#         pass
+#
+#
+# @implements(IPlugin)
+# class Plugin:
+#     __enabled__ = True
+#
+#     def enable(self):
+#         self.__enabled__ = True
+#
+#     def disable(self):
+#         self.__enabled__ = False
+#
+#     def enabled(self):
+#         return self.__enabled__
