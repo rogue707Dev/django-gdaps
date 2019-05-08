@@ -27,7 +27,8 @@ class Foo:
 def test_service_instantiation():
     ep = ExtensionPoint(IFoo)
     for i in ep:
-        i.foo_method()
+        assert hasattr(i, "foo_method")
+        assert callable(i.foo_method)
         assert isinstance(i, Foo)
 
 
