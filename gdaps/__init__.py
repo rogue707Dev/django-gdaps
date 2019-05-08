@@ -101,7 +101,7 @@ class ExtensionPoint:
     def __contains__(self, item):
         return item in self._interface._implementations
 
-    def extensions(self):
+    def extensions(self) -> set:
         """Returns a set of plugin instances that match the interface of this extension point.
 
         TODO: filter out disabled extension points.
