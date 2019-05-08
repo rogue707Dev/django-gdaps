@@ -60,6 +60,8 @@ class Singleton(type):
         return cls._instances[cls]
 
 
+# TODO: don't use a Singleton here, there are only @classmethods?
+# just make sure the PluginManager is never instantiated? Which is better?
 class PluginManager(metaclass=Singleton):
     """A Generic Django Plugin Manager that finds Django app plugins in a
     plugins folder or pkg_resources entry points and loads them dynamically.
