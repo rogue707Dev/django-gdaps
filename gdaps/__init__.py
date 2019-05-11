@@ -108,9 +108,9 @@ class ExtensionPoint:
         """
         ext_set = set()
         for impl in self._interface._implementations:
-            if not impl.__singleton__:
+            if impl.__singleton__:
                 # instanciate implementation now.
-                impl = impl()
+                impl = impl._singleton_instance
 
             # either look for the 'enabled' attribute and just return the plugin instance, when it's enabled,
             # or, if there is no 'enabled' attribute, ignore it and just return the plugin instance
@@ -169,6 +169,9 @@ class Implements:
         if self._singleton:
             # instantiate class immediately if it has a singleton marker
             cls = cls()
+            cls._singleton_instance = cls
+        else:
+            cls._singleton_instance = None
 
         for interface in self._interfaces:  # type: Interface
             for attr in [m for m in dir(interface) if not m.startswith("_")]:
