@@ -215,7 +215,7 @@ class PluginManager(metaclass=Singleton):
             logger.debug("Django apps: {}".format(apps.app_configs))
 
     @staticmethod
-    def collect_urls() -> list:
+    def urlpatterns() -> list:
         """Loads all plugins' urls.py and collects their urlpatterns.
 
         This is maybe not the best approach, but it allows plugins to
@@ -234,11 +234,6 @@ class PluginManager(metaclass=Singleton):
 
         # if gdaps.drf or gdaps.frontend is installed, use their urlpatterns automatically
         module_list = PluginManager.load_plugin_submodule("urls")
-
-        if "gdaps.drf" in [app.name for app in apps.get_app_configs()]:
-            from gdaps.drf import urls
-
-            module_list += [urls]
 
         if "gdaps.frontend" in [app.name for app in apps.get_app_configs()]:
             from gdaps.frontend import urls

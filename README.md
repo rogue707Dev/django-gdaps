@@ -169,7 +169,7 @@ urlpatterns =  [
 ]
 
 # just add this line after the urlpatterns definition:
-urlpatterns += PluginManager.collect_urls()
+urlpatterns += PluginManager.urlpatterns()
 ```
 
 GDAPS then loads and imports all available plugins' urls.py files, collects
