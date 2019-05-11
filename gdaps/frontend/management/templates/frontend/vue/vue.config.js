@@ -17,7 +17,7 @@ module.exports = {
         config
             .plugin('BundleTracker')
             .use(BundleTracker, [{
-                filename: '../{{ frontend_dir }}/webpack-stats.json'
+                // filename: 'webpack-stats.json' // = default
             }])
 
         config.resolve.alias
