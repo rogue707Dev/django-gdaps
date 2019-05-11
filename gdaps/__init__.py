@@ -21,7 +21,7 @@ from typing import List, Type
 
 from gdaps.exceptions import PluginError
 
-__all__ = ["Interface", "implements", "ExtensionPoint", "IPlugin", "Plugin"]
+__all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
 
 default_app_config = "gdaps.apps.GdapsConfig"
 
