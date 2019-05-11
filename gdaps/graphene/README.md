@@ -42,4 +42,21 @@ class UserQuery:
 
 Side note: you have to create at least one Query implementing `IGraphQuery`. If gdaps.graphene finds no plugin implementing it, it raises a PluginError. This is due to a small limitation in graphene_django. PRs welcome ;-).
 
+Now add your Graphene URL to your root urls.py:
+```python
+
+import graphene
+from gdaps.graphene import GDAPSQuery
+from gdaps.pluginmanager import PluginManager
+
+PluginManager.load_plugin_submodule("schema")
+schema = graphene.Schema(query=GDAPSQuery)
+
+urlpatterns = [
+    # ...
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=GDAPSQuery)),
+]
+
+```
+
 For more info how to create Graphene queries, look at the [Graphene-Django documentation](http://docs.graphene-python.org/projects/django/en/latest/)
