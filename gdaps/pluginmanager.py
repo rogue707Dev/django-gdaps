@@ -244,7 +244,7 @@ class PluginManager(metaclass=Singleton):
             if pattern:
                 logger.info(
                     "Added urlpatterns from module '{}' to global list.".format(
-                        module.name
+                        module.__name__
                     )
                 )
                 urlpatterns.append(pattern)
