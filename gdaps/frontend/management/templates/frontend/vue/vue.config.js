@@ -1,8 +1,13 @@
 const BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
+    // The base URL your application bundle will be deployed at
     publicPath: 'http://localhost:8080',
+    // The directory where the production build files will be generated in when running vue build.
+    // This must be Django's assets directory
     outputDir: './dist/',
+    // enable single file Vue components
+    runtimeCompiler: true,
 
     chainWebpack: config => {
 
