@@ -35,8 +35,8 @@ module.exports = {
                 '/api*': {
                     target: 'http://localhost:8000/',
                 },
+                // Forward frontend dev server request for /admin to django dev server
                 '/admin*': {
-                    // Forward frontend dev server request for /admin to django dev server
                     target: 'http://localhost:8000/',
                 }
              })
