@@ -13,12 +13,13 @@ If you want to create a Django application that makes use of "plugins" that can 
 this library is right for you. It consists of a few bells and twistles where Django lacks "automagic":
 
 * Apps are automatically found using pkgtools' entry points
-* Apps can use their own URLs (they are included automatically)
-* Apps can define Interfaces, that other GDAPS apps can implement (these are automatically found) 
+* Apps can provide their own URLs (they are included and merged into urlpatterns automatically)
+* Apps can define `Interfaces`, that other GDAPS apps then can implement
+* Apps can provide Javascript frontends that are found and compiled automatically (WorkInProgress)
 
 ## Usage
 
-Just create a normal Django application, e.g. using `manage.py startproject myproject`.
+Create a Django application as usual: `manage.py startproject myproject`.
 
 Now install `gdaps` as usual app:
 
@@ -60,7 +61,7 @@ Create plugins using a Django management command:
 
 This command asks a few questions, creates a basic Django app in the `FRONTEND_DIR` you chose before, and provides useful defaults as well as a setup.py file. 
 
-If you use git in your project, install the `gitpython` module (`pip/pipenv install gitpython`). `startplugin` will determine your git user/email automatically and use it for the setup.py file.
+If you use git in your project, install the `gitpython` module (`pip/pipenv install gitpython --dev`). `startplugin` will determine your git user/email automatically and use it for the setup.py file.
 
 You now have two choices for this plugin:
  * add it statically to `INSTALLED_APPS`: see [Static plugins](#static-plugins).
@@ -82,19 +83,18 @@ INSTALLED_APPS = [
     "myproject.plugins.fooplugin",
 ]
 ```
-
+This app is laoded as usual, bug your GDAPS enhanced Django application can make use of it's features.
 
 ### Dynamic plugins
 By installing a plugin with pip/pipenv, you can make your application aware of that plugin too:
 
 ```bash
-cd fooplugin
-pipenv install -e .
+pipenv install -e myproject/plugins/fooplugin
 ```
 
 This installs the plugin as python module into the site-packages and makes it discoverable using setuptools. From
 this moment on it should be already registered and loaded after a Django server restart.
-Of course this also works when plugins are installed from PyPi, they don't have to be in the project's `plugins` folder. You can conveniently start developing plugins in there, and later upload them as separate plugins to PyPi.
+Of course this also works when plugins are installed from PyPi, they don't have to be in the project's `plugins` folder. You can conveniently start developing plugins in there, and later move them to the PyPi repository.
 
 ### Using GDAPS apps
 
@@ -177,22 +177,24 @@ their `urlpatterns` variables and merges them into the global one.
 
 A typical `fooplugin/urls.py` would look like this:
 
-    from . import views
-    
-    app_name = fooplugin
+```python
+from . import views
 
-    urlpatterns =  [
-        path("/fooplugin/myurl", views.MyUrlView.as_view()),
-    ]
+app_name = fooplugin
 
-GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc.
+urlpatterns =  [
+    path("/fooplugin/myurl", views.MyUrlView.as_view()),
+]
+```
+
+GDAPS lets your plugin create global, root URLs, they are not namespaced. This is because soms plugins need to create URLS for frameworks like DRF, etc. Plugins are responsible for their URLs, and that they don't collide with others.
 
 ## Settings
 
 GDAPS settings are bundled in a `GDAPS` variable you can add to your settings: 
 ```python
 GDAPS = {
-    "FRONTEND_DIR": "<frontend directory, relative to project root>"
+    "FRONTEND_DIR": "frontend"
 }
 ```
 
@@ -233,14 +235,6 @@ REMOVED_SETTINGS = ( "FOO_SETTING" )
 
 fooplugin_settings = PluginSettings("FOOPLUGIN", None, DEFAULTS, IMPORT_STRINGS)
 
-
-def reload_fooplugin_settings(*args, **kwargs):
-    setting = kwargs["setting"]
-    if setting == "FOOPLUGIN":
-        fooplugin_settings.reload()
-
-
-setting_changed.connect(reload_fooplugin_settings)
 ``` 
 
 Detailed explanation:
@@ -264,16 +258,16 @@ However, the created conf.py file is not needed, so if you don't use custom sett
 
 GDAPS supports Javascript frontends for building e.g. SPA applications. ATM only Vue.js ist supported, but PRs are welcome to add more (Angular, React?).
 
-If you added `gdaps.frontend` to `INSTALLED_APPS`, there is a new management command available: `manage.py initfrontend`. It accepts one parameter `engine`, which ATM only can be "vue".
+If you add `gdaps.frontend` to `INSTALLED_APPS`, there is a new management command available: `manage.py initfrontend`. It has one mandatory parameter, the frontend engine:
     
     ./manage.py initfrontend vue
 
-creates a /frontend/ directory in the project root. Change into that directory and run `yarn install` once to install all the dependencies of Vue.js needed.
+This creates a /frontend/ directory in the project root. Change into that directory and run `yarn install` once to install all the dependencies of Vue.js needed.
 
 It is recommended to install vue globally, you can do that with `yarn global add @vue/cli @vue/cli-service-global`.
 
-Now you can start `vue serve` in the frontend directory to use the development server, edit files, and see changes directly.
-Remember, this only starts the frontend. You also need to start Django using `./manage.py runserver` to enable the backend, which most likely will be needed by your Vue frontend.
+Now you can start `yarn serve` in the frontend directory. This starts a development web server that bundles the frontend app using webpack automatically.
+You then need to start Django using `./manage.py runserver` to enable the Django backend. GDAPS manages all the needed background tasks to transparently enable hot-reloading when you change anything in the frontend source code now.
 
 
 ## Contributing
