@@ -58,7 +58,8 @@ class Command(TemplateCommand):
         if os.path.exists(frontend_path):
             raise CommandError(
                 "There already seems to be a frontend with that name in project '{project}'. "
-                "Please delete the '{frontend}' directory if you want to create a new one, or choose another name using --frontend_dir.".format(
+                "Please delete the '{frontend}' directory if you want to create a new one, "
+                "or choose another name using --frontend_dir.".format(
                     project=options["project_name"], frontend=options["frontend_dir"]
                 )
             )
