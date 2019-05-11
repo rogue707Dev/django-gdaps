@@ -106,7 +106,7 @@ class PluginManager(metaclass=Singleton):
                 appname += "." + ".".join(entry_point.attrs)
 
             found_apps.append(appname)
-            logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
+            logger.info("Found plugin '{}', adding to INSTALLED_APPS.".format(appname))
 
         # save a relative import path for plugins, derived from the "group" dotted plugin path
         # cls.plugin_path = os.path.join(*cls.group.split("."))
