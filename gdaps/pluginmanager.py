@@ -26,7 +26,6 @@ from pkg_resources import iter_entry_points
 from typing import List
 
 from gdaps.exceptions import PluginError
-from gdaps.drf import urls as gdaps_urls
 
 __all__ = ["PluginManager"]
 
@@ -233,10 +232,18 @@ class PluginManager(metaclass=Singleton):
         # Another unmanaged problem is 'dependencies':
         # FIXME: a dependency manager must be implemented into the PluginManager
 
-        # if gdaps.drf is installed, use its urlpatterns automatically
+        # if gdaps.drf or gdaps.frontend is installed, use their urlpatterns automatically
         module_list = PluginManager.load_plugin_submodule("urls")
+
         if "gdaps.drf" in [app.name for app in apps.get_app_configs()]:
-            module_list += [gdaps_urls]
+            from gdaps.drf import urls
+
+            module_list += [urls]
+
+        if "gdaps.frontend" in [app.name for app in apps.get_app_configs()]:
+            from gdaps.frontend import urls
+
+            module_list += [urls]
 
         urlpatterns = []
         for module in module_list:
@@ -247,6 +254,6 @@ class PluginManager(metaclass=Singleton):
                         module.__name__
                     )
                 )
-                urlpatterns.append(pattern)
+                urlpatterns += pattern
 
         return urlpatterns
