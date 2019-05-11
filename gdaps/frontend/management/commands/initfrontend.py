@@ -52,7 +52,7 @@ class Command(TemplateCommand):
         options["files"] = []
         options["extensions"] = []
 
-        # create a frontend/ directory in the drupal root
+        # create a frontend/ directory in the Django root
         frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
 
         if os.path.exists(frontend_path):
