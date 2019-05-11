@@ -29,7 +29,7 @@ class Command(TemplateCommand):
             "Available engines are: {}.".format(", ".join(_engines)),
         )
         parser.add_argument(
-            "--frontend_dir",
+            "--frontend_dir",  # FIXME: rename to --frontend-dir
             type=str,
             default="frontend",
             help="Specify custom frontend directory within project",
