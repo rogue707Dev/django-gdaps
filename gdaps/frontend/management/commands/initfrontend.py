@@ -29,7 +29,7 @@ class Command(TemplateCommand):
             "Available engines are: {}.".format(", ".join(_engines)),
         )
         parser.add_argument(
-            "--frontend_dir",
+            "--frontend_dir",  # FIXME: rename to --frontend-dir
             type=str,
             default="frontend",
             help="Specify custom frontend directory within project",
@@ -52,13 +52,14 @@ class Command(TemplateCommand):
         options["files"] = []
         options["extensions"] = []
 
-        # create a frontend/ directory in the drupal root
+        # create a frontend/ directory in the Django root
         frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
 
         if os.path.exists(frontend_path):
             raise CommandError(
                 "There already seems to be a frontend with that name in project '{project}'. "
-                "Please delete the '{frontend}' directory if you want to create a new one, or choose another name using --frontend_dir.".format(
+                "Please delete the '{frontend}' directory if you want to create a new one, "
+                "or choose another name using --frontend_dir.".format(
                     project=options["project_name"], frontend=options["frontend_dir"]
                 )
             )
@@ -104,8 +105,8 @@ class Command(TemplateCommand):
                         settings.BASE_DIR
                     )
                 )
-                # npm install vue
-                # FIXME: check if npm is available
+                # yarn install vue
+                # FIXME: check if yarn is available
                 subprocess.check_call(
                     "yarn install --cwd {}".format(frontend_path), shell=True
                 )

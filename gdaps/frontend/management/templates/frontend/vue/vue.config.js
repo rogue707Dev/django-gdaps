@@ -1,8 +1,13 @@
 const BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
-    publicPath: 'http://localhost:8080/'
+    // The base URL your application bundle will be deployed at
+    publicPath: 'http://localhost:8080/',
+    // The directory where the production build files will be generated in when running vue build.
+    // This must be Django's assets directory
     outputDir: './dist/',
+    // enable single file Vue components
+    runtimeCompiler: true,
 
     chainWebpack: config => {
 
@@ -12,7 +17,7 @@ module.exports = {
         config
             .plugin('BundleTracker')
             .use(BundleTracker, [{
-                filename: '../{{ frontend_dir }}/webpack-stats.json'
+                // filename: 'webpack-stats.json' // = default
             }])
 
         config.resolve.alias
@@ -35,8 +40,8 @@ module.exports = {
                 '/api*': {
                     target: 'http://localhost:8000/',
                 },
+                // Forward frontend dev server request for /admin to django dev server
                 '/admin*': {
-                    // Forward frontend dev server request for /admin to django dev server
                     target: 'http://localhost:8000/',
                 }
              })

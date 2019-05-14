@@ -1,14 +1,19 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 setup(
     name="gdaps",
-    version="0.1.0",
+    version="0.2.2",
     author="Christian González",
     # author_email="author@example.com",
     description="Generic Django Apps Plugin System",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     install_requires=["django"],
     url="https://gitlab.com/nerdocs/gdaps",
-    packages=["gdaps"],
+    packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     license="GPLv3",
     classifiers=[
         "Development Status :: 1 - Planning",

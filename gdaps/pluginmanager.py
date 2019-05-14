@@ -26,7 +26,6 @@ from pkg_resources import iter_entry_points
 from typing import List
 
 from gdaps.exceptions import PluginError
-from gdaps.drf import urls as gdaps_urls
 
 __all__ = ["PluginManager"]
 
@@ -75,6 +74,9 @@ class PluginManager(metaclass=Singleton):
 
     @classmethod
     def plugin_path(cls):
+        """Returns the absolute path where application plugins live.
+
+        CAVE: this is not callable from within the settings.py file."""
         assert cls.group != ""
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
@@ -98,6 +100,7 @@ class PluginManager(metaclass=Singleton):
             )
 
         cls.group = group
+
         found_apps = []
 
         for entry_point in iter_entry_points(group=group, name=None):
@@ -107,7 +110,7 @@ class PluginManager(metaclass=Singleton):
                 appname += "." + ".".join(entry_point.attrs)
 
             found_apps.append(appname)
-            logger.debug("Added '{}' to INSTALLED_APPS.".format(appname))
+            logger.info("Found plugin '{}', adding to INSTALLED_APPS.".format(appname))
 
         # save a relative import path for plugins, derived from the "group" dotted plugin path
         # cls.plugin_path = os.path.join(*cls.group.split("."))
@@ -216,7 +219,7 @@ class PluginManager(metaclass=Singleton):
             logger.debug("Django apps: {}".format(apps.app_configs))
 
     @staticmethod
-    def collect_urls() -> list:
+    def urlpatterns() -> list:
         """Loads all plugins' urls.py and collects their urlpatterns.
 
         This is maybe not the best approach, but it allows plugins to
@@ -233,10 +236,13 @@ class PluginManager(metaclass=Singleton):
         # Another unmanaged problem is 'dependencies':
         # FIXME: a dependency manager must be implemented into the PluginManager
 
-        # if gdaps.drf is installed, use its urlpatterns automatically
+        # if gdaps.drf or gdaps.frontend is installed, use their urlpatterns automatically
         module_list = PluginManager.load_plugin_submodule("urls")
-        if "gdaps.drf" in [app.name for app in apps.get_app_configs()]:
-            module_list += [gdaps_urls]
+
+        if "gdaps.frontend" in [app.name for app in apps.get_app_configs()]:
+            from gdaps.frontend import urls
+
+            module_list += [urls]
 
         urlpatterns = []
         for module in module_list:
@@ -244,9 +250,9 @@ class PluginManager(metaclass=Singleton):
             if pattern:
                 logger.info(
                     "Added urlpatterns from module '{}' to global list.".format(
-                        module.name
+                        module.__name__
                     )
                 )
-                urlpatterns.append(pattern)
+                urlpatterns += pattern
 
         return urlpatterns

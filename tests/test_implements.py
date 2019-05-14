@@ -14,7 +14,7 @@ class IAttribute1(Interface):
     foo = []
 
 
-@implements(IFoo, singleton=False)
+@implements(IFoo)
 class Foo:
     def foo_method(self):
         pass
@@ -24,18 +24,18 @@ class Foo:
 
 
 # FIXME: does not work yet, see issue #1
-def test_service_instantiation():
+def test_singleton_is_instantiated():
     ep = ExtensionPoint(IFoo)
     for i in ep:
         assert hasattr(i, "foo_method")
         assert callable(i.foo_method)
-        assert isinstance(i, Foo)
+        assert isinstance(i(), Foo)
 
 
 def test_service_method_call():
     ep = ExtensionPoint(IFoo)
     for i in ep:
-        i.foo_method()
+        i().foo_method()
 
 
 def test_attribute_missing():

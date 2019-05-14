@@ -21,7 +21,7 @@ from typing import List, Type
 
 from gdaps.exceptions import PluginError
 
-__all__ = ["Interface", "implements", "ExtensionPoint", "IPlugin", "Plugin"]
+__all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
 
 default_app_config = "gdaps.apps.GdapsConfig"
 
@@ -37,6 +37,7 @@ class InterfaceMeta(type):
 
     def __new__(mcs, name, bases, dct):
         """Creates a new Interface class"""
+
         interface = type.__new__(mcs, name, bases, dct)
         interface._implementations = []
         interface._permissions = []
@@ -108,9 +109,9 @@ class ExtensionPoint:
         """
         ext_set = set()
         for impl in self._interface._implementations:
-            if not impl.__singleton__:
-                # instanciate implementation now.
-                impl = impl()
+            # if impl.__singleton__:
+            #     # instanciate implementation now.
+            #     impl = impl._singleton_instance
 
             # either look for the 'enabled' attribute and just return the plugin instance, when it's enabled,
             # or, if there is no 'enabled' attribute, ignore it and just return the plugin instance
@@ -133,16 +134,16 @@ class Implements:
     You can also implement more than one interface: *@implements(IAInterface, IBInterface)*
     """
 
-    def __init__(self, *interfaces: List[Interface], singleton: bool = False) -> None:
+    def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True
         """Called at declaration of the decorator (with following class).
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
-        :param singleton: if True the implementations will get instanciated immediately, and prevented from
-                a second instantiation.
+        # :param singleton: if True the implementations will get instanciated immediately, and prevented from
+        #         a second instantiation.
         """
         # memoize a list of *Interface*s the decorated class is going to implement
         self._interfaces = []  # type: List[Interface]
-        self._singleton = singleton
+        # self._singleton = singleton
 
         if not interfaces:
             raise PluginError(
@@ -162,13 +163,14 @@ class Implements:
         """Called at decoration time
         :param cls: decorated class
         """
-        # add the decorated class to each Interface's internal
-        # implementation list
+        # add the decorated class to each Interface's internal implementation list
         assert isinstance(cls, type)
-        cls.__singleton__ = self._singleton
-        if self._singleton:
-            # instantiate class immediately if it has a singleton marker
-            cls = cls()
+        # if cls.Meta.singleton:
+        #     # instantiate class immediately if Interface has a singleton marker
+        #     cls = cls()
+        #     cls._singleton_instance = cls
+        # else:
+        #     cls._singleton_instance = None
 
         for interface in self._interfaces:  # type: Interface
             for attr in [m for m in dir(interface) if not m.startswith("_")]:
