@@ -74,6 +74,9 @@ class PluginManager(metaclass=Singleton):
 
     @classmethod
     def plugin_path(cls):
+        """Returns the absolute path where application plugins live.
+
+        CAVE: this is not callable from within the settings.py file."""
         assert cls.group != ""
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
@@ -97,6 +100,7 @@ class PluginManager(metaclass=Singleton):
             )
 
         cls.group = group
+
         found_apps = []
 
         for entry_point in iter_entry_points(group=group, name=None):
