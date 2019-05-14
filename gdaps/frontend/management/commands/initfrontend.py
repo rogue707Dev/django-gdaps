@@ -105,8 +105,8 @@ class Command(TemplateCommand):
                         settings.BASE_DIR
                     )
                 )
-                # npm install vue
-                # FIXME: check if npm is available
+                # yarn install vue
+                # FIXME: check if yarn is available
                 subprocess.check_call(
                     "yarn install --cwd {}".format(frontend_path), shell=True
                 )
