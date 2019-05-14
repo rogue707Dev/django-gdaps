@@ -34,23 +34,29 @@ def get_user_data(key):
 
 
 class Command(TemplateCommand):
+    """This is the managemant command to add a plugin from a template to a Django application.
+
+    Beware: the "startplugin" management command inherits from TemplateCommand, which is not part of Django's
+    official API. There is no guarantee that Django keeps this class stable."""
+
+    # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
+    # If there is a better way to do that - please let me know.
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
     # absolute path to internal plugins of application
-    plugin_path = os.path.join("BASE_DIR", *gdaps_settings.PLUGIN_PATH.split("."))
+    plugin_path = os.path.join(settings.BASE_DIR, *PluginManager.group.split("."))
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
         "'{}/' directory from a template.".format(plugin_path)
     )
 
-    missing_args_message = "You must provide a plugin _name."
+    missing_args_message = "You must provide a plugin name."
 
     def handle(self, name, **options):
         from django.core.validators import validate_email
 
-        plugin_path = PluginManager.plugin_path
-
+        plugin_path = PluginManager.plugin_path()
         logger.debug("Using plugin directory: {}".format(plugin_path))
 
         # override target directory
@@ -64,12 +70,10 @@ class Command(TemplateCommand):
         template = os.path.join(
             apps.get_app_config("gdaps").path, "management", "templates", "plugin"
         )
-        options["files"] += ["README.md"]
+        self.stdout.write("".join(options["files"]))
 
         options["upper_cased_app_name"] = name.upper()
 
-        # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
-        # If there is a better way to do that - please let me know.
         options["project_name"] = self._django_root
         options["plugin_path"] = plugin_path
         options["project_title"] = self._django_root.capitalize()
@@ -105,6 +109,11 @@ class Command(TemplateCommand):
             self.stdout.write(
                 "Successfully created plugin directory: {}\n".format(target)
             )
+
+            if os.path.exists(os.path.join(settings.BASE_DIR, "frontend")):
+                #  if there is a global "frontend" directory, assume that plugin has one too and create it.
+                os.makedirs(os.path.join(target, "frontend"))
+
         except OSError as e:
             raise CommandError(e)
 
