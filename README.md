@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 # entry points and from the directory named 'myproject.plugins':
 INSTALLED_APPS += PluginManager.find_plugins("myproject.plugins")
 ```
-We recommend that you use 'myproject.**plugins**' or just '**plugins**'.
+We recommend that you use 'myproject.**plugins**'.
 
 For further frontend specific instructions, see [Frontend support](#frontend-support).
 
