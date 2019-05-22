@@ -121,7 +121,9 @@ class PluginManager(metaclass=Singleton):
     @classmethod
     def plugins(cls) -> List[str]:
         # TODO: test plugins() method
-        """Returns a list of installed plugin apps, either set in INSTALLED_APPS directly, or found via entrypoint"""
+        """Returns a list of installed plugin app names.
+
+        These are either found in INSTALLED_APPS directly, or via pkgtools entrypoint."""
         for app in apps.get_app_configs():
             from gdaps.conf import gdaps_settings
 
