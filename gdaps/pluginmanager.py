@@ -70,6 +70,8 @@ class PluginManager(metaclass=Singleton):
 
     group = ""
 
+    coreplugin_name = None  # FIXME: test coreplugin_name
+    
     found_apps = []
 
     @classmethod
@@ -81,7 +83,7 @@ class PluginManager(metaclass=Singleton):
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
     @classmethod
-    def find_plugins(cls, group: str) -> List[str]:
+    def find_plugins(cls, group: str, coreplugin_name: str = None) -> List[str]:
         """Finds plugins from setuptools entrypoints
 
         This function is supposed to be called in settings.py after the
@@ -90,6 +92,11 @@ class PluginManager(metaclass=Singleton):
 
         :param group: a dotted path where wo find plugin apps. This is used as
             'group' for setuptools' entry points.
+        :param coreplugin_name: optional dotted name of a "Core" plugin. This plugin can be
+            outside of the group directory, but will be recognized as plugin too.
+            This helps maintaining a clean import path for "Core" plugins:
+            `from myapp.core import ...` instead of `from myapp.plugins.core import ...`
+            is a bit easier to read. And EVERY pluggable application has a Core plugin.
         :returns: A list of dotted app_names, which can be appended to
             INSTALLED_MODULES.
         """
@@ -100,6 +107,7 @@ class PluginManager(metaclass=Singleton):
             )
 
         cls.group = group
+        cls.coreplugin_name = coreplugin_name
 
         found_apps = []
 
@@ -128,7 +136,10 @@ class PluginManager(metaclass=Singleton):
             from gdaps.conf import gdaps_settings
 
             try:
-                if app.name.startswith(cls.group) and app.name not in cls.found_apps:
+                if (
+                    app.name.startswith(cls.group + ".")
+                    or app.name == cls.coreplugin_name
+                ) and app.name not in cls.found_apps:
                     cls.found_apps += [app.name]
             except ValueError:
                 pass
@@ -136,7 +147,7 @@ class PluginManager(metaclass=Singleton):
         return cls.found_apps
 
     @classmethod
-    def load_plugin_submodule(cls, submodule: str) -> list:
+    def load_plugin_submodule(cls, submodule: str, mandatory=False) -> list:
         """
         Search plugin apps for specific submodules and load them.
 
@@ -145,29 +156,35 @@ class PluginManager(metaclass=Singleton):
             plugin's namespace, e.g. "schema" - then
             ["<main>.core.schema", "<main>.laboratory.schema"] etc. will be
             found and imported.
+        :param mandatory: If set to True, each found plugin _must_ contain the given
+            submodule. If not, a PluginError is raised.
         :return: a list of module objects that have been successfully imported.
         """
         modules = []
         importlib.invalidate_caches()
         for app_name in PluginManager.plugins():
 
-            # import all the subbodules from all plugin apps
+            # import all the submodules from all plugin apps
             from gdaps.conf import gdaps_settings
 
-            if app_name.startswith(cls.group):
-
-                dotted_name = "%s.%s" % (app_name, submodule)
-                try:
-                    module = importlib.import_module(dotted_name)
-                    logger.info("Successfully loaded submodule {}".format(dotted_name))
-                    modules.append(module)
-                    logger.info("Loading plugin {}".format(dotted_name))
-                except ImportError as e:
-                    # ignore non-existing <submodule>.py files
-                    # in plugins
-                    logger.error(
-                        "Error loading submodule '{}':\n   {}".format(dotted_name, e)
+            dotted_name = "%s.%s" % (app_name, submodule)
+            try:
+                module = importlib.import_module(dotted_name)
+                logger.info("Successfully loaded submodule {}".format(dotted_name))
+                modules.append(module)
+                logger.info("Loading plugin {}".format(dotted_name))
+            except ImportError as e:
+                if mandatory:
+                    raise PluginError(
+                        "The '{plugin_name}' app does not contain a (mandatory) '{module}' module".format(
+                            module=submodule, plugin_name=app_name
+                        )
                     )
+                # ignore non-existing <submodule>.py files
+                # in plugins
+                logger.error(
+                    "Error loading submodule '{}':\n   {}".format(dotted_name, e)
+                )
         return modules
 
     @staticmethod
