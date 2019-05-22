@@ -88,7 +88,7 @@ class PluginManager(metaclass=Singleton):
         INSTALLED_APPS variable. Therefore it can not use global variables from
         settings, to prevent circle imports.
 
-        :group: a dotted path where wo find plugin apps. This is used as
+        :param group: a dotted path where wo find plugin apps. This is used as
             'group' for setuptools' entry points.
         :returns: A list of dotted app_names, which can be appended to
             INSTALLED_MODULES.
