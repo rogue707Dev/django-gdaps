@@ -173,19 +173,19 @@ class Implements:
         #     cls._singleton_instance = None
 
         for interface in self._interfaces:  # type: Interface
-            for attr in [m for m in dir(interface) if not m.startswith("_")]:
-                # test if implementation implements all methods
-                if callable(getattr(interface, attr)) and not hasattr(cls, attr):
-                    raise PluginError(
-                        "Class '%s' does not implement method '%s' of Interface '%s'"
-                        % (cls.__name__, attr, interface.__name__)
-                    )
-                # test if implementation implements all attributes
-                if not hasattr(cls, attr):
-                    raise PluginError(
-                        "Class '%s' does not implement attribute '%s' of Interface '%s'"
-                        % (cls.__name__, attr, interface.__name__)
-                    )
+            # for attr in [m for m in dir(interface) if not m.startswith("_")]:
+            #     # test if implementation implements all methods
+            #     if callable(getattr(interface, attr)) and not hasattr(cls, attr):
+            #         raise PluginError(
+            #             "Class '%s' does not implement method '%s' of Interface '%s'"
+            #             % (cls.__name__, attr, interface.__name__)
+            #         )
+            #     # test if implementation implements all attributes
+            #     if not hasattr(cls, attr):
+            #         raise PluginError(
+            #             "Class '%s' does not implement attribute '%s' of Interface '%s'"
+            #             % (cls.__name__, attr, interface.__name__)
+            #         )
             interface._implementations.append(cls)
 
         return cls
