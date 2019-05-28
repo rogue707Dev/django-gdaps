@@ -108,9 +108,22 @@ from gdaps import Interface
 class IFooInterface(Interface):   
     """Documentation of the interface"""
     
+    class Meta:
+        service = True
+    
     def do_something(self):
         pass
 ```
+Interfaces have a default Meta class that defines Interface options. 
+Available options:
+
+##### service
+If `service=True` (which is the default), then all implementations are instantiated instantly at
+definition time, having a full class instance availably at any time.
+You then can iterate over ExtensionPoints and use the instances directly.
+
+If you use `service=False`, ExtensionPoint iterations will return **classes**, not instances. 
+This sometimes may be the desired functionality.
 
 #### Implementations
 

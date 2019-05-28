@@ -10,6 +10,8 @@ class IGrapheneQuery(Interface):
     how to create abstract Graphene query objects. You just need to decorate them with @IGrapheneQuery,
     and they are included into the global GraphQL API automatically.
     """
+    class Meta:
+        service = False
 
 
 class IGrapheneMutation(Interface):
@@ -21,3 +23,5 @@ class IGrapheneMutation(Interface):
     how to create abstract Graphene mutation objects. You just need to decorate them with @IGrapheneMutation,
     and they are included into the global GraphQL API automatically.
     """
+    class Meta:
+        service = False

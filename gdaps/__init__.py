@@ -51,10 +51,23 @@ class InterfaceMeta(type):
 class Interface(metaclass=InterfaceMeta):
     """Base class for interface definitions."""
 
+    class Meta:
+        pass
+
     def __new__(cls, *args, **kwargs):
         raise PluginError(
             "<Interface> can't be instantiated directly".format(cls.__class__.__name__)
         )
+
+    @classmethod
+    def _is_service(cls):
+        """Returns True if Interface describes a "service".
+
+        Services are Interfaces whose implementations are instantiated at creation time.
+        Per default, service == true, if not set otherwise at declaration in the Interfaces'
+        Meta class.
+        """
+        return getattr(cls.Meta, "service", True)
 
 
 class ExtensionPoint:
@@ -186,6 +199,8 @@ class Implements:
             #             "Class '%s' does not implement attribute '%s' of Interface '%s'"
             #             % (cls.__name__, attr, interface.__name__)
             #         )
+            if interface._is_service():
+                cls = cls()
             interface._implementations.append(cls)
 
         return cls
