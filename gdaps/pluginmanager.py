@@ -70,7 +70,8 @@ class PluginManager(metaclass=Singleton):
     plugins folder or pkg_resources entry points and loads them dynamically.
 
     It provides methods to load submodules of all available plugins
-    dynamically."""
+    dynamically.
+    """
 
     group = ""
 
@@ -82,7 +83,8 @@ class PluginManager(metaclass=Singleton):
     def plugin_path(cls):
         """Returns the absolute path where application plugins live.
 
-        CAVE: this is not callable from within the settings.py file."""
+        CAVE: this is not callable from within the settings.py file.
+        """
         assert cls.group != ""
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
@@ -135,7 +137,9 @@ class PluginManager(metaclass=Singleton):
         # TODO: test plugins() method
         """Returns a list of installed plugin app names.
 
-        These are either found in INSTALLED_APPS directly, or via pkgtools entrypoint."""
+        These are either found in INSTALLED_APPS directly, or via pkgtools
+        entrypoint.
+        """
         for app in apps.get_app_configs():
             from gdaps.conf import gdaps_settings
 
