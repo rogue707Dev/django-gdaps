@@ -51,6 +51,10 @@ logger = logging.getLogger(__name__)
 
 
 class Singleton(type):
+    """A Metaclass implementing the Singleton pattern.
+
+    This class is for internal use only
+    """
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
