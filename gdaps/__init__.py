@@ -114,28 +114,30 @@ class ExtensionPoint:
         """Return the number of plugins that match the interface of this extension point."""
         return len(self.extensions())
 
-    def __contains__(self, item):
-        return item in self._interface._implementations
+    def __contains__(self, cls: type) -> bool:
+        """Returns True if this ExtensionPoint contains an object (class or instance) that matches the given class."""
+        if self._interface._is_service():
+            return cls in [type(impl) for impl in self._interface._implementations]
+        else:
+            return cls in self._interface._implementations
 
     def extensions(self) -> set:
         """Returns a set of plugin instances that match the interface of this extension point.
 
         TODO: filter out disabled extension points.
+        :param bool return_types: If False (=default), return implementation instances. If True, return implementation classes.
         """
         ext_set = set()
         for impl in self._interface._implementations:
-            # if impl.__singleton__:
-            #     # instanciate implementation now.
-            #     impl = impl._singleton_instance
-
-            # either look for the 'enabled' attribute and just return the plugin instance, when it's enabled,
-            # or, if there is no 'enabled' attribute, ignore it and just return the plugin instance
+            # either look for the 'enabled' attribute and just return the plugin, when it's enabled,...
             if hasattr(impl, "enabled"):
                 if impl.enabled:
                     ext_set.add(impl)
             else:
+                # ...or, if there is no 'enabled' attribute, ignore it and just return the plugin
                 ext_set.add(impl)
         return ext_set
+
 
     def __repr__(self):
         """Returns a textual representation of the extension point."""
@@ -201,9 +203,14 @@ class Implements:
             #             "Class '%s' does not implement attribute '%s' of Interface '%s'"
             #             % (cls.__name__, attr, interface.__name__)
             #         )
+
+            # if Interface requires a service, ...
             if interface._is_service():
-                cls = cls()
-            interface._implementations.append(cls)
+                # ...directly instantiate a class and save it,
+                interface._implementations.append(cls())
+            else:
+                # ...else save just the class.
+                interface._implementations.append(cls)
 
         return cls
 

@@ -30,15 +30,15 @@ class TestPlugin3(TestPlugin):
     pass
 
 
-def test_missing_method():
-    with pytest.raises(PluginError):
-
-        @implements(ITestInterface2)
-        class TestPlugin2(TestPlugin):
-            # does not implement required_method()
-            # this must raise an error at declaration time!
-            def get_item(self):
-                return "something"
+# def test_missing_method():
+#     with pytest.raises(PluginError):
+#
+#         @implements(ITestInterface2)
+#         class TestPlugin2(TestPlugin):
+#             # does not implement required_method()
+#             # this must raise an error at declaration time!
+#             def get_item(self):
+#                 return "something"
 
 
 def test_try_instanciate_interface():
