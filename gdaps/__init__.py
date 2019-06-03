@@ -99,6 +99,8 @@ class ExtensionPoint:
 
     def __call__(self, key=None) -> list:
         """Returns a set of plugins that match the interface of this extension point."""
+        # FIXME: implementation!
+        raise NotImplementedError
 
         if type(key) in (int, int):
             raise PluginError(

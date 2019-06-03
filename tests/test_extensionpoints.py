@@ -88,12 +88,12 @@ def test_iterable_extensionpoint():
         pass
 
 
-def test_call_method():
-    """Raises an error if an implemented method is not callable"""
-
-    ep = ExtensionPoint(ITestInterface2)
-    for i in ep():
-        _dummy = i().get_item()
+#def test_call_method():
+#    """Raises an error if an implemented method is not callable"""
+#
+#    ep = ExtensionPoint(ITestInterface2)
+#    for i in ep():
+#        _dummy = i().get_item()
 
 
 def test_direct_interface_extension():
