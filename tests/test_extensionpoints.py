@@ -15,6 +15,26 @@ class ITestInterface2(Interface):
         pass
 
 
+class INonService(Interface):
+    class Meta:
+        service = False
+
+    def foo(self):
+        pass
+
+
+@implements(INonService)
+class NonService1:
+    def foo(self):
+        pass
+
+
+@implements(INonService)
+class NonService2:
+    def foo(self):
+        pass
+
+
 class TestPlugin:
     pass
 
@@ -126,3 +146,21 @@ def test_attribute():
     # directly instantiate a class, which should contain an attribute.
     a = Attribute2Class()
     assert a.foo == ["first", "second"]
+
+
+def test_nonservice_plugins():
+    ep = ExtensionPoint(INonService)
+    for i in ep:
+        # compare classes, not instances
+        assert NonService1 in ep
+        assert NonService2 in ep
+
+        # don't accept arbitrary instances as comparison objects
+        assert NonService1() not in ep
+
+        # methods cannot be called, as there is no instance yet
+        with pytest.raises(TypeError):
+            i.foo()
+
+        i().foo()
+
