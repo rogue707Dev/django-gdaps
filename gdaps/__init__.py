@@ -78,7 +78,7 @@ class ExtensionPoint:
     def __init__(self, interface: Type[Interface]) -> None:
         """Creates the extension point.
 
-        @param interface: The interface that is referred to.
+        :param interface: The interface that is referred to.
         """
 
         if interface is None:
@@ -122,11 +122,7 @@ class ExtensionPoint:
             return cls in self._interface._implementations
 
     def extensions(self) -> set:
-        """Returns a set of plugin instances that match the interface of this extension point.
-
-        TODO: filter out disabled extension points.
-        :param bool return_types: If False (=default), return implementation instances. If True, return implementation classes.
-        """
+        """Returns a set of plugin instances that match the interface of this extension point."""
         ext_set = set()
         for impl in self._interface._implementations:
             # either look for the 'enabled' attribute and just return the plugin, when it's enabled,...
@@ -137,7 +133,6 @@ class ExtensionPoint:
                 # ...or, if there is no 'enabled' attribute, ignore it and just return the plugin
                 ext_set.add(impl)
         return ext_set
-
 
     def __repr__(self):
         """Returns a textual representation of the extension point."""
