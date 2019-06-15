@@ -41,6 +41,8 @@ class Interface(metaclass=InterfaceMeta):
 
             def do_something(self):
                 pass
+
+    Read more about interfaces in the :ref:`Interfaces` section.
     """
 
     class Meta:
@@ -143,6 +145,9 @@ class Implements:
 
     You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)* and implement all their
     methods.
+
+    Read more about implementations in the :ref:`Implementations` section.
+
     """
 
     def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True

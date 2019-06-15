@@ -62,8 +62,7 @@ this also works when plugins are installed from PyPi, they don't have to
 be in the project's ``plugins`` folder. You can conveniently start
 developing plugins in there, and later move them to the PyPi repository.
 
-Using GDAPS apps
-----------------
+.. _Interfaces:
 
 Interfaces
 ----------
@@ -97,6 +96,8 @@ service
     If you use ``service=False``, ExtensionPoint iterations will return
     **classes**, not instances. This sometimes may be the desired
     functionality.
+
+.. _Implementations:
 
 Implementations
 ---------------
