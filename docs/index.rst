@@ -16,7 +16,6 @@ This site contains information about how to use GDAPS and add "pluggability" to 
 
 
 .. toctree::
-   :glob:
     :maxdepth: 2
     :caption: Table of Contents
 
@@ -40,9 +39,10 @@ library as open as possible, and it should stay so.
 GDAPS is licensed under the `GPL <https://www.gnu.org/licenses/gpl.html>`_, see :ref:`LICENSE <LICENSE>`
 
 
-Indices and tables
-==================
+..
+    Indices and tables
+    ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    * :ref:`genindex`
+    * :ref:`modindex`
+    * :ref:`search`
