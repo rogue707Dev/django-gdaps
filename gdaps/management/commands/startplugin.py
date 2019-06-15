@@ -1,6 +1,7 @@
 import os
 import string
 import logging
+import django
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -84,6 +85,7 @@ class Command(TemplateCommand):
         options["plugin_group"] = PluginManager.group
         options["files"] += ("MANIFEST.in", "setup.cfg")
         options["extensions"] += ("md", "rst", "txt")
+        options["django_version"] = django.get_version()
 
         parameters = [
             # key, value, default, validator/None
