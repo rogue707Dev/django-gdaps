@@ -31,7 +31,17 @@ class InterfaceMeta(type):
 
 
 class Interface(metaclass=InterfaceMeta):
-    """Base class for interface definitions."""
+    """Base class for interface definitions.
+
+    Inherit from *Interface* and eventually add methods to that class:
+
+    .. code-block:: python
+
+        class MyInterface(Interface):
+
+            def do_something(self):
+                pass
+    """
 
     class Meta:
         pass
@@ -53,7 +63,16 @@ class Interface(metaclass=InterfaceMeta):
 
 
 class ExtensionPoint:
-    """Marker class for Extension points in plugins"""
+    """Marker class for Extension points in plugins.
+
+    You can iterate over 'Extensionpoint's via ``for..in``:
+
+    .. code-block:: python
+
+        ep = ExtensionPoint(MyInterface)
+        for plugin in ep:
+            plugin.do_something()
+    """
 
     # shamelessly copied (and adapted) from PyUtilib
 
@@ -111,8 +130,19 @@ class ExtensionPoint:
 class Implements:
     """Decorator class for implementing interfaces.
 
-    Just decorate a class with *@implements(IMyInterface)*.
-    You can also implement more than one interface: *@implements(IInterfaceA, IInterfaceB)*
+    Just decorate a class:
+
+     .. code-block:: python
+
+        @implements(MyInterface)
+        class PluginA:
+
+            def do_something(self):
+                print("Greetings from PluginA")
+
+
+    You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)* and implement all their
+    methods.
     """
 
     def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True
