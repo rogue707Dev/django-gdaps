@@ -41,12 +41,11 @@ loaded *after* the ``gdaps`` app.
         "myproject.plugins.fooplugin",
     ]
 
-This app is laoded as usual, bug your GDAPS enhanced Django application
-can make use of it's features.
+This plugin app is loaded as usual, bug your GDAPS enhanced Django application
+can make use of it's enhanced GDAPS features.
 
 Dynamic plugins
 ^^^^^^^^^^^^^^^
-
 
 By installing a plugin with pip/pipenv, you can make your application
 aware of that plugin too:
@@ -97,6 +96,32 @@ service
     **classes**, not instances. This sometimes may be the desired
     functionality.
 
+ExtensionPoints
+---------------
+
+An ExtensionPoint (EP) is a plugin hook that refers to an Interface. An
+EP can be defined anywhere in code. You can then get all the plugins
+that implement that interface by just iterating over that
+ExtensionPoint:
+
+\`\`\`python from gdaps import ExtensionPoint from
+myproject.plugins.fooplugin.api.interfaces import IFooInterface
+
+class MyPlugin: ep = ExtensionPoint(IFooInterface)
+
+::
+
+    def foo_method(self):
+        for plugin in ep:
+            print plugin().do_domething()
+
+\`\`\`
+
+Keep in mind that iterating over an ExtensionPoint **does not return
+instances** of plugins. It just returns the **class** that was decorated
+with *@implements*. This might be improved in the future
+(auto-instantiated plugins).
+
 .. _Implementations:
 
 Implementations
@@ -127,50 +152,25 @@ If you need a more "Plugin"-like class, just create a class that
 implements the ``gdaps.IPlugin`` interface, or use the included
 ``gdaps.Plugin`` class as parent for your convenience.
 
-ExtensionPoints
-^^^^^^^^^^^^^^^
 
-An ExtensionPoint (EP) is a plugin hook that refers to an Interface. An
-EP can be defined anywhere in code. You can then get all the plugins
-that implement that interface by just iterating over that
-ExtensionPoint:
+Extending Django's URL patterns
+-------------------------------
 
-\`\`\`python from gdaps import ExtensionPoint from
-myproject.plugins.fooplugin.api.interfaces import IFooInterface
-
-class MyPlugin: ep = ExtensionPoint(IFooInterface)
-
-::
-
-    def foo_method(self):
-        for plugin in ep:
-            print plugin().do_domething()
-
-\`\`\`
-
-Keep in mind that iterating over an ExtensionPoint **does not return
-instances** of plugins. It just returns the **class** that was decorated
-with *@implements*. This might be improved in the future
-(auto-instantiated plugins).
-
-URLs
-^^^^
-
-To let your plugin define some URLs that are automatically detected, you
-have to add some code to the global urls.py file:
+To let your plugin define some URLs that are automatically detected by your Django application, you
+have to add some code to your global urls.py file:
 
 .. code:: python
 
     from gdaps.pluginmanager import PluginManager
 
     urlpatterns =  [
-        # ...
+        # add your fixed, non-plugin paths here.
     ]
 
     # just add this line after the urlpatterns definition:
     urlpatterns += PluginManager.urlpatterns()
 
-GDAPS then loads and imports all available plugins' urls.py files,
+GDAPS then loads and imports all available plugins' *urls.py*  files,
 collects their ``urlpatterns`` variables and merges them into the global
 one.
 
@@ -191,26 +191,10 @@ namespaced. This is because soms plugins need to create URLS for
 frameworks like DRF, etc. Plugins are responsible for their URLs, and
 that they don't collide with others.
 
-Settings
---------
+.. _Settings:
 
-GDAPS settings are bundled in a ``GDAPS`` variable you can add to your
-settings:
-
-.. code:: python
-
-    GDAPS = {
-        "FRONTEND_DIR": "frontend"
-    }
-
-FRONTEND_DIR
-   The absolute path to the application wide frontend directory, where all
-   plugin's frontend parts will be bundled later.
-
-   *Defaults to:* ``os.path.join(settings.BASE_DIR, "frontend")``
-
-Custom per-plugin settings
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Per-plugin Settings
+-------------------
 
 GDAPS allows your application to have own settings for each plugin
 easily, which provide defaults, and can be overridden in the global
@@ -267,6 +251,9 @@ REMOVED_SETTINGS
    However, the created conf.py file is not needed, so if you don't use
    custom settings at all, just delete the file.
 
+
+.. _frontend-support:
+
 Frontend support
 ----------------
 
@@ -278,7 +265,7 @@ If you add ``gdaps.frontend`` to ``INSTALLED_APPS``, there is a new
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
-::
+:: code-block:: bash
 
     ./manage.py initfrontend vue
 

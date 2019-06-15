@@ -20,7 +20,7 @@ This site contains information about how to use GDAPS and add "pluggability" to 
     :caption: Table of Contents
 
     Introduction
-    installation
+    Installation
     usage
     APIs
     Contributing
