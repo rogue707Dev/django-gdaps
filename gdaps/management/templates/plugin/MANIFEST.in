@@ -1,0 +1,5 @@
+include LICENSE*
+include README*
+graft {{ app_name }}/templates *
+recursive-include docs *
+global-exclude *.py[co]

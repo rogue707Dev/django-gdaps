@@ -1,0 +1,6 @@
+include LICENSE.md
+include README.md
+graft gdaps/frontend/templates
+graft gdaps/management/templates
+recursive-include docs *
+global-exclude *.py[co]

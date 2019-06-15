@@ -53,6 +53,11 @@ class Command(TemplateCommand):
     missing_args_message = "You must provide a plugin name."
 
     def handle(self, name, **options):
+        self.rewrite_template_suffixes += (
+            ("md-tpl", "md"),
+            ("in-tpl", "in"),
+            ("cfg-tpl", "cfg"),
+        )
         from django.core.validators import validate_email
 
         plugin_path = PluginManager.plugin_path()
@@ -76,6 +81,9 @@ class Command(TemplateCommand):
         options["project_name"] = self._django_root
         options["plugin_path"] = plugin_path
         options["project_title"] = self._django_root.capitalize()
+        options["plugin_group"] = PluginManager.group
+        options["files"] += ("MANIFEST.in", "setup.cfg")
+        options["extensions"] += ("md", "rst", "txt")
 
         parameters = [
             # key, value, default, validator/None
