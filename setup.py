@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gdaps",
-    version="0.3.4",
+    version="0.3.5",
     author="Christian González",
     # author_email="author@example.com",
     description="Generic Django Apps Plugin System",
@@ -21,7 +21,7 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     license="GPLv3",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Environment :: Web Environment",
         "Framework :: Django",
         "Intended Audience :: Developers",
