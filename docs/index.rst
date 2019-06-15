@@ -34,10 +34,7 @@ library as open as possible, and it should stay this way.
 GDAPS is licensed under the `General Public License, version 3 <https://www.gnu.org/licenses/gpl-3.0-standalone.html>`_.
 
 
-..
-    Indices and tables
-    ==================
+Indices and tables
+==================
 
-    * :ref:`genindex`
-    * :ref:`modindex`
-    * :ref:`search`
+* :ref:`genindex`
