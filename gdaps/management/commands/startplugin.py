@@ -3,7 +3,6 @@ import string
 import logging
 
 from django.conf import settings
-from gdaps.conf import gdaps_settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
 from django.core.management.templates import TemplateCommand
@@ -121,5 +120,5 @@ class Command(TemplateCommand):
 
         self.stdout.write(
             "Please adapt '%s' to your needs.\n"
-            % os.path.join(settings.BASE_DIR, target, "setup.py")
+            % os.path.join(settings.BASE_DIR, target, "setup.cfg")
         )
