@@ -79,19 +79,6 @@ class ExtensionPoint:
 
         return self.extensions().__iter__()
 
-    def __call__(self, key=None) -> list:
-        """Returns a set of plugins that match the interface of this extension point."""
-        # FIXME: implementation!
-        raise NotImplementedError
-
-        if type(key) in (int, int):
-            raise PluginError(
-                "Access of the n-th extension point is "
-                "disallowed.  This is not well-defined, since "
-                "ExtensionPoints are stored as unordered sets."
-            )
-        return self.extensions()
-
     def __len__(self):
         """Return the number of plugins that match the interface of this extension point."""
         return len(self.extensions())
