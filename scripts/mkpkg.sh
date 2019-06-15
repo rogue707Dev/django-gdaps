@@ -6,11 +6,9 @@ die() {
     exit 1
 }
 
-if [ -d "dist/" ]; then
-    die "Please delete the dist/ directory before proceeding."
-fi
 
-version=$(grep "version=" setup.py| cut -d '"' -f2)
+#version=$(grep "version=" setup.py| cut -d '"' -f2)
+version=$(grep "__version__" gdaps/__init__.py | cut -d '"' -f2)
 [[ "$version" == "" ]] && die "Could not determine current version. Please check setup.py file."
 
 python -m keyring >/dev/null || die "Please install keyring in this virtualenv."
@@ -28,11 +26,15 @@ else
     echo "Uploading productive PyPi server"
 fi
 
-python -m twine upload --repository-url ${repo} dist/* || die "Not able to upload tp ${repo}"
+echo -e "\nShould I upload the package to ${repo}? [Y/n]."
+read yn
+if [ "$yn" != "n" ]; then
+    python -m twine upload --repository-url ${repo} dist/* || die "Not able to upload tp ${repo}"
 
-if [[ $testing ]]; then
     echo "Now test-install your package using this code:"
     echo
-    echo "python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps gdaps"
+    [[ $testing ]] && export arg="-i https://test.pypi.org/simple" || export arg=""
+    echo "pip install ${arg} --no-deps gdaps"
+
 fi
 
