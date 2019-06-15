@@ -19,7 +19,6 @@ This site contains information about how to use GDAPS and add "pluggability" to 
     :maxdepth: 2
     :caption: Table of Contents
 
-   LICENSE
     Introduction
     installation
     usage
@@ -34,8 +33,8 @@ License
 =======
 
 I'd like to give back what I received from many Open Source software packages, and keep this
-library as open as possible, and it should stay so.
-GDAPS is licensed under the `GPL <https://www.gnu.org/licenses/gpl.html>`_, see :ref:`LICENSE <LICENSE>`
+library as open as possible, and it should stay this way.
+GDAPS is licensed under the `General Public License, version 3 <https://www.gnu.org/licenses/gpl.html>`_.
 
 
 ..
