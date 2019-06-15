@@ -8,7 +8,5 @@ API
     :members:
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
+
