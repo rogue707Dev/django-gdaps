@@ -125,7 +125,7 @@ class Implements:
     """Decorator class for implementing interfaces.
 
     Just decorate a class with *@implements(IMyInterface)*
-    You can also implement more than one interface: *@implements(IAInterface, IBInterface)*
+    You can also implement more than one interface: *@implements(IInterfaceA, IInterfaceB)*
     """
 
     def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True
