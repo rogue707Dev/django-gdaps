@@ -23,12 +23,10 @@ This site contains information about how to use GDAPS and add "pluggability" to 
     Introduction
     installation
     usage
+    Contributing
 
 
-Contributing
-============
 
-If you want to contribute, feel free and write a PR, or contact me.
 
 
 License
