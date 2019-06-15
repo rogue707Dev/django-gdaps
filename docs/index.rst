@@ -8,22 +8,22 @@ This site contains information about how to use GDAPS and add "pluggability" to 
 
 
 .. warning::
-   This software is in a very early development state.
-   It could eat your dog, or create wormholes below your bed.
-   Use it at your own risk.
-   **You have been warned.**
+    This software is in a very early development state.
+    It could eat your dog, or create wormholes below your bed.
+    Use it at your own risk.
+    **You have been warned.**
 
 
 
 .. toctree::
-   :maxdepth: 3
-   :caption: Table of Contents
    :glob:
+    :maxdepth: 2
+    :caption: Table of Contents
 
-   Introduction
-   installation
-   usage
    LICENSE
+    Introduction
+    installation
+    usage
 
 
 Contributing
