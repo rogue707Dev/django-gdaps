@@ -13,9 +13,9 @@ fi
 version=$(grep "version=" setup.py| cut -d '"' -f2)
 [ "$version" == "" ] && die "Could not determine current version. Please check setup.py file."
 
-
 python -m keyring >/dev/null || die "Please install keyring in this virtualenv."
 
+echo -e "------- Building version ${version} -------\n"
 python setup.py sdist bdist_wheel >/dev/null
 
 
