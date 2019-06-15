@@ -1,10 +1,4 @@
 """
-Settings for GDAPS are all namespaced in the GDAPS setting.
-For example your project's `settings.py` file might look like this:
-GDAPS = {
-    "FRONTEND_DIR": "frontend"
-    )
-}
 This module provides the `gdaps_settings` object, that is used to access
 GDAPS settings, checking for user settings first, then falling
 back to the defaults.
@@ -20,7 +14,7 @@ from django.test.signals import setting_changed
 NAMESPACE = "GDAPS"
 
 
-DEFAULTS = {"FRONTEND_DIR": "frontend"}
+DEFAULTS = {}
 
 # List of settings that may be in string import notation.
 IMPORT_STRINGS = []
@@ -68,7 +62,7 @@ class PluginSettings:
     A settings object, that allows app specific settings to be accessed as properties.
     For example:
         from gdaps.conf import gdaps_settings
-        print(gdaps_settings.FRONTEND_DIR)
+        print(gdaps_settings.FOO_SETTING)
     Any setting with string import paths will be automatically resolved
     and return the class, rather than the string literal.
     """
