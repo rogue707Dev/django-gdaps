@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class InterfaceMeta(type):
-    """Metaclass for Interface
+    """Metaclass for Interface.
 
     This class assigns a new empty implementations and permissions list to each
     Interface at creation time.
@@ -124,7 +124,7 @@ class ExtensionPoint:
 class Implements:
     """Decorator class for implementing interfaces.
 
-    Just decorate a class with *@implements(IMyInterface)*
+    Just decorate a class with *@implements(IMyInterface)*.
     You can also implement more than one interface: *@implements(IInterfaceA, IInterfaceB)*
     """
 
