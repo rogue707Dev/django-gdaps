@@ -4,7 +4,7 @@ from typing import List, Type
 from gdaps.exceptions import PluginError
 
 __all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 default_app_config = "gdaps.apps.GdapsConfig"
 
