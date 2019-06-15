@@ -12,7 +12,7 @@ class {{ camel_case_app_name }}Config(AppConfig):
 
     # Dotted Python path to the application, e.g. '{{ plugin_path }}.fooplugin'
     # It has to start with '{{ plugin_path }}' to be recognized as {{ camel_case_project_name }} plugin.
-    name = '{{ plugin_path }}.{{ app_name }}'
+    name = '{{ plugin_group }}.{{ app_name }}'
 
     def ready(self):
         # This function is called after the app and all models are loaded.

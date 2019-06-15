@@ -13,7 +13,7 @@ from gdaps import Interface
 #     Then implement this interface in another, dependent plugin:
 #
 #     from gdaps import implements
-#     from {{ plugin_path }}.{{ app_name }}.api.interfaces import IMySpecial{{ camel_case_app_name }}Interface
+#     from {{ plugin_group }}.{{ app_name }}.api.interfaces import IMySpecial{{ camel_case_app_name }}Interface
 #
 #     @implements(IMySpecial{{ camel_case_app_name }}Interface)
 #     class OtherPluginClass:

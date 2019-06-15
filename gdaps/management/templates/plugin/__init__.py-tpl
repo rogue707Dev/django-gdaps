@@ -1,3 +1,2 @@
-default_app_config = '{{ plugin_path }}.{{ app_name }}.apps.{{ camel_case_app_name }}Config'
-
+default_app_config = '{{ plugin_group }}.{{ app_name }}.apps.{{ camel_case_app_name }}Config'
 
