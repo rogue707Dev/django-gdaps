@@ -26,9 +26,6 @@ This site contains information about how to use GDAPS and add "pluggability" to 
     Contributing
 
 
-
-
-
 License
 =======
 
