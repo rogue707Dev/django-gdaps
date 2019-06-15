@@ -5,12 +5,17 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gdaps",
-    version="0.2.2",
+    version="0.3.1",
     author="Christian González",
     # author_email="author@example.com",
     description="Generic Django Apps Plugin System",
     long_description=long_description,
     long_description_content_type="text/markdown",
+    project_urls={
+        "Documentation": "https://gdaps.readthedocs.io",
+        "Source": "https://gitlab.com/nerdocs/gdaps",
+        "Tracker": "https://gitlab.com/nerdocs/gdaps/issues",
+    },
     install_requires=["django"],
     url="https://gitlab.com/nerdocs/gdaps",
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),

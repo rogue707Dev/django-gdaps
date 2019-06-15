@@ -2,5 +2,5 @@ django==2.2.0
 
 pytest==4.6.3
 pytest-cov==2.7.1
-
+twine
 
