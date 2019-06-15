@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="gdaps",
-    version="0.3.2",
+    version="0.3.4",
     author="Christian González",
     # author_email="author@example.com",
     description="Generic Django Apps Plugin System",
