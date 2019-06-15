@@ -37,11 +37,12 @@ class Interface(metaclass=InterfaceMeta):
 
     .. code-block:: python
 
-        class MyInterface(Interface):
+        class IMyInterface(Interface):
 
             def do_something(self):
                 pass
 
+    You can choose whatever name you want for your interfaces, but we recommend you start the name with a capital "I".
     Read more about interfaces in the :ref:`Interfaces` section.
     """
 
@@ -71,7 +72,7 @@ class ExtensionPoint:
 
     .. code-block:: python
 
-        ep = ExtensionPoint(MyInterface)
+        ep = ExtensionPoint(IMyInterface)
         for plugin in ep:
             plugin.do_something()
     """
@@ -136,7 +137,7 @@ class Implements:
 
      .. code-block:: python
 
-        @implements(MyInterface)
+        @implements(IMyInterface)
         class PluginA:
 
             def do_something(self):
