@@ -63,7 +63,7 @@ be in the project's ``plugins`` folder. You can conveniently start
 developing plugins in there, and later move them to the PyPi repository.
 
 Using GDAPS apps
-================
+----------------
 
 Interfaces
 ----------
