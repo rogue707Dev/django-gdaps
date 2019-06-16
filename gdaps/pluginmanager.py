@@ -59,7 +59,7 @@ class PluginManager(metaclass=Singleton):
     group = ""
 
     coreplugin_name = None  # FIXME: test coreplugin_name
-    
+
     found_apps = []
 
     @classmethod
@@ -236,8 +236,7 @@ class PluginManager(metaclass=Singleton):
         have "global" URLs, and not only namespaced, and it is flexible
 
         :returns: a list of urlpatterns that can be merged with the global
-        urls.urlpattern.
-        """
+                  urls.urlpattern."""
 
         # FIXME: the order the plugins are loaded is not deterministic. This can lead to serious problems,
         # as apps could use the same URL namespace, and depending on which one was loaded first, it may mask the other
