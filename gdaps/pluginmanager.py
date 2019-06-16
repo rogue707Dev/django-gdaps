@@ -50,7 +50,7 @@ class Singleton(type):
 # just make sure the PluginManager is never instantiated? Which is better?
 class PluginManager(metaclass=Singleton):
     """A Generic Django Plugin Manager that finds Django app plugins in a
-    plugins folder or pkg_resources entry points and loads them dynamically.
+    plugins folder or setuptools entry points and loads them dynamically.
 
     It provides methods to load submodules of all available plugins
     dynamically.
