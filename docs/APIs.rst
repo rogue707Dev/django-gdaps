@@ -1,6 +1,9 @@
 API
 ===
 
+Interfaces/ExtensionPoints
+--------------------------
+
 .. automodule:: gdaps
     :members:
 
@@ -8,5 +11,8 @@ API
     :members:
 
 
+PluginManager
+-------------
 
-
+.. automodule:: gdaps.pluginmanager
+    :members:
