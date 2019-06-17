@@ -83,7 +83,7 @@ class PluginManager:
         INSTALLED_APPS variable. Therefore it can not use global variables from
         settings, to prevent circle imports.
 
-        :param group: a dotted path where wo find plugin apps. This is used as
+        :param group: a dotted path where to find plugin apps. This is used as
             'group' for setuptools' entry points.
         :param coreplugin_name: optional dotted name of a "Core" plugin. This plugin can be
             outside of the group directory, but will be recognized as plugin too.
