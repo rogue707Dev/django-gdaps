@@ -152,7 +152,7 @@ class PluginManager:
             ["<main>.core.schema", "<main>.laboratory.schema"] etc. will be
             found and imported.
         :param mandatory: If set to True, each found plugin _must_ contain the given
-            submodule. If not, a PluginError is raised.
+            submodule. If any installed plugin doesn't have it, a PluginError is raised.
         :return: a list of module objects that have been successfully imported.
         """
         modules = []
