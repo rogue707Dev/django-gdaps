@@ -47,8 +47,6 @@ logger = logging.getLogger(__name__)
 #         return cls._instances[cls]
 
 
-# TODO: don't use a Singleton here, there are only @classmethods?
-# just make sure the PluginManager is never instantiated? Which is better?
 class PluginManager:
     """A Generic Django Plugin Manager that finds Django app plugins in a
     plugins folder or setuptools entry points and loads them dynamically.
@@ -91,7 +89,7 @@ class PluginManager:
             `from myapp.core import ...` instead of `from myapp.plugins.core import ...`
             is a bit easier to read. And EVERY pluggable application has a Core plugin.
         :returns: A list of dotted app_names, which can be appended to
-            INSTALLED_MODULES.
+            INSTALLED_APPS.
         """
         if not group:
             raise PluginError(
