@@ -33,22 +33,23 @@ logger = logging.getLogger(__name__)
 #     dependencies: list = ['core']
 
 
-class Singleton(type):
-    """A Metaclass implementing the Singleton pattern.
-
-    This class is for internal use only
-    """
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+# class Singleton(type):
+#     """A Metaclass implementing the Singleton pattern.
+#
+#     This class is for internal use only
+#     """
+#
+#     _instances = {}
+#
+#     def __call__(cls, *args, **kwargs):
+#         if cls not in cls._instances:
+#             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+#         return cls._instances[cls]
 
 
 # TODO: don't use a Singleton here, there are only @classmethods?
 # just make sure the PluginManager is never instantiated? Which is better?
-class PluginManager(metaclass=Singleton):
+class PluginManager:
     """A Generic Django Plugin Manager that finds Django app plugins in a
     plugins folder or setuptools entry points and loads them dynamically.
 
@@ -61,6 +62,9 @@ class PluginManager(metaclass=Singleton):
     coreplugin_name = None  # FIXME: test coreplugin_name
 
     found_apps = []
+
+    def __init__(self):
+        raise PluginError("PluginManager is not meant to be instantiated.")
 
     @classmethod
     def plugin_path(cls):
@@ -120,7 +124,7 @@ class PluginManager(metaclass=Singleton):
         # TODO: test plugins() method
         """Returns a list of installed plugin app names.
 
-        These are either found in INSTALLED_APPS directly, or via pkgtools
+        These are either found in INSTALLED_APPS directly, or via setuptools
         entrypoint.
         """
         for app in apps.get_app_configs():
