@@ -126,8 +126,6 @@ class PluginManager:
         entrypoint.
         """
         for app in apps.get_app_configs():
-            from gdaps.conf import gdaps_settings
-
             try:
                 if (
                     app.name.startswith(cls.group + ".")
