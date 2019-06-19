@@ -3,11 +3,12 @@ from typing import List, Type
 
 from gdaps.exceptions import PluginError
 
+
 __all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
 __version__ = "0.3.10"
 
-default_app_config = "gdaps.apps.GdapsConfig"
 
+default_app_config = "gdaps.apps.GdapsConfig"
 logger = logging.getLogger(__name__)
 
 
@@ -181,6 +182,7 @@ class Implements:
         """Called at decoration time
         :param cls: decorated class
         """
+
         # add the decorated class to each Interface's internal implementation list
         assert isinstance(cls, type)
         # if cls.Meta.singleton:
