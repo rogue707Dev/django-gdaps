@@ -128,7 +128,7 @@ def test_direct_interface_extension():
 
 def test_ep_repr():
     ep = ExtensionPoint(ITestInterface2)
-    assert ep.__repr__() == "<ExtensionPoint 'ITestInterface2'>"
+    assert ep.__repr__() == "<ExtensionPoint for interface 'ITestInterface2'>"
 
 
 def test_ep_len():
