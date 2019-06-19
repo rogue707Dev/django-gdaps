@@ -161,7 +161,7 @@ class Implements:
         #         a second instantiation.
         """
         # memoize a list of *Interface*s the decorated class is going to implement
-        self._interfaces = []  # type: List[Interface]
+        self._interfaces: List[Interface] = []
         # self._singleton = singleton
 
         if not interfaces:
