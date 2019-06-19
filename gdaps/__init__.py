@@ -128,7 +128,7 @@ class ExtensionPoint:
 
     def __repr__(self):
         """Returns a textual representation of the extension point."""
-        return "<ExtensionPoint '%s'>" % self._interface.__name__
+        return "<ExtensionPoint for interface '%s'>" % self._interface.__name__
 
 
 class Implements:
