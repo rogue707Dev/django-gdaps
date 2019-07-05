@@ -1,6 +1,8 @@
 import logging
 from typing import List, Type
 
+from django.apps import AppConfig
+
 from gdaps.exceptions import PluginError
 
 
@@ -219,6 +221,25 @@ class Implements:
 
 
 implements = Implements
+
+
+def require_app(appconfig: AppConfig, required_app_name: str) -> None:
+    """Helper function for AppConfig.ready - checks if an app is loaded.
+
+    An ``ImproperlyConfigured`` Exception is raised if the required app is not present.
+
+    :param appconfig: the AppConfig which requires another app. usually use ``self`` here.
+    :param required_app_name: the required app name.
+    """
+    from django.apps import apps
+    from django.core.exceptions import ImproperlyConfigured
+
+    if appconfig.name not in [app.name for app in apps.get_app_configs()]:
+        raise ImproperlyConfigured(
+            "The '{}' module relies on {}. Please add '{}' to your INSTALLED_APPS.".format(
+                appconfig.name, appconfig.verbose_name, required_app_name
+            )
+        )
 
 
 # class IPlugin(Interface):

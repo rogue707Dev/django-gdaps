@@ -1,7 +1,8 @@
 from django.apps import AppConfig
 from django.apps import apps
+from django.core.exceptions import ImproperlyConfigured
 
-from gdaps import PluginError
+from gdaps import require_app
 
 
 class DrfConfig(AppConfig):
@@ -9,7 +10,4 @@ class DrfConfig(AppConfig):
 
     def ready(self):
 
-        if "rest_framework" not in [app.name for app in apps.get_app_configs()]:
-            raise PluginError(
-                "The 'gdaps.drf' module relies on Django REST Framework. Please add 'rest_framework' to your INSTALLED_APPS."
-            )
+        require_app(self, "rest_framework")
