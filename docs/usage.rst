@@ -42,7 +42,7 @@ loaded *after* the ``gdaps`` app.
     ]
 
 This plugin app is loaded as usual, bug your GDAPS enhanced Django application
-can make use of it's enhanced GDAPS features.
+can make use of it's GDAPS features.
 
 Dynamic plugins
 ^^^^^^^^^^^^^^^
