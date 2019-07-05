@@ -12,6 +12,11 @@
 #
 import os
 import sys
+<<<<<<< HEAD
+=======
+
+sys.path.insert(0, os.path.abspath(".."))
+>>>>>>> reformat code using black
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -63,6 +68,5 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
-
 
 autodoc_mock_imports = ["django"]
