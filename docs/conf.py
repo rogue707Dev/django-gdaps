@@ -12,11 +12,6 @@
 #
 import os
 import sys
-<<<<<<< HEAD
-=======
-
-sys.path.insert(0, os.path.abspath(".."))
->>>>>>> reformat code using black
 
 sys.path.insert(0, os.path.abspath(".."))
 
