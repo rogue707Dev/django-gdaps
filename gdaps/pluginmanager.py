@@ -198,7 +198,7 @@ class PluginManager:
             else:
                 app_config = AppConfig.create(entry)
 
-            if app_config.label in apps.app_configs:
+            if app_config.label in apps.app_configs():
                 return
 
             apps.ready = False
