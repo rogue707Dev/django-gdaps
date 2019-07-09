@@ -179,56 +179,6 @@ class PluginManager:
         return modules
 
     @staticmethod
-    def populate_apps(new_apps: list) -> None:
-        """This is a more or less copy of django.apps.Apps().populate(),
-        as the original version refuses to do anything if apps.ready==True
-        and returns. So we copy the behaviour here to mimic an app reloading.
-
-        This is not ideal, but until Django "fixes" this issue of dynamic
-        app reloading (https://code.djangoproject.com/ticket/29554)
-        it's the best we could do.
-        :param new_apps: a list of dotted app names to load into Django
-        """
-        new_app_configs = []
-
-        # Phase 1: initialize app configs and import app modules.
-        for entry in new_apps:
-            if isinstance(entry, AppConfig):
-                app_config = entry
-            else:
-                app_config = AppConfig.create(entry)
-
-            if app_config.label in apps.app_configs():
-                return
-
-            apps.ready = False
-            apps.apps_ready = False
-            apps.models_ready = False
-
-            new_app_configs.append(app_config)
-
-            # add new app name to the global app_configs
-            apps.app_configs[app_config.label] = app_config
-            app_config.apps = apps
-
-            apps.apps_ready = True
-
-            # Phase 2: import models modules.
-            for app_config in new_app_configs:
-                app_config.import_models()
-
-            apps.clear_cache()
-
-            apps.models_ready = True
-
-            # Phase 3: run ready() methods of app configs.
-            for app_config in new_app_configs:
-                app_config.ready()
-
-            apps.ready = True
-            logger.debug("Django apps: {}".format(apps.app_configs))
-
-    @staticmethod
     def urlpatterns() -> list:
         """Loads all plugins' urls.py and collects their urlpatterns.
 
