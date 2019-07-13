@@ -37,7 +37,7 @@ def test_service_method_call():
         i.foo_method()
 
 
-#def test_attribute_missing():
+# def test_attribute_missing():
 #    with pytest.raises(PluginError):
 #
 #        @implements(IAttribute1)

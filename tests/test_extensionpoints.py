@@ -108,7 +108,7 @@ def test_iterable_extensionpoint():
         pass
 
 
-#def test_call_method():
+# def test_call_method():
 #    """Raises an error if an implemented method is not callable"""
 #
 #    ep = ExtensionPoint(ITestInterface2)
@@ -163,4 +163,3 @@ def test_nonservice_plugins():
             i.foo()
 
         i().foo()
-
