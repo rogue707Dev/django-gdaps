@@ -148,10 +148,6 @@ decorator, you can easily use ANY, even your already existing, class and
 just ducktype-implement the methods the Interface demands. If you forget
 to implement a method, GDAPS will complain instantly.
 
-If you need a more "Plugin"-like class, just create a class that
-implements the ``gdaps.IPlugin`` interface, or use the included
-``gdaps.Plugin`` class as parent for your convenience.
-
 
 Extending Django's URL patterns
 -------------------------------

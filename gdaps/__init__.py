@@ -6,7 +6,7 @@ from django.apps import AppConfig
 from gdaps.exceptions import PluginError
 
 
-__all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
+__all__ = ["Interface", "implements", "ExtensionPoint"]
 __version__ = "0.3.10"
 
 
@@ -239,30 +239,3 @@ def require_app(appconfig: AppConfig, required_app_name: str) -> None:
                 appconfig.name, appconfig.verbose_name, required_app_name
             )
         )
-
-
-# class IPlugin(Interface):
-#     """A basic interface that provides some useful methods for plugin interaction."""
-#
-#     def enable(self):
-#         pass
-#
-#     def disable(self):
-#         pass
-#
-#     def enabled(self):
-#         pass
-#
-#
-# @implements(IPlugin)
-# class Plugin:
-#     __enabled__ = True
-#
-#     def enable(self):
-#         self.__enabled__ = True
-#
-#     def disable(self):
-#         self.__enabled__ = False
-#
-#     def enabled(self):
-#         return self.__enabled__
