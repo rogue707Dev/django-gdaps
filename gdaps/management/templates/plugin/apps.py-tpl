@@ -13,6 +13,15 @@ class {{ camel_case_app_name }}Config(PluginConfig):
     # It has to start with '{{ plugin_path }}' to be recognized as {{ camel_case_project_name }} plugin.
     name = '{{ plugin_group }}.{{ app_name }}'
 
+    class PluginMeta:
+        # the plugin machine "name" is taken from the Appconfig, so no name here
+        verbose_name = _('{{ spaced_app_name }}')
+        author = 'Me Personally'
+        description = _('A description of {{ spaced_app_name }}')
+        visible = True
+        version = '1.0.0'
+        compatibility = "myproject.core>=2.3.0"
+
     def ready(self):
         # This function is called after the app and all models are loaded.
         #

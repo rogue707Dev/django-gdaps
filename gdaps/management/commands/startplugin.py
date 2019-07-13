@@ -78,6 +78,7 @@ class Command(TemplateCommand):
         self.stdout.write("".join(options["files"]))
 
         options["upper_cased_app_name"] = name.upper()
+        options["spaced_app_name"] = _snake_case_to_spaces(name)
 
         options["project_name"] = self._django_root
         options["plugin_path"] = plugin_path

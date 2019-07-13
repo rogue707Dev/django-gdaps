@@ -20,7 +20,8 @@ class PluginConfig(AppConfig):
         class FooPluginConfig(PluginConfig):
 
             class PluginMeta:
-                name = _('Foo Plugin')
+                # the plugin machine "name" is taken from the Appconfig, so no name here
+                verbose_name = _('Foo Plugin')
                 author = 'Me Personally'
                 description = _('A foo plugin')
                 visible = True
@@ -42,11 +43,11 @@ class PluginConfig(AppConfig):
         <https://docs.djangoproject.com/en/2.2/ref/applications/#django.apps.AppConfig.ready>`_.
 
     If your plugin needs to install some data into the database at the first run, you can provide a ``initialize``
-    method, which will be called using the ``initializeplugin`` management command:
+    method, which will be called using the ``initializeplugins`` management command:
 
     .. code-block:: bash
 
-        ./manage.py initializeplugin
+        ./manage.py initializeplugins
 
     Do all necessary things there that need to be done when the plugin is available the first time, e.g. after
     installing a plugin using pip/pipenv.
