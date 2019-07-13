@@ -15,7 +15,7 @@ def pytest_configure():
             "django.contrib.sessions",
             "django.contrib.admin",
             "gdaps",
-            "gdaps.test.plugins.plugin1",
+            "tests.plugins.plugin1",
         ],
         # plugin1 specific settings
         PLUGIN1={"OVERRIDE": 20},
