@@ -51,15 +51,15 @@ class PluginManager:
     """A Generic Django Plugin Manager that finds Django app plugins in a
     plugins folder or setuptools entry points and loads them dynamically.
 
-    It provides methods to load submodules of all available plugins
-    dynamically.
+    It provides a couple of methods to interaft with plugins, load submodules of all available plugins
+    dynamically, or get a list of enabled plugins.
+    Don't instantiate a ``PluginManager`` directly, just use its static and class methods directly.
     """
 
     group = ""
 
-    coreplugin_name = None  # FIXME: test coreplugin_name
-
-    found_apps = []
+    # FIXME: test coreplugin_name
+    coreplugin_name = None
 
     def __init__(self):
         raise PluginError("PluginManager is not meant to be instantiated.")
@@ -100,42 +100,39 @@ class PluginManager:
         cls.group = group
         cls.coreplugin_name = coreplugin_name
 
-        found_apps = []
-
+        installed_plugin_apps = []
         for entry_point in iter_entry_points(group=group, name=None):
             appname = entry_point.module_name
             if entry_point.attrs:
                 # FIXME: adding an AppConfig does not work yet
                 appname += "." + ".".join(entry_point.attrs)
 
-            found_apps.append(appname)
-            logger.info("Found plugin '{}', adding to INSTALLED_APPS.".format(appname))
+            installed_plugin_apps.append(appname)
+            logger.info("Found plugin '{}'.".format(appname))
 
-        # save a relative import path for plugins, derived from the "group" dotted plugin path
-        # cls.plugin_path = os.path.join(*cls.group.split("."))
+        return installed_plugin_apps
 
-        cls.found_apps = found_apps
-        return found_apps
+    @staticmethod
+    def plugins(skip_disabled: bool = False) -> List[AppConfig]:
+        """Returns a list of AppConfig classes that are GDAPS plugins.
 
-    @classmethod
-    def plugins(cls) -> List[str]:
-        # TODO: test plugins() method
-        """Returns a list of installed plugin app names.
-
-        These are either found in INSTALLED_APPS directly, or via setuptools
-        entrypoint.
+        This method basically checks for the presence of a ``PluginMeta`` class
+        within the AppConfig of all apps and returns a list of them.
+        :param skip_disabled: If True, skips disabled plugins and only returns enabled ones. Defaults to ``False``.
         """
+
+        # TODO: test plugins() method
+        list = []
         for app in apps.get_app_configs():
-            try:
-                if (
-                    app.name.startswith(cls.group + ".")
-                    or app.name == cls.coreplugin_name
-                ) and app.name not in cls.found_apps:
-                    cls.found_apps += [app.name]
-            except ValueError:
-                pass
-        # TODO: should we return a copy [:] of the list here?
-        return cls.found_apps
+            if not hasattr(app, "PluginMeta"):
+                continue
+            if skip_disabled:
+                # skip disabled plugins per default
+                if not getattr(app.PluginMeta, "enabled", "True"):
+                    continue
+            list.append(app)
+
+        return list
 
     @classmethod
     def load_plugin_submodule(cls, submodule: str, mandatory=False) -> list:
@@ -153,12 +150,12 @@ class PluginManager:
         """
         modules = []
         importlib.invalidate_caches()
-        for app_name in PluginManager.plugins():
+        for app in PluginManager.plugins():
 
             # import all the submodules from all plugin apps
             from gdaps.conf import gdaps_settings
 
-            dotted_name = "%s.%s" % (app_name, submodule)
+            dotted_name = "%s.%s" % (app.name, submodule)
             try:
                 module = importlib.import_module(dotted_name)
                 logger.info("Successfully loaded submodule {}".format(dotted_name))
@@ -168,7 +165,7 @@ class PluginManager:
                 if mandatory:
                     raise PluginError(
                         "The '{plugin_name}' app does not contain a (mandatory) '{module}' module".format(
-                            module=submodule, plugin_name=app_name
+                            module=submodule, plugin_name=app.name
                         )
                     )
                 # ignore non-existing <submodule>.py files
