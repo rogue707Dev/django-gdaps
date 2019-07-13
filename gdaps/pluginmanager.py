@@ -68,6 +68,7 @@ class PluginManager:
     def plugin_path(cls):
         """Returns the absolute path where application plugins live.
 
+        This is basically the Django root + the dotted entry point.
         CAVE: this is not callable from within the settings.py file.
         """
         assert cls.group != ""
@@ -75,7 +76,7 @@ class PluginManager:
 
     @classmethod
     def find_plugins(cls, group: str, coreplugin_name: str = None) -> List[str]:
-        """Finds plugins from setuptools entrypoints
+        """Finds plugins from setuptools entry points.
 
         This function is supposed to be called in settings.py after the
         INSTALLED_APPS variable. Therefore it can not use global variables from
