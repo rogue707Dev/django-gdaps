@@ -8,4 +8,3 @@ class Plugin1Config(PluginConfig):
     class PluginMeta:
         verbose_name = "Plugin 1"
         version = "0.0.1"
-
