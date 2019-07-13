@@ -65,6 +65,11 @@ class PluginConfig(AppConfig):
     # shamelessly copied from Pretix
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if self.name == "gdaps":
+            # ignore GDAPS itself
+            return
+
         if not hasattr(self, "PluginMeta"):
             raise ImproperlyConfigured(
                 "A GDAPS plugin config must have a PluginMeta inner class."
