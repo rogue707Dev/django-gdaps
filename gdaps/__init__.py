@@ -9,6 +9,7 @@ from gdaps.exceptions import PluginError
 __all__ = ["Interface", "implements", "ExtensionPoint"]
 __version__ = "0.3.10"
 
+default_app_config = "gdaps.apps.PluginConfig"
 
 logger = logging.getLogger(__name__)
 
