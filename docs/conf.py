@@ -65,4 +65,4 @@ html_theme_options = {
 # html_static_path = ["_static"]
 
 
-autodoc_mock_imports = ['django']
+autodoc_mock_imports = ["django"]
