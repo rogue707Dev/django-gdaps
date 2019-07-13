@@ -10,7 +10,6 @@ __all__ = ["Interface", "implements", "ExtensionPoint"]  # "IPlugin", "Plugin"
 __version__ = "0.3.10"
 
 
-default_app_config = "gdaps.apps.GdapsConfig"
 logger = logging.getLogger(__name__)
 
 
