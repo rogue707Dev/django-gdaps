@@ -57,19 +57,9 @@ class Command(BaseCommand):
                 plugin = GdapsPlugin.objects.get(name=app.name)
                 file_version = app.PluginMeta.version
                 if Version(file_version) > Version(plugin.version):
-                    #  there is a newer version available on disk
-                    if (
-                        Version(file_version).major
-                        > Version(PluginManager.coreplugin).major
-                    ):
-                        # major version mismatch is not supported.
-                        raise IncompatibleVersionsError(
-                            "<{plugin} ({plugin_version})> is not compatible to <Core plugin ({core_version})>".format(
-                                plugin=plugin.name,
-                                plugin_version=file_version,
-                                core_version=PluginManager.coreplugin.PluginMeta.version,
-                            )
-                        )
+                    pass
+                    # there is a newer version available on disk
+
                     # FIXME: check PluginMeta.compatibility
 
                     # if self.is_database_synchronized():

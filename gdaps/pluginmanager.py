@@ -59,9 +59,6 @@ class PluginManager:
 
     group = ""
 
-    # FIXME: test coreplugin
-    coreplugin = None
-
     def __init__(self):
         raise PluginError("PluginManager is not meant to be instantiated.")
 
@@ -79,7 +76,7 @@ class PluginManager:
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
     @classmethod
-    def find_plugins(cls, group: str, coreplugin: AppConfig = None) -> List[str]:
+    def find_plugins(cls, group: str) -> List[str]:
         """Finds plugins from setuptools entry points.
 
         This function is supposed to be called in settings.py after the
@@ -88,12 +85,6 @@ class PluginManager:
 
         :param group: a dotted path where to find plugin apps. This is used as
             'group' for setuptools' entry points.
-        :param coreplugin: optional "Core" plugin class or dotted app path.
-            This plugin can be
-            outside of the group directory, but will be recognized as plugin too.
-            This helps maintaining a clean import path for "Core" plugins:
-            `from myapp.core import ...` instead of `from myapp.plugins.core import ...`
-            is a bit easier to read. And EVERY pluggable application has a Core plugin.
         :returns: A list of dotted app_names, which can be appended to
             INSTALLED_APPS.
         """
@@ -104,7 +95,6 @@ class PluginManager:
             )
 
         cls.group = group
-        cls.coreplugin = coreplugin
 
         installed_plugin_apps = []
         for entry_point in iter_entry_points(group=group, name=None):
