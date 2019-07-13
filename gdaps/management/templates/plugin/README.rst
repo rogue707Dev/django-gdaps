@@ -11,8 +11,8 @@ General
 They are normal Django apps, but found and loaded dynamically during startup.
 As Django apps, they can have everything a "static" app also has:
 
-AppConfig
-^^^^^^^^^
+PluginConfig = AppConfig
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The app configuration which should be declared in the module's ``apps.py``.
 

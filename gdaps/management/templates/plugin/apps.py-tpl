@@ -1,13 +1,12 @@
 import os
 
 from django.conf import settings
-from django.apps import AppConfig
 from django.utils.translation import gettext_lazy as _
 
+from gdaps.apps import PluginConfig
 from gdaps.conf import gdaps_settings
 
-
-class {{ camel_case_app_name }}Config(AppConfig):
+class {{ camel_case_app_name }}Config(PluginConfig):
     """ This configuration is the introspection data for plugins."""
 
     # Dotted Python path to the application, e.g. '{{ plugin_path }}.fooplugin'
