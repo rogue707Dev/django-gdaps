@@ -5,6 +5,7 @@ import importlib
 
 from django.apps import apps, AppConfig
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from pkg_resources import iter_entry_points
 from typing import List
 
@@ -71,7 +72,10 @@ class PluginManager:
         This is basically the Django root + the dotted entry point.
         CAVE: this is not callable from within the settings.py file.
         """
-        assert cls.group != ""
+        if cls.group == "":
+            raise ImproperlyConfigured(
+                "Plugin path could not be determinded. Please run PluginManager.find_plugins() in your settings.py first."
+            )
         return os.path.join(settings.BASE_DIR, *cls.group.split("."))
 
     @classmethod
