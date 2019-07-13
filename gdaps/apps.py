@@ -8,7 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 class PluginConfig(AppConfig):
     """Base config class for GDAPS plugins.
 
-    All GDAPS plugin apps files need to have an AppConfig class which inherits from this class.
+    All GDAPS plugin apps files need to have an AppConfig class which inherits from ``PluginConfig``.
     It is a convenience class that checks for the existence of the PluginMeta inner class, and provides
     some basic methods that are needed when interacting with a plugin during its life cycle.
 
@@ -28,7 +28,7 @@ class PluginConfig(AppConfig):
                 compatibility = "myproject.core>=2.3.0"
 
     If you are using signals in your plugin, we recommend to put them into a ``signals`` submodule.
-    Import them using the ``AppConfig.ready()`` method.
+    Import them from the ``AppConfig.ready()`` method.
 
     .. code-block:: python
 

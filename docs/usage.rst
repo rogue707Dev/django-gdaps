@@ -11,16 +11,14 @@ Create plugins using a Django management command:
 
     ./manage.py startplugin fooplugin
 
-This command asks a few questions, creates a basic Django app in the ``FRONTEND_DIR`` chosen before, and provides
-useful defaults as well as a setup.py file.
+This command asks a few questions, creates a basic Django app in the plugin path chosen in ``PluginManager.find_plugins()``. It provides useful defaults as well as a setup.py/setup.cfg file.
 
-If you use git in your project, install the ``gitpython`` module (``pip/pipenv install gitpython --dev``). ``startplugin`` will determine
-your git user/email automatically and use it for the setup.py file.
+If you use git in your project, install the ``gitpython`` module (``pip/pipenv install gitpython --dev``). ``startplugin`` will determine your git user/email automatically and use at the right places.
 
-You now have two choices for this plugin: \* add it statically to
-``INSTALLED_APPS``: see `Static plugins <#static-plugins>`__. \* make
-use of the dynamic loading feature: see `Dynamic
-plugins <#dynamic-plugins>`__.
+You now have two choices for this plugin:
+
+* add it statically to ``INSTALLED_APPS``: see `Static plugins <#static-plugins>`__.
+* make use of the dynamic loading feature: see `Dynamic plugins <#dynamic-plugins>`__.
 
 Static plugins
 ^^^^^^^^^^^^^^
@@ -38,7 +36,7 @@ loaded *after* the ``gdaps`` app.
         "gdaps",
 
         # put "static" plugins here too:
-        "myproject.plugins.fooplugin",
+        "myproject.plugins.fooplugin.apps.FooConfig",
     ]
 
 This plugin app is loaded as usual, but your GDAPS enhanced Django application
@@ -63,12 +61,21 @@ developing plugins in there, and later move them to the PyPi repository.
 
 .. _Interfaces:
 
+
+The plugin AppConfig
+--------------------
+
+Django recommends to point ot the app's AppConfig directly in INSTALLED_APPS. You should do that too with GDAPS plugins. Plugins that are installed via pip(env) are found automatically, as their AppConfig class must be named after the Plugin.
+
+Plugins' AppConfigs must inherit from ``gdaps.apps.PluginConfig``, and provide an inner class ``PluginMeta``. For more information see :class:`gdaps.apps.PluginConfig`.
+
+
 Interfaces
 ----------
 
 Plugins can define interfaces, which can then be implemented by other
 plugins. The ``startplugin`` command will create a ``<app_name>/api/interfaces.py`` file automatically.
-Interfaces must not be defined in that module, but it is a recommended coding style for GDAPS plugins:
+It's not obligatory to put all Interface definitions in that module, but it is a recommended coding style for GDAPS plugins:
 
 .. code:: python
 
@@ -83,18 +90,18 @@ Interfaces must not be defined in that module, but it is a recommended coding st
         def do_something(self):
             pass
 
-Interfaces have a default Meta class that defines Interface options.
+Interfaces can have a default Meta class that defines Interface options.
 Available options:
 
 service
     If ``service=True`` (which is the default), then all implementations are
     instantiated instantly at definition time, having a full class instance
-    availably at any time. You then can iterate over ExtensionPoints and use
-    the instances directly.
+    availably at any time. Iterations over ExtensionPoints return the instances directly.
 
-    If you use ``service=False``, ExtensionPoint iterations will return
-    **classes**, not instances. This sometimes may be the desired
-    functionality.
+    If you use ``service=False``, the plugin is not instantiated, and
+    iterations over ExtensionPoints will return **classes**, not instances.
+    This sometimes may be the desired functionality, e.g. for data classes, or classes that
+    just return staticmethods.
 
 ExtensionPoints
 ---------------
