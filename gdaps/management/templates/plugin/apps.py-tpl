@@ -17,7 +17,9 @@ class {{ camel_case_app_name }}Config(PluginConfig):
         # the plugin machine "name" is taken from the Appconfig, so no name here
         verbose_name = _('{{ spaced_app_name }}')
         author = 'Me Personally'
+        author_email = "me@example.com"
         description = _('A description of {{ spaced_app_name }}')
+        category = _("Base")
         visible = True
         version = '1.0.0'
         compatibility = "myproject.core>=2.3.0"

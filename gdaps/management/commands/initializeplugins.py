@@ -93,6 +93,8 @@ class Command(BaseCommand):
                     meta, "verbose_name", app.name.replace("_", " ").capitalize()
                 )
                 plugin.author = getattr(meta, "author", _("unknown"))
+                plugin.author_email = getattr(meta, "author_email", "")
+                plugin.category = getattr(meta, "category", _("Miscellaneous"))
                 plugin.description = getattr(meta, "description", "")
                 plugin.visible = getattr(meta, "visible", True)
 
