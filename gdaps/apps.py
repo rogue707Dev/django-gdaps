@@ -59,6 +59,8 @@ class PluginConfig(AppConfig):
 
     """
 
+    name = "gdaps"
+
     # shamelessly copied from Pretix
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -81,6 +83,3 @@ class PluginConfig(AppConfig):
                 )
 
                 sys.exit(1)
-
-
-apps_default_config = "gdaps.apps.PluginConfig"
