@@ -41,7 +41,7 @@ loaded *after* the ``gdaps`` app.
         "myproject.plugins.fooplugin",
     ]
 
-This plugin app is loaded as usual, bug your GDAPS enhanced Django application
+This plugin app is loaded as usual, but your GDAPS enhanced Django application
 can make use of it's GDAPS features.
 
 Dynamic plugins
