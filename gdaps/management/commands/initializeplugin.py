@@ -33,6 +33,12 @@ class Command(BaseCommand):
         try:
             for app in PluginManager.plugins():
                 # call all plugins' `initialize` methods
+
+                # FIXME: initialize() is not required to be idempotent
+                # It should be made sure that either plugins are responsible for this method being idempotent,
+                # or calling it just once. For the second, it's necessary to save the "initialized" state somewhere.
+                # Using a DB flag is not a good option, as it requires some projects to use a DB model
+                # without needing it.
                 if hasattr(app, "initialize"):
                     logger.error(app.name)
                     app.initialize()
