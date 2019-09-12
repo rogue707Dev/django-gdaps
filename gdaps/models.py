@@ -11,7 +11,7 @@ class GdapsPlugin(models.Model):
     description = models.TextField(null=True, default=None)
     version = models.CharField(max_length=32, default="1.0.0")
     compatibility = models.CharField(max_length=255, null=True, default=None)
-
+    category = models.CharField(max_length=255, blank=True, default="")
     visible = models.BooleanField(default=True)
     enabled = models.BooleanField(default=True)
 
