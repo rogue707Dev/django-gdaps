@@ -1,4 +1,5 @@
 const BundleTracker = require("webpack-bundle-tracker");
+const gdaps_plugins = require('./plugins.js');
 
 module.exports = {
     // The base URL your application bundle will be deployed at
@@ -9,10 +10,21 @@ module.exports = {
     // enable single file Vue components
     runtimeCompiler: true,
 
+    // First, use a merge object, because webpack-chain doesn't support
+    // dynamic webpack entry points (yet).
+    // see https://github.com/neutrinojs/webpack-chain/issues/200
+    configureWebpack: {
+      entry: () => {
+        return gdaps_plugins
+      }
+    },
     chainWebpack: config => {
 
         config.optimization
             .splitChunks(false)
+
+        config.entry('entry')
+            .add(getPlugins)
 
         config
             .plugin('BundleTracker')
@@ -33,7 +45,7 @@ module.exports = {
             })
             .https(false)
             .headers({
-                "Access-Control-Allow-Origin": ["\*"]
+                "Access-Control-Allow-Origin": ["*"]
             })
             .proxy({
                 // Forward frontend dev server request for /api to django dev server

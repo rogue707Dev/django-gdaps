@@ -88,6 +88,7 @@ class Command(TemplateCommand):
                 "vue.config.js",
                 "src/App.vue",
                 "src/main.js",
+                "src/plugins.js",
                 "src/assets/logo.png",
                 "src/components/HelloWorld.vue",
             ]
@@ -102,7 +103,7 @@ class Command(TemplateCommand):
                 )
 
                 sys.stdout.write(
-                    "A 'frontend/' directory was created in {}. ".format(
+                    "A 'frontend/' directory was created in {}.\n".format(
                         settings.BASE_DIR
                     )
                 )
