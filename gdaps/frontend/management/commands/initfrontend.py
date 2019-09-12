@@ -2,6 +2,7 @@ import os
 import logging
 import shutil
 import subprocess
+import sys
 
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
@@ -100,7 +101,7 @@ class Command(TemplateCommand):
                     **options,
                 )
 
-                print(
+                sys.stdout.write(
                     "A 'frontend/' directory was created in {}. ".format(
                         settings.BASE_DIR
                     )
