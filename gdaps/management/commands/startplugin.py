@@ -62,10 +62,10 @@ class Command(TemplateCommand):
         from django.core.validators import validate_email
 
         plugin_path = PluginManager.plugin_path()
-        logger.debug("Using plugin directory: {}".format(plugin_path))
+        logger.debug("Using plugin directory: {}".format(self.plugin_path))
 
         # override target directory
-        target = os.path.join(*plugin_path.split("."), name)
+        target = os.path.join(*self.plugin_path.split("."), name)
 
         if os.path.exists(target):
             raise CommandError("'{}' already exists".format(target))
