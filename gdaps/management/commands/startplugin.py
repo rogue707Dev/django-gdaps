@@ -120,10 +120,6 @@ class Command(TemplateCommand):
                 "Successfully created plugin: {}\n".format(target)
             )
 
-            if os.path.exists(os.path.join(settings.BASE_DIR, "frontend")):
-                #  if there is a global "frontend" directory, assume that plugin needs one too and create it.
-                os.makedirs(os.path.join(target, "frontend"))
-
         except OSError as e:
             raise CommandError(e)
 
