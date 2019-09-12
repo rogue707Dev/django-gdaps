@@ -117,7 +117,7 @@ class Command(TemplateCommand):
         try:
             os.makedirs(target)
             self.stdout.write(
-                "Successfully created plugin directory: {}\n".format(target)
+                "Successfully created plugin: {}\n".format(target)
             )
 
             if os.path.exists(os.path.join(settings.BASE_DIR, "frontend")):
@@ -131,5 +131,5 @@ class Command(TemplateCommand):
 
         self.stdout.write(
             "Please adapt '%s' to your needs.\n"
-            % os.path.join(settings.BASE_DIR, target, "setup.cfg")
+            % os.path.join(target, "setup.cfg")
         )
