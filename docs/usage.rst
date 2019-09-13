@@ -257,6 +257,26 @@ REMOVED_SETTINGS
 
 .. _frontend-support:
 
+
+Admin site
+----------
+GDAPS provides support for the Django admin site. The built-in ``GdapsPlugin`` model can be administered.
+
+.. note::
+
+    As GdapsPlugin database entries must not be edited directly, they are shown read-only in the admin.
+    **Please use the 'syncplugins' management command to
+    update the fields from the file system.**
+    However, you can enable/disable or hide/show plugins via the admin interface.
+
+If you want to disable the built-in admin site for GDAPS, or provide a custom GDAPS ModelAdmin, you can do this using:
+
+.. code:: python
+
+    GDAPS = {
+        "ADMIN": False
+    }
+
 Frontend support
 ----------------
 
