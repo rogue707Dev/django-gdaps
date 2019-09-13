@@ -18,6 +18,7 @@ class FrontendConfig(AppConfig):
                 "The 'gdaps.frontend' module relies on django-webpack-loader. Please add 'webpack_loader' to your INSTALLED_APPS."
             )
 
+        # FIXME: Django settings are immutable. Changing them is bad practice.
         settings.WEBPACK_LOADER.update(
             {
                 "GDAPS": {

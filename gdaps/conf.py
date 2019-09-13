@@ -114,7 +114,7 @@ class PluginSettings:
 
     @staticmethod
     def reload(*args, **kwargs):
-        # FIXME: this does not work for pluginsettings of other modules...! it's hardcoded "gdaps_settings".
+        # FIXME: this does not work for inherited pluginsettings of other modules...! it's hardcoded "gdaps_settings".
         global gdaps_settings
         setting, value = kwargs["setting"], kwargs["value"]
         if setting == NAMESPACE:
