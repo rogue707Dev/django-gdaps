@@ -307,7 +307,7 @@ all the needed background tasks to transparently enable hot-reloading
 when you change anything in the frontend source code now.
 
 Frontend plugins
-----------------
+^^^^^^^^^^^^^^^^
 
 Django itself provides a template engine, so you could
 use templates in your GDAPS apps to build the frontend parts too. But templates are not always the desired way to go. Since a few years, Javascript SPAs (Single Page Applications) have come up and promise fast, responsive software.
