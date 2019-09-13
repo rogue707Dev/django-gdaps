@@ -65,7 +65,7 @@ class PluginSettings:
         self,
         namespace: str = None,
         user_settings: list = None,
-        defaults: list = None,
+        defaults: dict = None,
         import_strings=None,
         removed_settings=None,
     ):
