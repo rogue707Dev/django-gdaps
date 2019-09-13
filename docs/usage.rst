@@ -305,3 +305,33 @@ automatically. You then need to start Django using
 ``./manage.py runserver`` to enable the Django backend. GDAPS manages
 all the needed background tasks to transparently enable hot-reloading
 when you change anything in the frontend source code now.
+
+Frontend plugins
+----------------
+
+Django itself provides a template engine, so you could
+use templates in your GDAPS apps to build the frontend parts too. But templates are not always the desired way to go. Since a few years, Javascript SPAs (Single Page Applications) have come up and promise fast, responsive software.
+
+But: a SPA mostly is written as monolithic block. All tutorials that describe Django as backend recommend building the Django server modular, but it should serve only as API, namely REST or GraphQL.
+This API then should be consumed by a monolithic Javascript frontend, built by webpack etc.
+At least I didn't find anything else on the internet. So I created my own solution:
+
+GDAPS is a plugin system. It provides backend plugins (Django apps). But using `gdaps.frontend`, each
+GDAPS app can use a `frontend` directory which contains an installable npm module, which is automatically installed when the app is added to the system.
+
+When the `gdaps.frontend` app is activated in
+INSTALLED_APPS, the `startplugin` management command is extended by a frontend part: When a new plugin is created, a ``frontend`` directory in that plugin is
+initialized with a boilerplate javascript file `index.js`, which is the plugin entry point in the frontend. This is accomplished by webpack and django-webpack-loader.
+
+So all you have to do is:
+
+1. Add `gdaps.frontend` to INSTALLED_APPS (before `gdaps`)
+1. Call './manage.py initfrontend vue', if you haven't already
+1. Call `./manage.py startplugin fooplugin` and fill out the questions
+1. start `yarn serve` in the *frontend* directory
+1. start Django server using `./manage.py runserver`
+
+Webpack aggregates all you need into a package, using the *frontend/plugins.js* file as index where to find plugin entry points.
+You shouldn't manually edit that file, but just install GDAPS plugins as usual (pip, pipenv, or by adding them to INSTALLED_APPS) and call `manage.py syncplugins` then.
+
+This command scans your app for plugins, updates the database with plugin data, and recreates the plugins.js file.
