@@ -19,9 +19,9 @@ Now add "gdaps" to the ``INSTALLED_APPS`` section, and add a special line below 
 
     INSTALLED_APPS = [
         # ... standard Django apps and GDAPS
-        "gdaps",
         # if you also want frontend support, add:
         # "gdaps.frontend"
+        "gdaps",
         # "webpack_loader",
     ]
     # The following line is important: It loads all plugins from setuptools

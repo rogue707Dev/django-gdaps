@@ -264,7 +264,7 @@ GDAPS supports Javascript frontends for building e.g. SPA applications.
 ATM only Vue.js ist supported, but PRs are welcome to add more (Angular,
 React?).
 
-If you add ``gdaps.frontend`` to ``INSTALLED_APPS``, there is a new
+Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** 'gdaps'. Afterwords, there is a new
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
