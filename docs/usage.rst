@@ -325,11 +325,11 @@ initialized with a boilerplate javascript file `index.js`, which is the plugin e
 
 So all you have to do is:
 
-1. Add `gdaps.frontend` to INSTALLED_APPS (before `gdaps`)
-1. Call './manage.py initfrontend vue', if you haven't already
-1. Call `./manage.py startplugin fooplugin` and fill out the questions
-1. start `yarn serve` in the *frontend* directory
-1. start Django server using `./manage.py runserver`
+#. Add `gdaps.frontend` to INSTALLED_APPS (before `gdaps`)
+#. Call './manage.py initfrontend vue', if you haven't already
+#. Call `./manage.py startplugin fooplugin` and fill out the questions
+#. start `yarn serve` in the *frontend* directory
+#. start Django server using `./manage.py runserver`
 
 Webpack aggregates all you need into a package, using the *frontend/plugins.js* file as index where to find plugin entry points.
 You shouldn't manually edit that file, but just install GDAPS plugins as usual (pip, pipenv, or by adding them to INSTALLED_APPS) and call `manage.py syncplugins` then.
