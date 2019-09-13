@@ -288,7 +288,7 @@ Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwo
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
-:: code-block:: bash
+.. code-block:: bash
 
     ./manage.py initfrontend vue
 
