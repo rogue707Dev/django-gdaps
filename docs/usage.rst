@@ -284,7 +284,7 @@ GDAPS supports Javascript frontends for building e.g. SPA applications.
 ATM only Vue.js ist supported, but PRs are welcome to add more (Angular,
 React?).
 
-Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** 'gdaps'. Afterwords, there is a new
+Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwords, there is a new
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
@@ -316,16 +316,16 @@ But: a SPA mostly is written as monolithic block. All tutorials that describe Dj
 This API then should be consumed by a monolithic Javascript frontend, built by webpack etc.
 At least I didn't find anything else on the internet. So I created my own solution:
 
-GDAPS is a plugin system. It provides backend plugins (Django apps). But using `gdaps.frontend`, each
-GDAPS app can use a `frontend` directory which contains an installable npm module, which is automatically installed when the app is added to the system.
+GDAPS is a plugin system. It provides backend plugins (Django apps). But using ``gdaps.frontend``, each
+GDAPS app can use a *frontend* directory which contains an installable npm module, that is automatically installed when the app is added to the system.
 
 When the ``gdaps.frontend`` app is activated in
-INSTALLED_APPS, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a ``frontend`` directory in that plugin is
+``INSTALLED_APPS``, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a *frontend* directory in that plugin is
 initialized with a boilerplate javascript file ``index.js``, which is the plugin entry point in the frontend. This is accomplished by webpack and django-webpack-loader.
 
 So all you have to do is:
 
-#. Add ``gdaps.frontend`` to INSTALLED_APPS (before ``gdaps``)
+#. Add ``gdaps.frontend`` to ``INSTALLED_APPS`` (before ``gdaps``)
 #. Call ``./manage.py initfrontend vue``, if you haven't already
 #. Call ``./manage.py startplugin fooplugin`` and fill out the questions
 #. start ``yarn serve`` in the *frontend* directory
