@@ -47,12 +47,7 @@ def import_from_string(val, setting_name):
         module = import_module(module_path)
         return getattr(module, class_name)
     except (ImportError, AttributeError) as e:
-        msg = "Could not import '%s' for plugin setting '%s'. %s: %s." % (
-            val,
-            setting_name,
-            e.__class__.__name__,
-            e,
-        )
+        msg = f"Could not import '{val}' for plugin setting '{setting_name}'.{e.__class__.__name__}: {e}."
         raise ImportError(msg)
 
 
@@ -96,13 +91,11 @@ class PluginSettings:
     def __getattr__(self, attr):
         if attr in self.removed_settings:
             raise AttributeError(
-                "Invalid access - Plugin settings attribute '%s' has invalid (removed) key: '%s'."
-                % (self._namespace, attr)
+                f"Invalid access - Plugin settings attribute '{self._namespace}' has invalid (removed) key: '{attr}'."
             )
         if attr not in self.defaults:
             raise AttributeError(
-                "Invalid access - Plugin settings attribute '%s' has missing key: '%s'"
-                % (self._namespace, attr)
+                f"Invalid access - Plugin settings attribute '{self._namespace}' doesn't allow key: '{attr}'"
             )
 
         try:
