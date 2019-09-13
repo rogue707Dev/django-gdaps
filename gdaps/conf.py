@@ -13,7 +13,6 @@ from django.test.signals import setting_changed
 
 NAMESPACE = "GDAPS"
 
-
 DEFAULTS = {}
 
 # List of settings that may be in string import notation.
