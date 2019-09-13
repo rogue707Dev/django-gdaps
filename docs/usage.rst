@@ -67,7 +67,7 @@ The plugin AppConfig
 
 Django recommends to point ot the app's AppConfig directly in INSTALLED_APPS. You should do that too with GDAPS plugins. Plugins that are installed via pip(env) are found automatically, as their AppConfig class must be named after the Plugin.
 
-Plugins' AppConfigs must inherit from ``gdaps.apps.PluginConfig``, and provide an inner class ``PluginMeta``. For more information see :class:`gdaps.apps.PluginConfig`.
+Plugins' AppConfigs must inherit from ``gdaps.apps.PluginConfig``, and provide an inner class, or a pointer to an external ``PluginMeta`` class. For more information see :class:`gdaps.apps.PluginConfig`.
 
 
 Interfaces
