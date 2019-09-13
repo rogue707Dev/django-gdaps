@@ -6,23 +6,36 @@ from django.utils.translation import gettext_lazy as _
 from gdaps.apps import PluginConfig
 from gdaps.conf import gdaps_settings
 
-class {{ camel_case_app_name }}Config(PluginConfig):
+
+class {{ camel_case_app_name }}PluginMeta:
     """ This configuration is the introspection data for plugins."""
+
+    # the plugin machine "name" is taken from the Appconfig, so no name here
+    verbose_name = _('{{ spaced_app_name }}')
+    author = '{{ author }}'
+    author_email = "{{ author_email }}"
+    description = _('A description of {{ spaced_app_name }}')
+    category = _("Base")
+    visible = True
+    version = '1.0.0'
+    # compatibility = "myproject.core>=2.3.0"
+
+
+class {{ camel_case_app_name }}Config(PluginConfig):
+    """A GDAPS Django app plugin.
+
+    It needs a special parameter named ``pluginMeta``. It is the key for GDAPS
+    to recognize this app as a GDAPS plugin.
+    ``pluginMeta`` must point to a class that implements certain attributes
+    and methods.
+    """
 
     # Dotted Python path to the application, e.g. '{{ plugin_path }}.fooplugin'
     # It has to start with '{{ plugin_path }}' to be recognized as {{ camel_case_project_name }} plugin.
     name = '{{ plugin_group }}.{{ app_name }}'
 
-    class PluginMeta:
-        # the plugin machine "name" is taken from the Appconfig, so no name here
-        verbose_name = _('{{ spaced_app_name }}')
-        author = 'Me Personally'
-        author_email = "me@example.com"
-        description = _('A description of {{ spaced_app_name }}')
-        category = _("Base")
-        visible = True
-        version = '1.0.0'
-        compatibility = "myproject.core>=2.3.0"
+    # This is the most important attribute of a GDAPS plugin app.
+    PluginMeta = {{ camel_case_app_name }}PluginMeta
 
     def ready(self):
         # This function is called after the app and all models are loaded.

@@ -70,12 +70,12 @@ class PluginConfig(AppConfig):
             # ignore GDAPS itself
             return
 
-        if not hasattr(self, "pluginMeta"):
+        if not hasattr(self, "PluginMeta"):
             raise ImproperlyConfigured(
                 "A GDAPS plugin config must have a PluginMeta inner class."
             )
 
-        if hasattr(self.pluginMeta, "compatibility"):
+        if hasattr(self.PluginMeta, "compatibility"):
             import pkg_resources
 
             try:
