@@ -14,6 +14,7 @@ class {{ camel_case_app_name }}PluginMeta:
     verbose_name = _('{{ spaced_app_name }}')
     author = '{{ author }}'
     author_email = "{{ author_email }}"
+    vendor = "My Company"
     description = _('A description of {{ spaced_app_name }}')
     category = _("Base")
     visible = True
