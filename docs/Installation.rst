@@ -69,4 +69,11 @@ You can leave that empty by now, it's just that it has to exist. Another section
         "FRONTEND": "vue",
     }
 
+The ``FRONTEND`` is used for the following command to setup the right frontend. Per default this is done in
+``<django-root>/frontend``.
+
+.. code-block::bash
+
+    ./manage.py initfrontend
+
 .. _Usage: usage
