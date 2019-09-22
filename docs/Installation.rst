@@ -66,14 +66,16 @@ You can leave that empty by now, it's just that it has to exist. Another section
 
 .. code-block::python
     GDAPS = {
-        "FRONTEND": "vue",
+        "FRONTEND_ENGINE": "vue",
     }
 
-The ``FRONTEND`` is used for the following command to setup the right frontend. Per default this is done in
-``<django-root>/frontend``.
+The ``FRONTEND_ENGINE`` is used for the following command to setup the right frontend. ATM it can only be "vue".
+Now you can initialize the frontend with
 
 .. code-block::bash
 
     ./manage.py initfrontend
 
+This creates a basic boilerplate (previously created with 'vue create' and calls *yarn install* to
+install the needed javascript packages.
 .. _Usage: usage
