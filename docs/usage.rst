@@ -260,7 +260,8 @@ REMOVED_SETTINGS
 
 Admin site
 ----------
-GDAPS provides support for the Django admin site. The built-in ``GdapsPlugin`` model can be administered.
+GDAPS provides support for the Django admin site. The built-in ``GdapsPlugin`` model automatically
+are added to Django'S admin site, and can be administered there.
 
 .. note::
 
