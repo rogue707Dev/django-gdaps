@@ -1,9 +1,13 @@
 from gdaps import Interface
 
 
-class IFrontendEngines(Interface):
+class IFrontendEngine(Interface):
+    class Meta:
+        service = False
+
     name = None
     files = []
 
-    def initialize(self):
+    @staticmethod
+    def initialize(frontend_path: str):
         pass

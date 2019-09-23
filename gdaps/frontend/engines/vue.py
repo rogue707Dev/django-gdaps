@@ -2,7 +2,7 @@ import shutil
 import subprocess
 
 from gdaps import implements
-from gdaps.api import IFrontendEngine
+from gdaps.frontend.api import IFrontendEngine
 
 
 @implements(IFrontendEngine)

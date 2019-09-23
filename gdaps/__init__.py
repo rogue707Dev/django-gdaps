@@ -102,7 +102,6 @@ class ExtensionPoint:
 
     def __iter__(self):
         """Returns an iterator to a set of plugins that match the interface of this extension point."""
-
         return self.extensions().__iter__()
 
     def __len__(self):

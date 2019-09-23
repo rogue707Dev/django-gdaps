@@ -12,7 +12,8 @@ from django.utils.version import get_docs_version
 
 from gdaps import ExtensionPoint
 from gdaps.conf import gdaps_settings
-from gdaps.frontend.api import IFrontendEngines
+from gdaps.frontend.api import IFrontendEngine
+from gdaps.frontend.engines import vue
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +28,7 @@ class Command(BaseCommand):
         (".py-tpl", ".py"),
     )
 
-    # TODO: allow dynamic engines
-    _engines = ExtensionPoint(IFrontendEngines)
+    _engines = ExtensionPoint(IFrontendEngine)
 
     def is_supported_engine(self, engine):
         engine_names = [engine.name for engine in self._engines]
