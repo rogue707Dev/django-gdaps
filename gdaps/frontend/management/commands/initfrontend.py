@@ -34,7 +34,7 @@ class Command(BaseCommand):
         engine_names = [engine.name for engine in self._engines]
         if engine not in engine_names:
             raise CommandError(
-                f"'{engine.name}' is not supported as frontend engine. Available engines are: {engine_names} "
+                f"'{engine.name}' is not supported as frontend engine. Available engines are: {engine_names}"
             )
 
     def handle(self, **options):
@@ -54,7 +54,7 @@ class Command(BaseCommand):
                 self.engine = engine
                 break
         else:
-            raise CommandError(f"Engine [self.engine] not supported.")
+            raise CommandError(f"Engine {self.engine} not supported.")
 
         if not self.engine:
             raise CommandError(
