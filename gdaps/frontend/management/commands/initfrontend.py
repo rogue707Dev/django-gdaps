@@ -116,8 +116,6 @@ class Command(BaseCommand):
             "frontend",
             self.engine.name,
         )
-        prefix_length = len(template_dir) + 1
-
         for root, dirs, files in os.walk(template_dir):
 
             for dirname in dirs[:]:
