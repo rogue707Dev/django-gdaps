@@ -7,7 +7,7 @@ Creating plugins
 
 Create plugins using a Django management command:
 
-.. code-block:: bash
+.. code-block::bash
 
     ./manage.py startplugin fooplugin
 
@@ -27,7 +27,7 @@ In most of the cases, you will ship your application with a few
 "standard" plugins that are statically installed. These plugins must be
 loaded *after* the ``gdaps`` app.
 
-.. code:: python
+.. code::python
 
     # ...
 
@@ -115,6 +115,7 @@ ExtensionPoint:
 myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
 class MyPlugin: ep = ExtensionPoint(IFooInterface)
+.. code-block::python
 
 ::
 
@@ -289,7 +290,7 @@ Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwo
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
-.. code-block:: bash
+.. code-block::bash
 
     ./manage.py initfrontend vue
 

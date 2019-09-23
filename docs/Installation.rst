@@ -3,7 +3,7 @@ Installation
 
 Install GDAPS in your Python virtual environment (pipenv is preferred):
 
-.. code-block:: bash
+.. code-block::bash
 
     pipenv install gdaps
     # or: pip install gdaps
