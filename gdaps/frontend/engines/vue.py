@@ -20,8 +20,8 @@ class VueEngine:
         "src/components/HelloWorld.vue",
     ]
 
-    def initialize(self, frontend_path):
-
+    @staticmethod
+    def initialize(frontend_path):
         try:
             # yarn install vue
             # FIXME: check if yarn is available
