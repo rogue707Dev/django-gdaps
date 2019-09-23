@@ -93,6 +93,8 @@ It's not obligatory to put all Interface definitions in that module, but it is a
 Interfaces can have a default Meta class that defines Interface options.
 Available options:
 
+.. _service
+
 service
     If ``service=True`` (which is the default), then all implementations are
     instantiated instantly at definition time, having a full class instance
@@ -122,10 +124,8 @@ ExtensionPoint:
             for plugin in ep:
                 print plugin().do_domething()
 
-Keep in mind that iterating over an ExtensionPoint **does not return
-instances** of plugins. It just returns the **class** that was decorated
-with *@implements*. This might be improved in the future
-(auto-instantiated plugins).
+Depending on the `service <#service>`__ Meta flag, iterating over an ExtensionPoint
+returns either a **class** (``service = False``) or an already instantiated **object** (``service = True``). Depending on your needs, just set *service* to the correct value. The default is *True*.
 
 .. _Implementations:
 
@@ -150,8 +150,7 @@ I didn't want to force implementations to inherit a ``Plugin`` base
 class, like some other plugin systems do. This would mean that
 implementations won't be as flexible as I wanted them. When just using a
 decorator, you can easily use ANY, even your already existing, class and
-just ducktype-implement the methods the Interface demands. If you forget
-to implement a method, GDAPS will complain instantly.
+just ducktype-implement the methods the Interface demands.
 
 
 Extending Django's URL patterns
