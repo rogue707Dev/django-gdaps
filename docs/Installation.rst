@@ -13,7 +13,7 @@ Create a Django application as usual: ``manage.py startproject myproject``.
 
 Now add "gdaps" to the ``INSTALLED_APPS`` section, and add a special line below it:
 
-.. code-block::python
+.. code-block:: python
 
     from gdaps.pluginmanager import PluginManager
 
@@ -45,7 +45,7 @@ First, add *gdaps*, *gdaps.frontend*, and *webpack_loader* to Django.
     pipenv install django-webpack-loader
 
 
-.. code-block::python
+.. code-block:: python
 
     from gdaps.pluginmanager import PluginManager
 
@@ -59,12 +59,12 @@ First, add *gdaps*, *gdaps.frontend*, and *webpack_loader* to Django.
 
 Now, to satisfy webpack-loader, add a section to settings.py:
 
-.. code-block::python
+.. code-block:: python
     WEBPACK_LOADER = {}
 
 You can leave that empty by now, it's just that it has to exist. Another section is needed for GDAPS:
 
-.. code-block::python
+.. code-block:: python
     GDAPS = {
         "FRONTEND_ENGINE": "vue",
     }
