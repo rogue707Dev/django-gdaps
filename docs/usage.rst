@@ -93,7 +93,7 @@ It's not obligatory to put all Interface definitions in that module, but it is a
 Interfaces can have a default Meta class that defines Interface options.
 Available options:
 
-.. _service
+.. _service:
 
 service
     If ``service=True`` (which is the default), then all implementations are
