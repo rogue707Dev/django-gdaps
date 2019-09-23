@@ -7,7 +7,7 @@ Creating plugins
 
 Create plugins using a Django management command:
 
-.. code-block:: bash
+.. code-block::bash
 
     ./manage.py startplugin fooplugin
 
@@ -27,7 +27,7 @@ In most of the cases, you will ship your application with a few
 "standard" plugins that are statically installed. These plugins must be
 loaded *after* the ``gdaps`` app.
 
-.. code:: python
+.. code::python
 
     # ...
 
@@ -111,18 +111,16 @@ EP can be defined anywhere in code. You can then get all the plugins
 that implement that interface by just iterating over that
 ExtensionPoint:
 
-\`\`\`python from gdaps import ExtensionPoint from
-myproject.plugins.fooplugin.api.interfaces import IFooInterface
+.. code-block::python
 
-class MyPlugin: ep = ExtensionPoint(IFooInterface)
+    from gdaps import ExtensionPoint from
+    myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
-::
+    class MyPlugin: ep = ExtensionPoint(IFooInterface)
 
-    def foo_method(self):
-        for plugin in ep:
-            print plugin().do_domething()
-
-\`\`\`
+        def foo_method(self):
+            for plugin in ep:
+                print plugin().do_domething()
 
 Keep in mind that iterating over an ExtensionPoint **does not return
 instances** of plugins. It just returns the **class** that was decorated
@@ -289,7 +287,7 @@ Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwo
 management command available: ``manage.py initfrontend``. It has one
 mandatory parameter, the frontend engine:
 
-.. code-block:: bash
+.. code-block::bash
 
     ./manage.py initfrontend vue
 

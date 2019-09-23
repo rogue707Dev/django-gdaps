@@ -2,128 +2,188 @@ import os
 import logging
 import shutil
 import subprocess
-import sys
 
+import django
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
-from django.core.management.templates import TemplateCommand
 from django.apps import apps
+from django.template import Context
+from django.utils.version import get_docs_version
 
+from gdaps import ExtensionPoint
 from gdaps.conf import gdaps_settings
+from gdaps.frontend.api import IFrontendEngines
 
 logger = logging.getLogger(__name__)
 
-_engines = ["vue"]
 
-
-class Command(TemplateCommand):
+class Command(BaseCommand):
 
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
-    help = "Initializes a Django GDAPS application with an Javascript frontend (currently only Vue.js supported)."
+    help = "Initializes a Django GDAPS application with a Javascript frontend."
+    rewrite_template_suffixes = (
+        # Allow shipping invalid .py files without byte-compilation.
+        (".py-tpl", ".py"),
+    )
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            "engine",
-            type=str,
-            help="Specify Javascript framework that should be added to a GDAPS application.\n"
-            "Available engines are: {}.".format(", ".join(_engines)),
-        )
-        parser.add_argument(
-            "--frontend_dir",  # FIXME: rename to --frontend-dir
-            type=str,
-            default="frontend",
-            help="Specify custom frontend directory within project",
-        )
+    # TODO: allow dynamic engines
+    _engines = ExtensionPoint(IFrontendEngines)
 
-    def handle(self, *args, **options):
-
-        # check if the engine is supported
-        # TODO: allow dynamic engines
-        if options["engine"] not in _engines:
+    def is_supported_engine(self, engine):
+        engine_names = [engine.name for engine in self._engines]
+        if engine not in engine_names:
             raise CommandError(
-                "'{}' is not supported as frontend engine. Available engines are: {} ".format(
-                    options["engine"], _engines
-                )
+                f"'{engine.name}' is not supported as frontend engine. Available engines are: {engine_names} "
             )
 
-        # preparation
-        options["project_name"] = self._django_root
-        options["project_title"] = self._django_root.title().replace("_", " ")
-        options["files"] = []
-        options["extensions"] = []
+    def handle(self, **options):
+        try:
+            frontend_dir = settings.GDAPS["FRONTEND_DIR"]
+        except:
+            frontend_dir = "frontend"
+
+        self.verbosity = options["verbosity"]
+
+        if len(self._engines) == 0:
+            raise CommandError("There is no frontend engine available.")
+
+        self.engine = None  # type: IFrontendEngines
+        for engine in self._engines:
+            if engine.name == settings.GDAPS["FRONTEND_ENGINE"]:
+                self.engine = engine
+                break
+        else:
+            raise CommandError(f"Engine [self.engine] not supported.")
+
+        if not self.engine:
+            raise CommandError(
+                "No frontend engine is selected. Please select one in settings.py using GDAPS['FRONTEND_ENGINE')"
+            )
 
         # create a frontend/ directory in the Django root
-        frontend_path = os.path.join(settings.BASE_DIR, options["frontend_dir"])
+        frontend_path = os.path.abspath(
+            os.path.expanduser(os.path.join(settings.BASE_DIR, options["frontend_dir"]))
+        )
 
-        if os.path.exists(frontend_path):
+        options["files"] += self.engine.files
+
+        try:
+            os.mkdir(frontend_path)
+        except FileExistsError:
             raise CommandError(
-                "There already seems to be a frontend with that name in project '{project}'. "
-                "Please delete the '{frontend}' directory if you want to create a new one, "
-                "or choose another name using --frontend_dir.".format(
-                    project=options["project_name"], frontend=options["frontend_dir"]
-                )
+                "There already seems to be a frontend directory with that name. "
+                f"Please delete the '{frontend_dir}' directory if you want to create a new one."
             )
 
-        os.mkdir(frontend_path)
-
-        # extend a plugin with vuejs
-        if options["engine"] == "vue":
-
-            if not os.path.exists(frontend_path):
-                os.mkdir(frontend_path)
-
-            # create files
-            template = os.path.join(
-                apps.get_app_config("frontend").path,
-                "management",
-                "templates",
-                "frontend",
-                "vue",
+        extra_files = []
+        for file in options["files"]:
+            extra_files.extend(map(lambda x: x.strip(), file.split(",")))
+        if self.verbosity >= 2:
+            self.stdout.write(
+                "Rendering frontend files with "
+                f"filenames: {', '.join(extra_files)}\n"
             )
-            options["files"] += [
-                ".gitignore",
-                "babel.config.js",
-                "package.json",  # contains dependencies
-                "vue.config.js",
-                "src/App.vue",
-                "src/main.js",
-                "src/plugins.js",
-                "src/assets/logo.png",
-                "src/components/HelloWorld.vue",
-            ]
 
-            try:
-                super().handle(
-                    "app",
-                    options["project_name"] + "_frontend",
-                    target=frontend_path,
-                    template=template,
-                    **options,
-                )
+        project_name = self._django_root
+        project_title = self._django_root.title().replace("_", " ")
+        files = []
+        extensions = ["js"]
 
-                sys.stdout.write(
-                    "A 'frontend/' directory was created in {}.\n".format(
-                        settings.BASE_DIR
+        context = Context(
+            {
+                **options,
+                "project_name": project_name,
+                "project_title": project_title,
+                "frontend_dir": frontend_dir,
+                "frontend_path": frontend_path,
+                "docs_version": get_docs_version(),
+                "django_version": django.__version__,
+            },
+            autoescape=False,
+        )
+
+        # Setup a stub settings environment for template rendering
+        if not settings.configured:
+            settings.configure()
+            django.setup()
+
+        template_dir = os.path.join(
+            apps.get_app_config("frontend").path,
+            "management",
+            "templates",
+            "frontend",
+            self.engine,
+        )
+        prefix_length = len(template_dir) + 1
+
+        for root, dirs, files in os.walk(template_dir):
+
+            for dirname in dirs[:]:
+                if dirname.startswith(".") or dirname == "__pycache__":
+                    dirs.remove(dirname)
+
+            for filename in files:
+                # FIXME: use Js specific file endings here
+                if filename.endswith((".pyo", ".pyc", ".py.class")):
+                    # Ignore some files as they cause various breakages.
+                    continue
+                old_path = os.path.join(root, filename)
+
+                new_path = os.path.join(frontend_path, filename)
+                for old_suffix, new_suffix in self.rewrite_template_suffixes:
+                    if new_path.endswith(old_suffix):
+                        new_path = new_path[: -len(old_suffix)] + new_suffix
+                        break  # Only rewrite once
+
+                if os.path.exists(new_path):
+                    raise CommandError(
+                        f"{new_path} already exists, overlaying a "
+                        "frontend file into an existing directory won't replace conflicting files"
                     )
-                )
-                # yarn install vue
-                # FIXME: check if yarn is available
-                subprocess.check_call(
-                    "yarn install --cwd {}".format(frontend_path), shell=True
-                )
 
-            except Exception as e:
-                shutil.rmtree(frontend_path)
-                raise e
+                # Only render intended files, as we don't want to
+                # accidentally render Django templates files
+                if new_path.endswith(extensions) or filename in extra_files:
+                    with open(old_path, encoding="utf-8") as template_file:
+                        content = template_file.read()
+                    template = django.template.Engine().from_string(content)
+                    content = template.render(context)
+                    with open(new_path, "w", encoding="utf-8") as new_file:
+                        new_file.write(content)
+                else:
+                    shutil.copyfile(old_path, new_path)
 
-            # build
-            # subprocess.check_call(
-            #     "npm run build --prefix {base_dir}/{plugin}/frontend".format(
-            #         plugin=target, base_dir=settings.BASE_DIR
-            #     ),
-            #     shell=True,
-            # )
+                if self.verbosity >= 2:
+                    self.stdout.write(f"Creating {new_path}\n")
+                try:
+                    shutil.copymode(old_path, new_path)
+                    self.make_writeable(new_path)
+                except OSError:
+                    self.stderr.write(
+                        f"Notice: Couldn't set permission bits on {new_path}. You're "
+                        "probably using an uncommon filesystem setup. No problem."
+                    )
 
-            # ask the user to be sure to copy the static files
-            # subprocess.check_call('./manage.py collectstatic'.format(plugin=target, base_dir=settings.BASE_DIR), shell=True)
+        self.engine.initialize(frontend_path)
+
+        # build
+        # subprocess.check_call(
+        #     "npm run build --prefix {base_dir}/{plugin}/frontend".format(
+        #         plugin=target, base_dir=settings.BASE_DIR
+        #     ),
+        #     shell=True,
+        # )
+
+        # ask the user to be sure to copy the static files
+        # subprocess.check_call('./manage.py collectstatic'.format(plugin=target, base_dir=settings.BASE_DIR), shell=True)
+
+    def make_writeable(self, filename):
+        """
+        Make sure that the file is writeable.
+        Useful if our source is read-only.
+        """
+        if not os.access(filename, os.W_OK):
+            st = os.stat(filename)
+            new_permissions = stat.S_IMODE(st.st_mode) | stat.S_IWUSR
+            os.chmod(filename, new_permissions)

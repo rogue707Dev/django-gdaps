@@ -3,7 +3,7 @@ Installation
 
 Install GDAPS in your Python virtual environment (pipenv is preferred):
 
-.. code-block:: bash
+.. code-block::bash
 
     pipenv install gdaps
     # or: pip install gdaps
@@ -66,7 +66,16 @@ You can leave that empty by now, it's just that it has to exist. Another section
 
 .. code-block::python
     GDAPS = {
-        "FRONTEND": "vue",
+        "FRONTEND_ENGINE": "vue",
     }
 
+The ``FRONTEND_ENGINE`` is used for the following command to setup the right frontend. ATM it can only be "vue".
+Now you can initialize the frontend with
+
+.. code-block::bash
+
+    ./manage.py initfrontend
+
+This creates a basic boilerplate (previously created with 'vue create' and calls *yarn install* to
+install the needed javascript packages.
 .. _Usage: usage

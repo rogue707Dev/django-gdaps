@@ -12,7 +12,7 @@ class PluginConfig(AppConfig):
     It is a convenience class that checks for the existence of the PluginMeta inner class, and provides
     some basic methods that are needed when interacting with a plugin during its life cycle.
 
-    .. code-block:: python
+    .. code-block::python
 
         from django.utils.translation import gettext_lazy as _
         from gdaps.apps import PluginConfig
@@ -31,7 +31,7 @@ class PluginConfig(AppConfig):
     If you are using signals in your plugin, we recommend to put them into a ``signals`` submodule.
     Import them from the ``AppConfig.ready()`` method.
 
-    .. code-block:: python
+    .. code-block::python
 
             def ready(self):
                 # Import signals if necessary:
@@ -45,14 +45,14 @@ class PluginConfig(AppConfig):
     If your plugin needs to install some data into the database at the first run, you can provide a ``initialize``
     method, which will be called using the ``initializeplugins`` management command:
 
-    .. code-block:: bash
+    .. code-block::bash
 
         ./manage.py initializeplugins
 
     Do all necessary things there that need to be done when the plugin is available the first time, e.g. after
     installing a plugin using pip/pipenv.
 
-    .. code-block:: python
+    .. code-block::python
 
         def initialize(self):
             # install some fixtures, etc.

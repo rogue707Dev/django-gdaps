@@ -39,7 +39,7 @@ class Interface(metaclass=InterfaceMeta):
 
     Inherit from *Interface* and eventually add methods to that class:
 
-    .. code-block:: python
+    .. code-block::python
 
         class IMyInterface(Interface):
 
@@ -74,7 +74,7 @@ class ExtensionPoint:
 
     You can iterate over 'Extensionpoint's via ``for..in``:
 
-    .. code-block:: python
+    .. code-block::python
 
         ep = ExtensionPoint(IMyInterface)
         for plugin in ep:
@@ -139,7 +139,7 @@ class Implements:
 
     Just decorate a class:
 
-     .. code-block:: python
+     .. code-block::python
 
         @implements(IMyInterface)
         class PluginA:
