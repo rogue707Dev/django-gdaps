@@ -48,7 +48,7 @@ class Command(BaseCommand):
         if len(self._engines) == 0:
             raise CommandError("There is no frontend engine available.")
 
-        self.engine = None  # type: IFrontendEngines
+        self.engine = None  # type: IFrontendEngine or None
         for engine in self._engines:
             if engine.name == settings.GDAPS["FRONTEND_ENGINE"]:
                 self.engine = engine
