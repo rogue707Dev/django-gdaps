@@ -1,6 +1,8 @@
 import shutil
 import subprocess
 
+from django.core.management import CommandError
+
 from gdaps import implements
 from gdaps.frontend.api import IFrontendEngine
 
@@ -22,9 +24,12 @@ class VueEngine:
 
     @staticmethod
     def initialize(frontend_path):
+        """Initializes an already created frontend using 'yarn install'."""
         try:
             # yarn install vue
-            # FIXME: check if yarn is available
+            if shutil.which("yarn") is None:
+                raise CommandError("Yarn is not available. Please install yarn.")
+
             subprocess.check_call(f"yarn install --cwd {frontend_path}", shell=True)
         except Exception as e:
             shutil.rmtree(frontend_path)
