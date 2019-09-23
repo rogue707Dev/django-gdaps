@@ -155,16 +155,13 @@ class Implements:
 
     """
 
-    def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True
+    def __init__(self, *interfaces: List[Interface]) -> None:
         """Called at declaration of the decorator (with following class).
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
-        # :param singleton: if True the implementations will get instanciated immediately, and prevented from
-        #         a second instantiation.
         """
         # memoize a list of *Interface*s the decorated class is going to implement
         self._interfaces: List[Interface] = []
-        # self._singleton = singleton
 
         if not interfaces:
             raise PluginError(
@@ -187,12 +184,6 @@ class Implements:
 
         # add the decorated class to each Interface's internal implementation list
         assert isinstance(cls, type)
-        # if cls.Meta.singleton:
-        #     # instantiate class immediately if Interface has a singleton marker
-        #     cls = cls()
-        #     cls._singleton_instance = cls
-        # else:
-        #     cls._singleton_instance = None
 
         for interface in self._interfaces:  # type: Interface
             # for attr in [m for m in dir(interface) if not m.startswith("_")]:
