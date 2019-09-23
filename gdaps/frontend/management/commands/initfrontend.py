@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
         # create a frontend/ directory in the Django root
         frontend_path = os.path.abspath(
-            os.path.expanduser(os.path.join(settings.BASE_DIR, options["frontend_dir"]))
+            os.path.expanduser(os.path.join(settings.BASE_DIR, frontend_dir))
         )
 
         options["files"] += self.engine.files
