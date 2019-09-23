@@ -84,7 +84,7 @@ class ExtensionPoint:
     # shamelessly copied (and adapted) from PyUtilib
 
     def __init__(self, interface: Type[Interface]) -> None:
-        """Creates the extension point.
+        """Creates the extension point of the given Interface.
 
         :param interface: The interface that is referred to.
         """
@@ -98,7 +98,7 @@ class ExtensionPoint:
                 "An extension point can't directly refer to <Interface>. Use an <Interface> subclass."
             )
         self._interface = interface
-        self.__doc__ = "List of plugins that implement %s" % interface.__name__
+        self.__doc__ = f"List of plugins that implement {interface.__name__}"
 
     def __iter__(self):
         """Returns an iterator to a set of plugins that match the interface of this extension point."""
@@ -131,13 +131,13 @@ class ExtensionPoint:
 
     def __repr__(self):
         """Returns a textual representation of the extension point."""
-        return "<ExtensionPoint for interface '%s'>" % self._interface.__name__
+        return f"<ExtensionPoint for interface '{self._interface.__name__}'>"
 
 
 class Implements:
     """Decorator class for implementing interfaces.
 
-    Just decorate a class:
+    Just decorate a class with @implements to make it an implementation of an :ref:`Interface`:
 
      .. code-block:: python
 
@@ -148,15 +148,16 @@ class Implements:
                 print("Greetings from PluginA")
 
 
-    You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)* and implement all their
-    methods.
+    You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)*
+    and implement all their methods.
 
     Read more about implementations in the :ref:`Implementations` section.
 
     """
 
     def __init__(self, *interfaces: List[Interface]) -> None:
-        """Called at declaration of the decorator (with following class).
+        """Called at declaration of the decorator, with one or more Interfaces as parameter.
+
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
         """

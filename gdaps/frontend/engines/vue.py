@@ -25,9 +25,7 @@ class VueEngine:
         try:
             # yarn install vue
             # FIXME: check if yarn is available
-            subprocess.check_call(
-                "yarn install --cwd {}".format(frontend_path), shell=True
-            )
+            subprocess.check_call(f"yarn install --cwd {frontend_path}", shell=True)
         except Exception as e:
             shutil.rmtree(frontend_path)
             raise e
