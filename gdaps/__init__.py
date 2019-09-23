@@ -63,8 +63,8 @@ class Interface(metaclass=InterfaceMeta):
         """Returns True if Interface describes a "service".
 
         Services are Interfaces whose implementations are instantiated at creation time.
-        Per default, service == true, if not set otherwise at declaration in the Interfaces'
-        Meta class.
+        Per default, service == True, if not set otherwise at the declaration in the
+        Interfaces' Meta class.
         """
         return getattr(cls.Meta, "service", True)
 
