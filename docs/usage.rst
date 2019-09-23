@@ -118,7 +118,9 @@ ExtensionPoint:
     from gdaps import ExtensionPoint from
     myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
-    class MyPlugin: ep = ExtensionPoint(IFooInterface)
+    class MyPlugin:
+
+        ep = ExtensionPoint(IFooInterface)
 
         def foo_method(self):
             for plugin in ep:
