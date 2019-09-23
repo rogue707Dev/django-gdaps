@@ -27,7 +27,7 @@ In most of the cases, you will ship your application with a few
 "standard" plugins that are statically installed. These plugins must be
 loaded *after* the ``gdaps`` app.
 
-.. code::python
+.. code-block:: python
 
     # ...
 
@@ -77,7 +77,7 @@ Plugins can define interfaces, which can then be implemented by other
 plugins. The ``startplugin`` command will create a ``<app_name>/api/interfaces.py`` file automatically.
 It's not obligatory to put all Interface definitions in that module, but it is a recommended coding style for GDAPS plugins:
 
-.. code:: python
+.. code-block:: python
 
     from gdaps import Interface
 
@@ -92,6 +92,8 @@ It's not obligatory to put all Interface definitions in that module, but it is a
 
 Interfaces can have a default Meta class that defines Interface options.
 Available options:
+
+.. _service
 
 service
     If ``service=True`` (which is the default), then all implementations are
@@ -111,7 +113,7 @@ EP can be defined anywhere in code. You can then get all the plugins
 that implement that interface by just iterating over that
 ExtensionPoint:
 
-.. code-block::python
+.. code-block:: python
 
     from gdaps import ExtensionPoint from
     myproject.plugins.fooplugin.api.interfaces import IFooInterface
@@ -122,10 +124,8 @@ ExtensionPoint:
             for plugin in ep:
                 print plugin().do_domething()
 
-Keep in mind that iterating over an ExtensionPoint **does not return
-instances** of plugins. It just returns the **class** that was decorated
-with *@implements*. This might be improved in the future
-(auto-instantiated plugins).
+Depending on the `service <#service>`__ Meta flag, iterating over an ExtensionPoint
+returns either a **class** (``service = False``) or an already instantiated **object** (``service = True``). Depending on your needs, just set *service* to the correct value. The default is *True*.
 
 .. _Implementations:
 
@@ -135,7 +135,7 @@ Implementations
 You can then easily implement this interface in any other file (in this
 plugin or in another plugin) using the ``@implements`` decorator syntax:
 
-.. code:: python
+.. code-block:: python
 
     from gdaps import implements
     from myproject.plugins.fooplugin.api.interfaces import IFooInterface
@@ -150,8 +150,7 @@ I didn't want to force implementations to inherit a ``Plugin`` base
 class, like some other plugin systems do. This would mean that
 implementations won't be as flexible as I wanted them. When just using a
 decorator, you can easily use ANY, even your already existing, class and
-just ducktype-implement the methods the Interface demands. If you forget
-to implement a method, GDAPS will complain instantly.
+just ducktype-implement the methods the Interface demands.
 
 
 Extending Django's URL patterns
@@ -160,7 +159,7 @@ Extending Django's URL patterns
 To let your plugin define some URLs that are automatically detected by your Django application, you
 have to add some code to your global urls.py file:
 
-.. code:: python
+.. code-block:: python
 
     from gdaps.pluginmanager import PluginManager
 
@@ -177,7 +176,7 @@ one.
 
 A typical ``fooplugin/urls.py`` would look like this:
 
-.. code:: python
+.. code-block:: python
 
     from . import views
 
@@ -202,7 +201,7 @@ easily, which provide defaults, and can be overridden in the global
 ``settings.py`` file. Look at the example conf.py file (created by
 ``./manage.py startplugin fooplugin``), and adapt to your needs:
 
-.. code:: python
+.. code-block:: python
 
     from django.test.signals import setting_changed
     from gdaps.conf import PluginSettings
@@ -270,7 +269,7 @@ are added to Django'S admin site, and can be administered there.
 
 If you want to disable the built-in admin site for GDAPS, or provide a custom GDAPS ModelAdmin, you can do this using:
 
-.. code:: python
+.. code-block:: python
 
     GDAPS = {
         "ADMIN": False
