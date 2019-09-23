@@ -43,6 +43,7 @@ class Command(BaseCommand):
         except:
             frontend_dir = "frontend"
 
+        options["files"] = []
         self.verbosity = options["verbosity"]
 
         if len(self._engines) == 0:
