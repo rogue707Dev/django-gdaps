@@ -114,7 +114,7 @@ class Command(BaseCommand):
             "management",
             "templates",
             "frontend",
-            self.engine,
+            self.engine.name,
         )
         prefix_length = len(template_dir) + 1
 
