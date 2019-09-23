@@ -89,7 +89,7 @@ class Command(BaseCommand):
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")
         files = []
-        extensions = ["js"]
+        extensions = ("js",)
 
         context = Context(
             {
