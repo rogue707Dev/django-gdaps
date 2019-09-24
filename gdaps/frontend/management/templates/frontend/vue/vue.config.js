@@ -23,9 +23,6 @@ module.exports = {
         config.optimization
             .splitChunks(false)
 
-        config.entry('entry')
-            .add(getPlugins)
-
         config
             .plugin('BundleTracker')
             .use(BundleTracker, [{
