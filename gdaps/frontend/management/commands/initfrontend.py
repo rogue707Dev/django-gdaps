@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """This command basically comes from Django's TemplateCommand.
+
+    It creates a Javascript frontend from a boilerplate code."""
 
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
