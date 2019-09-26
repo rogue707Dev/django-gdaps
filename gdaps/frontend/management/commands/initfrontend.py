@@ -1,18 +1,20 @@
-import os
 import logging
+import os
 import shutil
-import subprocess
 
 import django
+from django.apps import apps
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
-from django.apps import apps
 from django.template import Context
 from django.utils.version import get_docs_version
 
 from gdaps import ExtensionPoint
 from gdaps.conf import gdaps_settings
 from gdaps.frontend.api import IFrontendEngine
+
+# this imported is needed to add the plugin to the ExtensionPoint,
+# even if it's not used directly.
 from gdaps.frontend.engines import vue
 
 logger = logging.getLogger(__name__)
