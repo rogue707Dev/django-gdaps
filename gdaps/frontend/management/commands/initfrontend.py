@@ -111,8 +111,8 @@ class Command(BaseCommand):
 
         template_dir = os.path.join(
             apps.get_app_config("frontend").path,
-            "management",
             "templates",
+            "gdaps",
             "frontend",
             self.engine.name,
         )
