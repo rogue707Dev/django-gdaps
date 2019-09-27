@@ -136,7 +136,8 @@ class ExtensionPoint:
 class Implements:
     """Decorator class for implementing interfaces.
 
-    Just decorate a class with @implements to make it an implementation of an :ref:`Interface`:
+    Just decorate a class with @implements to make it an implementation of an
+    :ref:`Interface <Interfaces>`:
 
      .. code-block:: python
 
