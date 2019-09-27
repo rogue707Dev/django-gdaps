@@ -1,6 +1,15 @@
 Usage
 =====
 
+The generic plugin system is completely decoupled from the
+PluginManager (which manages GDAPS pluggable Django apps),
+so basically you have two choices to use GDAPS:
+
+1. Use `Interfaces`_, `ExtensionPoints`_, `Implementations`_,  without a plugin
+system. It's not necessary to divide your application into GDAPS plugins or use pip/env
+to install them. Just code your application as usual and have an easy- to use
+"observer pattern" plugin system.
+1. GDAPS Full.
 
 Creating plugins
 ----------------
@@ -17,8 +26,8 @@ If you use git in your project, install the ``gitpython`` module (``pip/pipenv i
 
 You now have two choices for this plugin:
 
-* add it statically to ``INSTALLED_APPS``: see `Static plugins <#static-plugins>`__.
-* make use of the dynamic loading feature: see `Dynamic plugins <#dynamic-plugins>`__.
+* add it statically to ``INSTALLED_APPS``: see `Static plugins <#static-plugins>`_.
+* make use of the dynamic loading feature: see `Dynamic plugins <#dynamic-plugins>`_.
 
 Static plugins
 ^^^^^^^^^^^^^^
