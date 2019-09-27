@@ -44,7 +44,7 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         try:
-            frontend_dir = gdaps_settings.GDAPS["FRONTEND_DIR"]
+            frontend_dir = gdaps_settings.FRONTEND_DIR
         except:
             frontend_dir = "frontend"
 
@@ -56,7 +56,7 @@ class Command(BaseCommand):
 
         self.engine = None  # type: IFrontendEngine or None
         for engine in self._engines:
-            if engine.name == gdaps_settings.GDAPS["FRONTEND_ENGINE"]:
+            if engine.name == gdaps_settings.FRONTEND_ENGINE:
                 self.engine = engine
                 break
         else:
