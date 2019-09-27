@@ -1,40 +1,7 @@
+.. usage:
+
 Usage
 =====
-
-The generic plugin system is completely decoupled from the
-PluginManager (which manages GDAPS pluggable Django apps),
-so basically you have two choices to use GDAPS:
-
-Simple
-    Use `Interfaces`_, `ExtensionPoints`_, and `Implementations`_  **without a plugin/module
-    system**. It's not necessary to divide your application into GDAPS apps to use GDAPS.
-    Just code your application as usual and have an
-    easy-to-use "observer pattern" plugin system.
-
-    * Define an interface
-    * Create one or more implementations for it and
-    * put an extensionpoint anywhere in your code.
-
-    Just *importing* the python files with your implementations will make them work.
-
-    Use this if you just want to structure your Django software using an "observer pattern".
-    This is used  within  GDAPS itself, for the Javascript frontend implementations
-    (e.g. Vue.js).
-
-Full
-    Use GDAPS as **complete module/app system**.
-
-    * You'll have to add "gdaps" to your INSTALLED_APPS first.
-    * Create plugins using the ``startplugin`` managemant command, and install them via
-      pip/pipenv.
-
-    You have a :ref:`PluginManager` available then, and after a ``manage.py migrate``
-    and ``manage.py syncplugins``,
-    Django will have all GDAPS plugins recognized as models too, so you can easily
-    administer them in your Django admin.
-
-    This mode enables you to create fully-fledged extensible applications with real
-    plugins that can be written by different parties and distributed via PyPi.
 
 Creating plugins
 ----------------
