@@ -4,16 +4,15 @@ import sys
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
-from django.core.management import call_command
 from django.core.management.base import BaseCommand, no_translations
-from django.db import connections, DEFAULT_DB_ALIAS
+from django.db import connections
 from django.db.migrations.executor import MigrationExecutor
-from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
 import gdaps
+from gdaps.api import IGdapsPlugin
 from gdaps.apps import PluginConfig
-from gdaps.exceptions import IncompatibleVersionsError, PluginError
+from gdaps.exceptions import PluginError
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager
 from semantic_version import Version
@@ -143,8 +142,12 @@ class Command(BaseCommand):
                             f"Error calling initialize method of '{app.name}' plugin"
                         )
 
+            # plugin hook after plugins are synchronized to DB
+            for ep in gdaps.ExtensionPoint(IGdapsPlugin):
+                ep.plugin_synchronized(app)
+
         # are there plugins in the database that do not exist on disk?
-        self.log(3, "Searching for orphaned plugins...\n")
+        self.log(2, "Searching for orphaned plugins...\n")
 
         for plugin in PluginManager.orphaned_plugins():  # type: GdapsPlugin
             self.log(2, f"  * {plugin.name}: ")
@@ -153,3 +156,5 @@ class Command(BaseCommand):
                 self.log(2, "removed from database.\n")
             else:
                 self.log(2, "\n")
+        else:
+            self.log(3, "  None found.\n")

@@ -1,3 +1,5 @@
+import logging
+
 from gdaps import ExtensionPoint
 from gdaps.exceptions import PluginError
 from gdaps.frontend.api import IFrontendEngine
@@ -5,6 +7,7 @@ from gdaps.frontend.conf import frontend_settings
 from gdaps.frontend.engines import vue
 
 default_app_config = "gdaps.frontend.apps.FrontendConfig"
+logger = logging.getLogger(__file__)
 
 __current_engine: IFrontendEngine or None = None
 

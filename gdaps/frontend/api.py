@@ -28,5 +28,5 @@ class IFrontendEngine(Interface):
 
         This can be different from frontend to frontend. Easiest way is to create a Javascript
         module that exports an [array] of paths that point to modules that e.g. webpack then imports.
-        :param plugins_list: a list of strings that point to Javascript modules.
+        :param plugins_list: a list of paths that point to Javascript modules.
         """

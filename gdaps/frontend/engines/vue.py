@@ -1,26 +1,27 @@
+import logging
 import os
 import shutil
 import subprocess
 from typing import List
 
-from django.conf import settings
-
-from gdaps import implements, PluginError
-from gdaps.frontend import frontend_settings
-from django.core.management import CommandError
 
 from gdaps import implements
-from gdaps.conf import gdaps_settings
+from gdaps.exceptions import PluginError
+from gdaps.api import IGdapsPlugin
+from gdaps.frontend import frontend_settings
+from django.core.management import CommandError
 from gdaps.frontend.api import IFrontendEngine
-from gdaps.pluginmanager import PluginManager
 
+logger = logging.getLogger(__file__)
+
+# TODO: use header text replacing instead of manually writing a file.
 header = """
 // plugins.js
 //
 // This is a special file that is created by GDAPS automatically
 // using the 'startplugin' and 'syncplugins' management command.
 // Only touch this file if you exactly know what you are doing.
-// it will be overwritten with every run of 'manage.py startplugin <xyz>'
+// it will be overwritten with every run of 'manage.py startplugin/syncplugin'
 
 module.exports = {plugins}
 """
@@ -57,12 +58,11 @@ class VueEngine:
         """Writes plugins into plugins.js file, to be collected dynamically by webpack."""
 
         if not os.path.exists(frontend_settings.FRONTEND_DIR):
-            try:
-                os.makedirs(frontend_settings.FRONTEND_DIR)
-            except:
-                raise PluginError(
-                    f"Could not create frontend directory '{frontend_settings.FRONTEND_DIR}'."
-                )
+            logger.warning(
+                f"Could not find frontend directory '{frontend_settings.FRONTEND_DIR}'."
+            )
+            return
+
         with open(
             os.path.join(frontend_settings.FRONTEND_DIR, "plugins.js"), "w"
         ) as plugins_file:
@@ -72,10 +72,26 @@ class VueEngine:
             counter = 1
             total = len(plugins_list)
             for app_name in plugins_list:
-                plugins_file.write('  "' + os.path.join(app_name, "frontend") + '"')
-                if counter < total:
-                    plugins_file.write(",")
-                plugins_file.write("\n")
-                counter += 1
+                plugin_frontend_entry_point = os.path.join(app_name, "frontend")
+                if os.path.exists(
+                    os.path.join(plugin_frontend_entry_point, "index.js")
+                ):
+                    logger.info(f"Found entry point in GDAPS plugin {app_name}.")
+                    plugins_file.write(f'  "{plugin_frontend_entry_point}"')
+                    if counter < total:
+                        plugins_file.write(",")
+                    plugins_file.write("\n")
+                    counter += 1
+                else:
+                    logger.info(f"No entry point found in {app_name}. Skipping")
 
             plugins_file.write("]\n")
+
+
+@implements(IGdapsPlugin)
+class VuePlugin:
+    def plugin_synchronized(self, app):
+        if not os.path.exists(os.path.join(app.path, "frontend", "index.js")):
+            logger.info(f"    - {app.name} - no frontend found.")
+        else:
+            logger.info((f"    - {app.name} - frontend found."))
