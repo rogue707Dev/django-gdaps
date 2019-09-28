@@ -6,6 +6,7 @@ import importlib
 from django.apps import apps, AppConfig
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models import QuerySet
 from pkg_resources import iter_entry_points
 from typing import List
 
@@ -211,3 +212,18 @@ class PluginManager:
                 urlpatterns += pattern
 
         return urlpatterns
+
+    ###############################################################
+    #  The following plugins require Django's ORM already setup.  #
+    #  Don't call them during the setup process                   #
+    ###############################################################
+
+    @staticmethod
+    def orphaned_plugins() -> QuerySet:
+        """Returns a list of GdapsPlugin models that have no disk representance any more."""
+
+        from gdaps.models import GdapsPlugin
+
+        return GdapsPlugin.objects.exclude(
+            name__in=[app.name for app in PluginManager.plugins()]
+        )
