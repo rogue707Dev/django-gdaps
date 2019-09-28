@@ -55,8 +55,13 @@ class PluginSettings:
     """
     A settings object, that allows app specific settings to be accessed as properties.
     For example:
-        from gdaps.conf import gdaps_settings
-        print(gdaps_settings.FOO_SETTING)
+        settings.py:
+            GDAPS = { "FOO_SETTING": "blah" }
+
+        anywhere else:
+            from gdaps.conf import gdaps_settings
+            print(gdaps_settings.FOO_SETTING)
+
     Any setting with string import paths will be automatically resolved
     and return the class, rather than the string literal.
     """
