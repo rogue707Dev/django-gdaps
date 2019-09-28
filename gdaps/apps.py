@@ -71,7 +71,7 @@ class PluginConfig(AppConfig):
             # ignore GDAPS itself
             return
 
-        if not hasattr(self, "PluginMeta"):
+        if not hasattr(self, "pluginMeta"):
             raise ImproperlyConfigured(
                 "A GDAPS plugin config must have a PluginMeta inner class."
             )
