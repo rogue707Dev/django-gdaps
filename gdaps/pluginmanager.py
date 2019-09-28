@@ -154,7 +154,7 @@ class PluginManager:
             # import all the submodules from all plugin apps
             from gdaps.conf import gdaps_settings
 
-            dotted_name = "%s.%s" % (app.name, submodule)
+            dotted_name = f"{app.name}.{submodule}"
             try:
                 module = importlib.import_module(dotted_name)
                 logger.info("Successfully loaded submodule {}".format(dotted_name))

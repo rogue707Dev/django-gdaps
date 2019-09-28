@@ -1,25 +1,35 @@
-import os
 import logging
+import os
 import shutil
-import subprocess
 
 import django
+from django.apps import apps
 from django.conf import settings
 from django.core.management.base import CommandError, BaseCommand
-from django.apps import apps
 from django.template import Context
 from django.utils.version import get_docs_version
 
 from gdaps import ExtensionPoint
 from gdaps.frontend.api import IFrontendEngine
 from gdaps.conf import gdaps_settings
+<<<<<<< HEAD
 from gdaps.frontend import current_engine
 from gdaps.frontend.api import IFrontendEngines
+=======
+from gdaps.frontend.api import IFrontendEngine
+
+# this imported is needed to add the plugin to the ExtensionPoint,
+# even if it's not used directly.
+from gdaps.frontend.engines import vue
+>>>>>>> 162fa9f76eed9e94bf8a1cb1ef2c047fcacdfd85
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+    """This command basically comes from Django's TemplateCommand.
+
+    It creates a Javascript frontend from a boilerplate code."""
 
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
@@ -29,30 +39,46 @@ class Command(BaseCommand):
         (".py-tpl", ".py"),
     )
 
-    # TODO: allow dynamic engines
-    _engines = ExtensionPoint(IFrontendEngines)
+    _engines = ExtensionPoint(IFrontendEngine)
 
     def is_supported_engine(self, engine):
         engine_names = [engine.name for engine in self._engines]
         if engine not in engine_names:
             raise CommandError(
-                f"'{engine.name}' is not supported as frontend engine. Available engines are: {engine_names} "
+                f"'{engine.name}' is not supported as frontend engine. Available engines are: {engine_names}"
             )
 
     def handle(self, **options):
         try:
-            frontend_dir = settings.GDAPS["FRONTEND_DIR"]
+            frontend_dir = gdaps_settings.FRONTEND_DIR
         except:
             frontend_dir = "frontend"
 
+        options["files"] = []
         self.verbosity = options["verbosity"]
 
         if len(self._engines) == 0:
             raise CommandError("There is no frontend engine available.")
 
+<<<<<<< HEAD
+=======
+        self.engine = None  # type: IFrontendEngine or None
+        for engine in self._engines:
+            if engine.name == gdaps_settings.FRONTEND_ENGINE:
+                self.engine = engine
+                break
+        else:
+            raise CommandError(f"Engine {self.engine} not supported.")
+
+        if not self.engine:
+            raise CommandError(
+                "No frontend engine is selected. Please select one in settings.py using GDAPS['FRONTEND_ENGINE')"
+            )
+
+>>>>>>> 162fa9f76eed9e94bf8a1cb1ef2c047fcacdfd85
         # create a frontend/ directory in the Django root
         frontend_path = os.path.abspath(
-            os.path.expanduser(os.path.join(settings.BASE_DIR, options["frontend_dir"]))
+            os.path.expanduser(os.path.join(settings.BASE_DIR, frontend_dir))
         )
 
         options["files"] += current_engine().files
@@ -77,7 +103,7 @@ class Command(BaseCommand):
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")
         files = []
-        extensions = ["js"]
+        extensions = ("js",)
 
         context = Context(
             {
@@ -99,13 +125,11 @@ class Command(BaseCommand):
 
         template_dir = os.path.join(
             apps.get_app_config("frontend").path,
-            "management",
             "templates",
+            "gdaps",
             "frontend",
-            self.engine,
+            self.engine.name,
         )
-        prefix_length = len(template_dir) + 1
-
         for root, dirs, files in os.walk(template_dir):
 
             for dirname in dirs[:]:

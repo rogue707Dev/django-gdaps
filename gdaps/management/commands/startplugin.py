@@ -116,9 +116,7 @@ class Command(TemplateCommand):
 
         try:
             os.makedirs(target)
-            self.stdout.write(
-                "Successfully created plugin: {}\n".format(target)
-            )
+            self.stdout.write(f"Successfully created plugin: {target}\n")
 
         except OSError as e:
             raise CommandError(e)
@@ -126,6 +124,5 @@ class Command(TemplateCommand):
         super().handle("app", name, target, template=template, **options)
 
         self.stdout.write(
-            "Please adapt '%s' to your needs.\n"
-            % os.path.join(target, "setup.cfg")
+            f"Please adapt '{os.path.join(target, 'setup.cfg')}' to your needs.\n"
         )

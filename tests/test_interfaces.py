@@ -72,3 +72,16 @@ def test_multiple_interfaces():
 
     ep2 = ExtensionPoint(ITestInterface2)
     assert Dummy in ep2
+
+
+def test_interface_attr():
+    ep = ExtensionPoint(ITestInterface1)
+
+    assert hasattr(ep, "_interface")
+
+
+def test_interface_implementations_attr():
+    ep = ExtensionPoint(ITestInterface1)
+
+    assert hasattr(ep._interface, "_implementations")
+    assert len(ep._interface._implementations) == 3

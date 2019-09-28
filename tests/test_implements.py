@@ -14,13 +14,35 @@ class IAttribute1(Interface):
     foo = []
 
 
+class IFooNonService(Interface):
+    class Meta:
+        service = False
+
+
 @implements(IFoo)
 class Foo:
     def foo_method(self):
         pass
 
 
+@implements(IFooNonService)
+class Baz1:
+    pass
+
+
 # Tests
+
+
+def test_nonservice_is_not_instantiated():
+    ep = ExtensionPoint(IFooNonService)
+    for i in ep:
+        assert i is Baz1
+
+
+def test_interface_attribute():
+    ep = ExtensionPoint(IFoo)
+
+    assert hasattr(ep, "_interface")
 
 
 # FIXME: does not work yet, see issue #1
@@ -51,36 +73,3 @@ def test_empty_implements():
         @implements()  # implements must have an Interface as argument
         class Foo:
             pass
-
-
-def test_enabled_implementations():
-    class Noop(Interface):
-        pass
-
-    @implements(Noop)
-    class Baz:
-        enabled = True
-
-    @implements(Noop)
-    class Bar:
-        pass
-
-    ep = ExtensionPoint(Noop)
-    assert len(ep) == 2
-    for i in ep:
-        # either plugins have .enabled=True, or (per default) are enabled by
-        # not having this attr
-        assert not hasattr(i, "enabled") or i.enabled
-
-
-def test_disabled_implementations():
-    class Noop(Interface):
-        pass
-
-    @implements(Noop)
-    class Baz:
-        enabled = False
-
-    ep = ExtensionPoint(Noop)
-    for i in ep:
-        raise PluginError("Disabled extension was returned in Extensionpoint!")

@@ -6,8 +6,24 @@ from typing import List
 from django.conf import settings
 
 from gdaps import implements, PluginError
-from gdaps.frontend.api import IFrontendEngine
 from gdaps.frontend import frontend_settings
+from django.core.management import CommandError
+
+from gdaps import implements
+from gdaps.conf import gdaps_settings
+from gdaps.frontend.api import IFrontendEngine
+from gdaps.pluginmanager import PluginManager
+
+header = """
+// plugins.js
+//
+// This is a special file that is created by GDAPS automatically
+// using the 'startplugin' and 'syncplugins' management command.
+// Only touch this file if you exactly know what you are doing.
+// it will be overwritten with every run of 'manage.py startplugin <xyz>'
+
+module.exports = {plugins}
+"""
 
 
 @implements(IFrontendEngine)
@@ -20,19 +36,18 @@ class VueEngine:
         "vue.config.js",
         "src/App.vue",
         "src/main.js",
-        "src/plugins.js",
         "src/assets/logo.png",
         "src/components/HelloWorld.vue",
     ]
 
     @staticmethod
     def initialize(frontend_path):
+        """Initializes an already created frontend using 'yarn install'."""
         try:
             # yarn install vue
-            # FIXME: check if yarn is available
-            subprocess.check_call(
-                "yarn install --cwd {}".format(frontend_path), shell=True
-            )
+            if shutil.which("yarn") is None:
+                raise CommandError("Yarn is not available. Please install yarn.")
+            subprocess.check_call(f"yarn install --cwd {frontend_path}", shell=True)
         except Exception as e:
             shutil.rmtree(frontend_path)
             raise e

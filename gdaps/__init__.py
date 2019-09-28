@@ -63,8 +63,8 @@ class Interface(metaclass=InterfaceMeta):
         """Returns True if Interface describes a "service".
 
         Services are Interfaces whose implementations are instantiated at creation time.
-        Per default, service == true, if not set otherwise at declaration in the Interfaces'
-        Meta class.
+        Per default, service == True, if not set otherwise at the declaration in the
+        Interfaces' Meta class.
         """
         return getattr(cls.Meta, "service", True)
 
@@ -84,7 +84,7 @@ class ExtensionPoint:
     # shamelessly copied (and adapted) from PyUtilib
 
     def __init__(self, interface: Type[Interface]) -> None:
-        """Creates the extension point.
+        """Creates the extension point of the given Interface.
 
         :param interface: The interface that is referred to.
         """
@@ -98,11 +98,10 @@ class ExtensionPoint:
                 "An extension point can't directly refer to <Interface>. Use an <Interface> subclass."
             )
         self._interface = interface
-        self.__doc__ = "List of plugins that implement %s" % interface.__name__
+        self.__doc__ = f"List of plugins that implement {interface.__name__}"
 
     def __iter__(self):
         """Returns an iterator to a set of plugins that match the interface of this extension point."""
-
         return self.extensions().__iter__()
 
     def __len__(self):
@@ -131,13 +130,14 @@ class ExtensionPoint:
 
     def __repr__(self):
         """Returns a textual representation of the extension point."""
-        return "<ExtensionPoint for interface '%s'>" % self._interface.__name__
+        return f"<ExtensionPoint for interface '{self._interface.__name__}'>"
 
 
 class Implements:
     """Decorator class for implementing interfaces.
 
-    Just decorate a class:
+    Just decorate a class with @implements to make it an implementation of an
+    :ref:`Interface <Interfaces>`:
 
      .. code-block:: python
 
@@ -148,23 +148,21 @@ class Implements:
                 print("Greetings from PluginA")
 
 
-    You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)* and implement all their
-    methods.
+    You can also implement more than one interface: *@implements(InterfaceA, InterfaceB)*
+    and implement all their methods.
 
     Read more about implementations in the :ref:`Implementations` section.
 
     """
 
-    def __init__(self, *interfaces: List[Interface]) -> None:  # singleton: bool = True
-        """Called at declaration of the decorator (with following class).
+    def __init__(self, *interfaces: List[Interface]) -> None:
+        """Called at declaration of the decorator, with one or more Interfaces as parameter.
+
         :param interfaces: list of interface classes the decorated class will
                 be implementing.
-        # :param singleton: if True the implementations will get instanciated immediately, and prevented from
-        #         a second instantiation.
         """
         # memoize a list of *Interface*s the decorated class is going to implement
         self._interfaces: List[Interface] = []
-        # self._singleton = singleton
 
         if not interfaces:
             raise PluginError(
@@ -187,12 +185,6 @@ class Implements:
 
         # add the decorated class to each Interface's internal implementation list
         assert isinstance(cls, type)
-        # if cls.Meta.singleton:
-        #     # instantiate class immediately if Interface has a singleton marker
-        #     cls = cls()
-        #     cls._singleton_instance = cls
-        # else:
-        #     cls._singleton_instance = None
 
         for interface in self._interfaces:  # type: Interface
             # for attr in [m for m in dir(interface) if not m.startswith("_")]:

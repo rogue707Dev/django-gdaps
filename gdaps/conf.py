@@ -13,7 +13,7 @@ from django.test.signals import setting_changed
 
 NAMESPACE = "GDAPS"
 
-DEFAULTS = {"ADMIN": True}
+DEFAULTS = {"FRONTEND_DIR": "frontend", "FRONTEND_ENGINE": None, "ADMIN": True}
 
 # List of settings that may be in string import notation.
 IMPORT_STRINGS = []
