@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
+
+from gdaps.conf import gdaps_settings
 from gdaps.models import GdapsPlugin
 
 
@@ -44,8 +46,5 @@ class GdapsAdmin(ReadOnlyAdmin):
 # show Admin per default, disable this behaviour using:
 # GDAPS["ADMIN"] = False
 # in settings.py
-try:
-    if settings.GDAPS["ADMIN"]:
-        admin.site.register(GdapsPlugin, GdapsAdmin)
-except KeyError:
+if gdaps_settings.ADMIN:
     admin.site.register(GdapsPlugin, GdapsAdmin)
