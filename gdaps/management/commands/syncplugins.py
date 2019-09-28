@@ -10,8 +10,7 @@ from django.db.migrations.executor import MigrationExecutor
 from django.utils.translation import gettext_lazy as _
 
 import gdaps
-from gdaps.api import IGdapsPlugin
-from gdaps.apps import PluginConfig
+from gdaps.api import IGdapsPlugin, PluginConfig
 from gdaps.exceptions import PluginError
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager

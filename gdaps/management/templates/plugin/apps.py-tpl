@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from gdaps.apps import PluginConfig
+from gdaps.api import PluginConfig
 from gdaps.conf import gdaps_settings
 from . import __version__
 

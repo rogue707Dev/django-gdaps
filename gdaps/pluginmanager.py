@@ -10,7 +10,7 @@ from django.db.models import QuerySet
 from pkg_resources import iter_entry_points
 from typing import List
 
-from gdaps.apps import PluginConfig
+from gdaps.api import PluginConfig
 from gdaps.exceptions import PluginError
 
 __all__ = ["PluginManager"]

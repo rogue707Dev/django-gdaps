@@ -1,4 +1,4 @@
-from gdaps.apps import PluginConfig
+from gdaps.api import PluginConfig
 
 
 class Plugin1Meta:
