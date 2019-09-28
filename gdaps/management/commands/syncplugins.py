@@ -108,13 +108,15 @@ class Command(BaseCommand):
                                 "command first to update plugins."
                             )
 
-                    # at this point, the db is in sync with the files according to Django.
-                    # we can now update all db fields with that from the plugin on disk
-                    # this is necessary as the author e.g. could change during plugin development
-                    self._copy_plugin_to_db(app, db_plugin)
+                # at this point, the db is in sync with the files according to Django.
+                # we can now update all db fields with that from the plugin on disk
+                # this is necessary as the author e.g. could change during plugin development
 
-                    # we can now check if there is code waiting to execute.
-                    # TODO: run upgrade procedure of plugin
+                # Copy metadata to DB in any case, as other thincs as version could have changed too.
+                self._copy_plugin_to_db(app, db_plugin)
+
+                # we can now check if there is code waiting to execute.
+                # TODO: run upgrade procedure of plugin
 
             except ObjectDoesNotExist:
                 # if it doesn't exist, it is a new plugin.
