@@ -96,11 +96,11 @@ class PluginSettings:
     def __getattr__(self, attr):
         if attr in self.removed_settings:
             raise AttributeError(
-                f"Invalid access - Plugin settings attribute '{self._namespace}' has invalid (removed) key: '{attr}'."
+                f"Invalid plugin settings attribute: '{self._namespace}' has invalid (removed) key '{attr}'."
             )
         if attr not in self.defaults:
             raise AttributeError(
-                f"Invalid access - Plugin settings attribute '{self._namespace}' doesn't allow key: '{attr}'"
+                f"Invalid plugin settings attribute: '{self._namespace}' doesn't allow key '{attr}'"
             )
 
         try:
