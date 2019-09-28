@@ -121,7 +121,7 @@ class PluginManager:
         # TODO: test plugins() method
         list = []
         for app in apps.get_app_configs():
-            if not hasattr(app, "PluginMeta") or app.pluginMeta is None:
+            if not hasattr(app, "pluginMeta") or app.pluginMeta is None:
                 continue
             if skip_disabled:
                 # skip disabled plugins per default

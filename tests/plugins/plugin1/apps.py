@@ -9,4 +9,4 @@ class Plugin1Meta:
 class Plugin1Config(PluginConfig):
 
     name = "tests.plugins.plugin1"
-    PluginMeta = Plugin1Meta
+    pluginMeta = Plugin1Meta
