@@ -255,9 +255,6 @@ REMOVED_SETTINGS
    custom settings at all, just delete the file.
 
 
-.. _frontend-support:
-
-
 Admin site
 ----------
 GDAPS provides support for the Django admin site. The built-in ``GdapsPlugin`` model automatically
@@ -278,6 +275,9 @@ If you want to disable the built-in admin site for GDAPS, or provide a custom GD
         "ADMIN": False
     }
 
+
+.. _frontend-support:
+
 Frontend support
 ----------------
 
@@ -286,19 +286,17 @@ ATM only Vue.js ist supported, but PRs are welcome to add more (Angular,
 React?).
 
 Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwords, there is a new
-management command available: ``manage.py initfrontend``. It has one
-mandatory parameter, the frontend engine:
+management command available. Set the ``GDAPS["FRONTEND_ENGINE"]`` to your desired engine (ATM only "vue"), and call:
 
-.. code-block::bash
+.. code-block:: bash
 
-    ./manage.py initfrontend vue
+    ./manage.py initfrontend
 
-This creates a /frontend/ directory in the project root. Change into
-that directory and run ``yarn install`` once to install all the
-dependencies of Vue.js needed.
+This creates a /frontend/ directory in the project root, and installs a Javascript application there.
 
-It is recommended to install vue globally, you can do that with
-``yarn global add @vue/cli @vue/cli-service-global``.
+Vue.js
+    It is recommended to install vue globally, you can do that with
+    ``yarn global add @vue/cli @vue/cli-service-global``.
 
 Now you can start ``yarn serve`` in the frontend directory. This starts
 a development web server that bundles the frontend app using webpack
@@ -335,4 +333,4 @@ So all you have to do is:
 Webpack aggregates all you need into a package, using the ``frontend/plugins.js`` file as index where to find plugin entry points.
 You shouldn't manually edit that file, but just install GDAPS plugins as usual (pip, pipenv, or by adding them to INSTALLED_APPS) and call ``manage.py syncplugins`` then.
 
-This command scans your app for plugins, updates the database with plugin data, and recreates the plugins.js file.
+This command scans your app for plugins, updates the database with plugin data, and recreates the plugins.js entry file.
