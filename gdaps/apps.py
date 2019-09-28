@@ -67,13 +67,9 @@ class PluginConfig(AppConfig):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.name == "gdaps":
-            # ignore GDAPS itself
-            return
-
         if not hasattr(self, "pluginMeta"):
             raise ImproperlyConfigured(
-                "A GDAPS plugin config must have a PluginMeta inner class."
+                "A GDAPS plugin config must have a pluginMeta attribute pointing to a PluginMeta class."
             )
 
         if hasattr(self.pluginMeta, "compatibility"):
