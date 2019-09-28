@@ -3,11 +3,10 @@ import string
 import logging
 import sys
 
-import django
-
 from django.conf import settings
 
-from gdaps import PluginError
+from gdaps.exceptions import PluginError
+from gdaps.frontend.conf import frontend_settings
 from gdaps.pluginmanager import PluginManager
 from gdaps.management.commands.startplugin import Command as StartPluginCommand
 
@@ -25,7 +24,7 @@ class Command(StartPluginCommand):
     def handle(self, name, **options):
         super().handle(name, **options)
 
-        frontend_path = os.path.join(settings.BASE_DIR, "frontend")
+        frontend_path = os.path.join(settings.BASE_DIR, frontend_settings.FRONTEND_DIR)
         if not os.path.exists(frontend_path):
             try:
                 os.makedirs(frontend_path)
