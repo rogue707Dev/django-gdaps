@@ -170,7 +170,7 @@ class PluginManager:
                     )
                 # ignore non-existing <submodule>.py files
                 # in plugins
-                logger.error(
+                logger.info(
                     "Error loading submodule '{}':\n   {}".format(dotted_name, e)
                 )
         return modules
