@@ -9,6 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 from pkg_resources import iter_entry_points
 from typing import List
 
+from gdaps.apps import PluginConfig
 from gdaps.exceptions import PluginError
 
 __all__ = ["PluginManager"]
@@ -109,7 +110,7 @@ class PluginManager:
         return installed_plugin_apps
 
     @staticmethod
-    def plugins(skip_disabled: bool = False) -> List[AppConfig]:
+    def plugins(skip_disabled: bool = False) -> List[PluginConfig]:
         """Returns a list of AppConfig classes that are GDAPS plugins.
 
         This method basically checks for the presence of a ``PluginMeta`` class

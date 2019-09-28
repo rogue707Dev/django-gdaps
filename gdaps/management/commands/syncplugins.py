@@ -71,11 +71,11 @@ class Command(BaseCommand):
                 # noinspection PyUnresolvedReferences
                 db_plugin = GdapsPlugin.objects.get(name=app.name)
 
-                file_version = app.PluginMeta.version
+                file_version = app.pluginMeta.version
                 if Version(file_version) > Version(db_plugin.version):
                     # there is a newer version available on disk
 
-                    # TODO: check PluginMeta.compatibility here
+                    # TODO: check pluginMeta.compatibility here
 
                     self.stdout.write(
                         f"There is a newer version of the '{app.verbose_name}' plugin available.\n"

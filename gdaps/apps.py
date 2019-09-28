@@ -61,6 +61,7 @@ class PluginConfig(AppConfig):
     """
 
     name = "gdaps"
+    pluginMeta = None
 
     # shamelessly copied from Pretix
     def __init__(self, *args, **kwargs):
@@ -75,7 +76,7 @@ class PluginConfig(AppConfig):
                 "A GDAPS plugin config must have a PluginMeta inner class."
             )
 
-        if hasattr(self.PluginMeta, "compatibility"):
+        if hasattr(self.pluginMeta, "compatibility"):
             import pkg_resources
 
             try:
