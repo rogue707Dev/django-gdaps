@@ -104,9 +104,7 @@ class Command(BaseCommand):
                     db_plugin.version = version
                 except ValueError as e:
                     raise ImproperlyConfigured(
-                        "Plugin '{}'version number is incorrect: '{}'".format(
-                            app.name, version
-                        )
+                        f"Plugin '{app.name}' version number is incorrect: '{version}'"
                     )
                 self._copy_plugin_to_db(app, db_plugin)
 
