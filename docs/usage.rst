@@ -1,6 +1,7 @@
+.. usage:
+
 Usage
 =====
-
 
 Creating plugins
 ----------------
@@ -17,8 +18,8 @@ If you use git in your project, install the ``gitpython`` module (``pip/pipenv i
 
 You now have two choices for this plugin:
 
-* add it statically to ``INSTALLED_APPS``: see `Static plugins <#static-plugins>`__.
-* make use of the dynamic loading feature: see `Dynamic plugins <#dynamic-plugins>`__.
+* add it statically to ``INSTALLED_APPS``: see `Static plugins <#static-plugins>`_.
+* make use of the dynamic loading feature: see `Dynamic plugins <#dynamic-plugins>`_.
 
 Static plugins
 ^^^^^^^^^^^^^^
@@ -93,7 +94,7 @@ It's not obligatory to put all Interface definitions in that module, but it is a
 Interfaces can have a default Meta class that defines Interface options.
 Available options:
 
-.. _service
+.. _service:
 
 service
     If ``service=True`` (which is the default), then all implementations are
@@ -118,7 +119,9 @@ ExtensionPoint:
     from gdaps import ExtensionPoint from
     myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
-    class MyPlugin: ep = ExtensionPoint(IFooInterface)
+    class MyPlugin:
+
+        ep = ExtensionPoint(IFooInterface)
 
         def foo_method(self):
             for plugin in ep:
