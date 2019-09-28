@@ -36,10 +36,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, **options):
-        try:
-            frontend_dir = gdaps_settings.FRONTEND_DIR
-        except:
-            frontend_dir = "frontend"
+        frontend_dir = gdaps_settings.FRONTEND_DIR
 
         options["files"] = []
         self.verbosity = options["verbosity"]
