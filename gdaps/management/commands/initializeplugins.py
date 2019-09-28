@@ -55,7 +55,7 @@ class Command(BaseCommand):
             # if it exists, check if there is an update available.
             try:
                 plugin = GdapsPlugin.objects.get(name=app.name)
-                file_version = app.PluginMeta.version
+                file_version = app.pluginMeta.version
                 if Version(file_version) > Version(plugin.version):
                     pass
                     # there is a newer version available on disk
@@ -77,7 +77,7 @@ class Command(BaseCommand):
                 plugin = GdapsPlugin()
                 plugin.name = app.name
 
-                meta = app.PluginMeta
+                meta = app.pluginMeta
 
                 plugin.verbose_name = getattr(
                     meta, "verbose_name", app.name.replace("_", " ").capitalize()

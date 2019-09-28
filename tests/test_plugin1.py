@@ -21,7 +21,7 @@ def test_plugin_meta():
     apps = PluginManager.plugins()
     assert len(apps) != 0
     for app_config in PluginManager.plugins():
-        meta = app_config.PluginMeta
+        meta = app_config.pluginMeta
         assert meta.verbose_name == "Plugin 1"
 
 

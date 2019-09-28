@@ -125,7 +125,7 @@ class PluginManager:
                 continue
             if skip_disabled:
                 # skip disabled plugins per default
-                if not getattr(app.PluginMeta, "enabled", "True"):
+                if not getattr(app.pluginMeta, "enabled", "True"):
                     continue
             list.append(app)
 

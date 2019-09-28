@@ -36,7 +36,7 @@ class {{ camel_case_app_name }}Config(PluginConfig):
     name = '{{ plugin_group }}.{{ app_name }}'
 
     # This is the most important attribute of a GDAPS plugin app.
-    PluginMeta = {{ camel_case_app_name }}PluginMeta
+    pluginMeta = {{ camel_case_app_name }}PluginMeta
 
     def ready(self):
         # This function is called after the app and all models are loaded.
