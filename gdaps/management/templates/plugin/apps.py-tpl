@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from gdaps.apps import PluginConfig
 from gdaps.conf import gdaps_settings
+from . import __version__
 
 
 class {{ camel_case_app_name }}PluginMeta:
@@ -18,7 +19,7 @@ class {{ camel_case_app_name }}PluginMeta:
     description = _('A description of {{ spaced_app_name }}')
     category = _("Base")
     visible = True
-    version = '1.0.0'
+    version = __version__
     # compatibility = "myproject.core>=2.3.0"
 
 
