@@ -6,7 +6,10 @@ import django
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
-from django.core.management.templates import TemplateCommand
+from django.template import Context
+from django.utils.version import get_docs_version
+
+from gdaps.management.templates import TemplateCommand
 from django.apps import apps
 
 from gdaps.pluginmanager import PluginManager
@@ -34,59 +37,43 @@ def get_user_data(key):
 
 
 class Command(TemplateCommand):
-    """This is the managemant command to add a plugin from a template to a Django application.
-
-    Beware: the "startplugin" management command inherits from TemplateCommand, which is not part of Django's
-    official API. There is no guarantee that Django keeps this class stable."""
-
-    # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
-    # If there is a better way to do that - please let me know.
-    _django_root: str = settings.ROOT_URLCONF.split(".")[0]
+    """This is the managemant command to add a plugin from a template to a Django application."""
 
     # absolute path to internal plugins of application
     plugin_path = os.path.join(settings.BASE_DIR, *PluginManager.group.split("."))
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
-        "'{}/' directory from a template.".format(plugin_path)
+        f"'{plugin_path}/' directory from a template."
     )
-
     missing_args_message = "You must provide a plugin name."
+    extensions = ("py",)
+
+    def add_arguments(self, parser):
+        parser.add_argument("name")
 
     def handle(self, name, **options):
-        self.rewrite_template_suffixes += (
-            ("md-tpl", "md"),
-            ("in-tpl", "in"),
-            ("cfg-tpl", "cfg"),
-        )
+
         from django.core.validators import validate_email
 
         plugin_path = PluginManager.plugin_path()
         logger.debug("Using plugin directory: {}".format(self.plugin_path))
 
         # override target directory
-        target = os.path.join(*self.plugin_path.split("."), name)
+        self.target_path = os.path.join(*self.plugin_path.split("."), name)
 
-        if os.path.exists(target):
-            raise CommandError("'{}' already exists".format(target))
+        if os.path.exists(self.target_path):
+            raise CommandError("'{}' already exists".format(self.target_path))
 
         # override plugin template directory
-        del options["template"]
-        template = os.path.join(
-            apps.get_app_config("gdaps").path, "management", "templates", "plugin"
+        self.templates.append(
+            os.path.join(
+                apps.get_app_config("gdaps").path, "management", "templates", "plugin"
+            )
         )
-        self.stdout.write("".join(options["files"]))
 
-        options["upper_cased_app_name"] = name.upper()
-        options["spaced_app_name"] = _snake_case_to_spaces(name)
-
-        options["project_name"] = self._django_root
-        options["plugin_path"] = plugin_path
-        options["project_title"] = self._django_root.capitalize()
-        options["plugin_group"] = PluginManager.group
-        options["files"] += ("MANIFEST.in", "setup.cfg")
-        options["extensions"] += ("md", "rst", "txt")
-        options["django_version"] = django.get_version()
+        # self.files += ["MANIFEST.in", "setup.cfg"]
+        self.extensions += ("md", "rst", "txt")
 
         parameters = [
             # key, value, default, validator/None
@@ -114,15 +101,25 @@ class Command(TemplateCommand):
 
             options[key] = s
 
-        try:
-            os.makedirs(target)
-            self.stdout.write(f"Successfully created plugin: {target}\n")
+        self.context.update(
+            {
+                **options,
+                "app_name": name,
+                "camel_case_app_name": "".join(x for x in name.title() if x != "_"),
+                "upper_cased_app_name": name.upper(),
+                "spaced_app_name": _snake_case_to_spaces(name),
+                "project_name": self._django_root,
+                "plugin_path": plugin_path,
+                "project_title": self._django_root.capitalize(),
+                "plugin_group": PluginManager.group,
+            }
+        )
 
-        except OSError as e:
-            raise CommandError(e)
+        self.create_directory(self.target_path)
 
-        super().handle("app", name, target, template=template, **options)
+        self.copy_templates()
 
+        self.stdout.write(f"Successfully created plugin: {self.target_path}\n")
         self.stdout.write(
-            f"Please adapt '{os.path.join(target, 'setup.cfg')}' to your needs.\n"
+            f"Please adapt '{os.path.join(self.target_path, 'setup.cfg')}' to your needs.\n"
         )

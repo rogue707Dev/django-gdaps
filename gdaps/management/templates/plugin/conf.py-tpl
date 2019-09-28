@@ -35,7 +35,7 @@ IMPORT_STRINGS = (
 REMOVED_SETTINGS = ()
 
 
-{{ app_name }}_settings = PluginSettings('{{ upper_cased_app_name }}', DEFAULTS, IMPORT_STRINGS)
+{{ app_name }}_settings = PluginSettings(NAMESPACE, DEFAULTS, IMPORT_STRINGS)
 
 
 def reload_{{ app_name }}_settings(*args, **kwargs):

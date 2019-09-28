@@ -6,66 +6,46 @@ import stat
 import django
 from django.apps import apps
 from django.conf import settings
-from django.core.management.base import CommandError, BaseCommand
 from django.template import Context
 from django.utils.version import get_docs_version
 
-from gdaps import ExtensionPoint
-from gdaps.frontend.api import IFrontendEngine
 from gdaps.conf import gdaps_settings
 from gdaps.frontend import current_engine
 
 # this imported is needed to add the plugin to the ExtensionPoint,
 # even if it's not used directly.
 from gdaps.frontend.engines import vue
+from gdaps.management.templates import TemplateCommand
+from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__name__)
 
 
-class Command(BaseCommand):
+class Command(TemplateCommand):
     """This command basically comes from Django's TemplateCommand.
 
     It creates a Javascript frontend from a boilerplate code."""
 
-    _django_root: str = settings.ROOT_URLCONF.split(".")[0]
-
     help = "Initializes a Django GDAPS application with a Javascript frontend."
-    rewrite_template_suffixes = (
-        # Allow shipping invalid .py files without byte-compilation.
-        (".py-tpl", ".py"),
-    )
 
-    def handle(self, **options):
-        frontend_dir = gdaps_settings.FRONTEND_DIR
-
-        options["files"] = []
-        self.verbosity = options["verbosity"]
+    def handle(self, *args, **options):
+        super().handle(*args, **options)
+        frontend_dir = os.path.expanduser(gdaps_settings.FRONTEND_DIR)
 
         # create a frontend/ directory in the Django root
-        frontend_path = os.path.abspath(
-            os.path.expanduser(os.path.join(settings.BASE_DIR, frontend_dir))
-        )
+        frontend_path = os.path.abspath((os.path.join(settings.BASE_DIR, frontend_dir)))
 
-        options["files"] += current_engine().files
+        self.rewrite_template_suffixes = current_engine().rewrite_template_suffixes
 
-        try:
-            os.mkdir(frontend_path)
-        except FileExistsError:
-            raise CommandError(
-                "There already seems to be a frontend directory with that name. "
-                f"Please delete the '{frontend_dir}' directory if you want to create a new one."
-            )
+        self.create_directory(frontend_path)
 
-        extra_files = []
-        for file in options["files"]:
-            extra_files.extend(map(lambda x: x.strip(), file.split(",")))
+        # run initialisation of engine
+        current_engine().initialize(frontend_path)
 
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")
-        files = []
-        extensions = ("js",)
 
-        context = Context(
+        self.context = Context(
             {
                 **options,
                 "project_name": project_name,
@@ -78,69 +58,20 @@ class Command(BaseCommand):
             autoescape=False,
         )
 
-        # Setup a stub settings environment for template rendering
-        if not settings.configured:
-            settings.configure()
-            django.setup()
-
-        template_dir = os.path.join(
-            apps.get_app_config("frontend").path,
-            "templates",
-            "gdaps",
-            "frontend",
-            current_engine().name,
+        self.templates.append(
+            os.path.join(
+                apps.get_app_config("frontend").path,
+                "engines",
+                current_engine().name,
+                "template",
+            )
         )
-        for root, dirs, files in os.walk(template_dir):
 
-            for dirname in dirs[:]:
-                if dirname.startswith(".") or dirname == "__pycache__":
-                    dirs.remove(dirname)
+        self.copy_templates()
 
-            for filename in files:
-                # FIXME: use Js specific file endings here
-                if filename.endswith((".pyo", ".pyc", ".py.class")):
-                    # Ignore some files as they cause various breakages.
-                    continue
-                old_path = os.path.join(root, filename)
-
-                new_path = os.path.join(frontend_path, filename)
-                for old_suffix, new_suffix in self.rewrite_template_suffixes:
-                    if new_path.endswith(old_suffix):
-                        new_path = new_path[: -len(old_suffix)] + new_suffix
-                        break  # Only rewrite once
-
-                if os.path.exists(new_path):
-                    raise CommandError(
-                        f"{new_path} already exists, overlaying a "
-                        "frontend file into an existing directory won't replace conflicting files"
-                    )
-
-                # Only render intended files, as we don't want to
-                # accidentally render Django templates files
-                if new_path.endswith(extensions) or filename in extra_files:
-                    with open(old_path, encoding="utf-8") as template_file:
-                        content = template_file.read()
-                    template = django.template.Engine().from_string(content)
-                    content = template.render(context)
-                    with open(new_path, "w", encoding="utf-8") as new_file:
-                        new_file.write(content)
-                else:
-                    shutil.copyfile(old_path, new_path)
-
-                if self.verbosity >= 2:
-                    self.stdout.write(f"Creating {new_path}\n")
-                try:
-                    shutil.copymode(old_path, new_path)
-                    self.make_writeable(new_path)
-                except OSError:
-                    self.stderr.write(
-                        f"Notice: Couldn't set permission bits on {new_path}. You're "
-                        "probably using an uncommon filesystem setup. No problem."
-                    )
-
-        # run initialisation of engine
-        current_engine().initialize(frontend_path)
-
+        current_engine().update_plugins_list(
+            [os.path.join(app.path, "frontend") for app in PluginManager.plugins()]
+        )
         # build
         # subprocess.check_call(
         #     "npm run build --prefix {base_dir}/{plugin}/frontend".format(
@@ -151,13 +82,3 @@ class Command(BaseCommand):
 
         # ask the user to be sure to copy the static files
         # subprocess.check_call('./manage.py collectstatic'.format(plugin=target, base_dir=settings.BASE_DIR), shell=True)
-
-    def make_writeable(self, filename):
-        """
-        Make sure that the file is writeable.
-        Useful if our source is read-only.
-        """
-        if not os.access(filename, os.W_OK):
-            st = os.stat(filename)
-            new_permissions = stat.S_IMODE(st.st_mode) | stat.S_IWUSR
-            os.chmod(filename, new_permissions)

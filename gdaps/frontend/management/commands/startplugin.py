@@ -1,24 +1,35 @@
-import os
-import string
 import logging
+import os
 import sys
+
+from django.apps import apps
 
 from gdaps.frontend import current_engine
 from gdaps.pluginmanager import PluginManager
-from gdaps.management.commands.startplugin import Command as StartPluginCommand
+from gdaps.management.commands.startplugin import Command as GdapsStartPluginCommand
 
 logger = logging.getLogger(__name__)
 
 
-class Command(StartPluginCommand):
-    """This overrides gdaps' startplugin command and adds frontend features to it."""
+class Command(GdapsStartPluginCommand):
+    """Overrides gdaps' startplugin command and adds frontend features to it."""
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
-        f"'{StartPluginCommand.plugin_path}/' directory from a template, including a frontend package."
+        f"'{GdapsStartPluginCommand.plugin_path}/' directory from a template"
+        ", including a frontend package."
     )
 
     def handle(self, name, **options):
+
+        self.templates.append(
+            os.path.join(
+                apps.get_app_config("frontend").path,
+                "management",
+                "templates",
+                "plugin",
+            )
+        )
         super().handle(name, **options)
 
         # get all plugins, including

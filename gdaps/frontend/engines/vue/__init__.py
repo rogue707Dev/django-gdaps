@@ -30,16 +30,12 @@ module.exports = {plugins}
 @implements(IFrontendEngine)
 class VueEngine:
     name = "vue"
-    files = [
-        ".gitignore",
-        "babel.config.js",
-        "package.json",  # contains dependencies
-        "vue.config.js",
-        "src/App.vue",
-        "src/main.js",
-        "src/assets/logo.png",
-        "src/components/HelloWorld.vue",
-    ]
+    files = ["vue.config.js"]
+    rewrite_template_suffixes = (
+        # Allow shipping invalid .js files without linting errors.
+        (".js-tpl", ".js"),
+    )
+    extensions = ("js",)
 
     @staticmethod
     def initialize(frontend_path):
@@ -47,14 +43,26 @@ class VueEngine:
         try:
             # yarn install vue
             if shutil.which("yarn") is None:
-                raise CommandError("Yarn is not available. Please install yarn.")
-            subprocess.check_call(f"yarn install --cwd {frontend_path}", shell=True)
+                raise CommandError("Yarn is not available. Aborting.")
+
+            if shutil.which("vue") is None:
+                subprocess.check_call(
+                    "yarn global add @vue/cli @vue/cli-service-global", shell=True
+                )
+
+            subprocess.check_call(
+                "vue create --no-git .", cwd=frontend_path, shell=True
+            )
+
+            subprocess.check_call(
+                "yarn add webpack-bundle-tracker", cwd=frontend_path, shell=True
+            )
         except Exception as e:
             shutil.rmtree(frontend_path)
             raise e
 
     @staticmethod
-    def update_plugins_list(plugins_list: List[str]) -> None:
+    def update_plugins_list(plugin_names: List[str]) -> None:
         """Writes plugins into plugins.js file, to be collected dynamically by webpack."""
 
         if not os.path.exists(frontend_settings.FRONTEND_DIR):
@@ -70,8 +78,8 @@ class VueEngine:
             plugins_file.write("module.exports = [\n")
 
             counter = 1
-            total = len(plugins_list)
-            for app_name in plugins_list:
+            total = len(plugin_names)
+            for app_name in plugin_names:
                 plugin_frontend_entry_point = os.path.join(app_name, "frontend")
                 if os.path.exists(
                     os.path.join(plugin_frontend_entry_point, "index.js")
