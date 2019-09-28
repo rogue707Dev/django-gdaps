@@ -1,7 +1,6 @@
 import string
 import logging
 
-from django.apps import AppConfig
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, no_translations
@@ -11,6 +10,7 @@ from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
 from gdaps import PluginError
+from gdaps.apps import PluginConfig
 from gdaps.exceptions import IncompatibleVersionsError
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager
@@ -43,9 +43,9 @@ class Command(BaseCommand):
         # return self.__db_synchronized
 
     @staticmethod
-    def _copy_plugin_to_db(app: AppConfig, db_plugin: Model) -> None:
+    def _copy_plugin_to_db(app: PluginConfig, db_plugin: Model) -> None:
         # noinspection PyUnresolvedReferences
-        meta = app.PluginMeta
+        meta = app.pluginMeta
         db_plugin.name = app.name
         db_plugin.verbose_name = getattr(
             meta, "verbose_name", app.name.replace("_", " ").capitalize()
@@ -56,7 +56,7 @@ class Command(BaseCommand):
         db_plugin.category = getattr(meta, "category", _("Miscellaneous"))
         db_plugin.description = getattr(meta, "description", "")
         db_plugin.visible = getattr(meta, "visible", True)
-        db_plugin.version = app.PluginMeta.version
+        db_plugin.version = app.pluginMeta.version
         db_plugin.compatibility = getattr(meta, "compatibility", "")
 
         db_plugin.save()
@@ -100,7 +100,7 @@ class Command(BaseCommand):
                 db_plugin = GdapsPlugin()
                 version = None
                 try:
-                    version = getattr(app.PluginMeta, "version", "1.0.0")
+                    version = getattr(app.pluginMeta, "version", "1.0.0")
                     v = Version(version)
                     db_plugin.version = version
                 except ValueError as e:
@@ -113,12 +113,10 @@ class Command(BaseCommand):
 
                 # TODO: add compatibility check
 
-                if hasattr(app, "initialize"):
+                if hasattr(app.pluginMeta, "initialize"):
                     try:
-                        app.initialize()
+                        app.pluginMeta.initialize()
                     except Exception as E:
                         raise PluginError(
-                            "Error calling initialize method of '{}' plugin".format(
-                                app.name
-                            )
+                            f"Error calling initialize method of '{app.name}' plugin"
                         )
