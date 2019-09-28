@@ -30,12 +30,14 @@ def test_plugin_initialize_cmd():
 
     # first, no plugins are installed.
     with pytest.raises(ObjectDoesNotExist):
+        # noinspection PyUnresolvedReferences
         GdapsPlugin.objects.get(name="tests.plugins.plugin1")
 
     # second, initialize plugins
     call_command("initializeplugins")
 
     # third, now all plugins must be installed
+    # noinspection PyUnresolvedReferences
     plugin1 = GdapsPlugin.objects.get(name="tests.plugins.plugin1")
     assert plugin1.name == "tests.plugins.plugin1"
     assert plugin1.version == "0.0.1"

@@ -54,6 +54,7 @@ class Command(BaseCommand):
             # first, try to fetch this plugin from the DB - if doesn't exist, create and initialize it.
             # if it exists, check if there is an update available.
             try:
+                # noinspection PyUnresolvedReferences
                 plugin = GdapsPlugin.objects.get(name=app.name)
                 file_version = app.pluginMeta.version
                 if Version(file_version) > Version(plugin.version):
