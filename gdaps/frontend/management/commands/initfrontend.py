@@ -11,7 +11,9 @@ from django.template import Context
 from django.utils.version import get_docs_version
 
 from gdaps import ExtensionPoint
+from gdaps.frontend.api import IFrontendEngine
 from gdaps.conf import gdaps_settings
+from gdaps.frontend import current_engine
 from gdaps.frontend.api import IFrontendEngines
 
 logger = logging.getLogger(__name__)
@@ -48,25 +50,12 @@ class Command(BaseCommand):
         if len(self._engines) == 0:
             raise CommandError("There is no frontend engine available.")
 
-        self.engine = None  # type: IFrontendEngine or None
-        for engine in self._engines:
-            if engine.name == settings.GDAPS["FRONTEND_ENGINE"]:
-                self.engine = engine
-                break
-        else:
-            raise CommandError(f"Engine [self.engine] not supported.")
-
-        if not self.engine:
-            raise CommandError(
-                "No frontend engine is selected. Please select one in settings.py using GDAPS['FRONTEND_ENGINE')"
-            )
-
         # create a frontend/ directory in the Django root
         frontend_path = os.path.abspath(
             os.path.expanduser(os.path.join(settings.BASE_DIR, options["frontend_dir"]))
         )
 
-        options["files"] += self.engine.files
+        options["files"] += current_engine().files
 
         try:
             os.mkdir(frontend_path)
