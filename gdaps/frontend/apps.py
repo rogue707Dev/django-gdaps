@@ -7,12 +7,15 @@ from gdaps.apps import GdapsConfig
 import gdaps
 from gdaps import PluginError
 from gdaps.conf import gdaps_settings
+from gdaps.apps import GdapsConfig
 
 
 class FrontendPluginMeta:
     version = gdaps.__version__
     visible = False
-    author =
+    author = GdapsConfig.pluginMeta.author
+    email = GdapsConfig.pluginMeta.author_email
+    category = GdapsConfig.pluginMeta.category
 
 
 class FrontendConfig(AppConfig):
