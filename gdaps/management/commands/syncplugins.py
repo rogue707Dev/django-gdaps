@@ -56,7 +56,6 @@ class Command(BaseCommand):
 
     @staticmethod
     def _copy_plugin_to_db(app: PluginConfig, db_plugin: GdapsPlugin) -> None:
-        # noinspection PyUnresolvedReferences
         meta = app.pluginMeta
         db_plugin.name = app.name
         db_plugin.verbose_name = getattr(
