@@ -220,7 +220,10 @@ class PluginManager:
 
     @staticmethod
     def orphaned_plugins() -> QuerySet:
-        """Returns a list of GdapsPlugin models that have no disk representance any more."""
+        """Returns a list of GdapsPlugin models that have no disk representance any more.
+
+        .. note:: This method needs Django's ORM to be running.
+        """
 
         from gdaps.models import GdapsPlugin
 
