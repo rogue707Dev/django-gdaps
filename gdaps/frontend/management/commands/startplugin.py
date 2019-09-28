@@ -6,7 +6,6 @@ import sys
 import django
 
 from django.conf import settings
-from django.apps import apps
 
 from gdaps import PluginError
 from gdaps.pluginmanager import PluginManager
@@ -36,22 +35,42 @@ class Command(StartPluginCommand):
                 )
 
         # get all plugins, including
-        all_plugins = [app.name for app in PluginManager.plugins()]
-        # FIXME: DEBUG
-        sys.stdout.write("plugins: ")
-        for plugin in all_plugins:
-            sys.stdout.write(plugin)
+        all_plugin_names = [
+            app.name.replace(PluginManager.group + ".", "")
+            for app in PluginManager.plugins()
+        ] + [name]
+        if options["verbosity"] >= 2:
+            sys.stdout.write("Found plugins:\n")
+            for plugin in all_plugin_names:
+                sys.stdout.write("  " + plugin + "\n")
 
         # write plugins into js file, to be collected dynamically by webpack
         try:
             plugins_file = open(os.path.join(frontend_path, "plugins.js"), "w")
             plugins_file.write("module.exports = [\n")
-            for app in all_plugins:
-                plugins_file.write(os.path.join(self.plugin_path, app.name, "frontend"))
+            counter = 1
+            total = len(all_plugin_names)
+            for app_name in all_plugin_names:
+                plugins_file.write(
+                    '  "'
+                    + os.path.join(
+                        self.plugin_path,
+                        app_name.replace(PluginManager.plugin_path(), ""),
+                        "frontend",
+                    )
+                    + '"'
+                )
+                if counter < total:
+                    plugins_file.write(",")
+                plugins_file.write("\n")
+                counter += 1
+
             plugins_file.write("]\n")
-        except:
+        except Exception as e:
             raise PluginError(
-                f"Could not open plugins.js for writing. Please check write permissions in {frontend_path}."
+                str(e)
+                + "\n "
+                + f"Could not open plugins.js for writing. Please check write permissions in {frontend_path}."
             )
         finally:
             plugins_file.close()
