@@ -59,11 +59,6 @@ class Command(BaseCommand):
         extra_files = []
         for file in options["files"]:
             extra_files.extend(map(lambda x: x.strip(), file.split(",")))
-        if self.verbosity >= 2:
-            self.stdout.write(
-                "Rendering frontend files with "
-                f"filenames: {', '.join(extra_files)}\n"
-            )
 
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")
