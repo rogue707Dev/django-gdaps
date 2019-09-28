@@ -9,9 +9,8 @@ from django.db.migrations.executor import MigrationExecutor
 from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 
-from gdaps import PluginError
 from gdaps.apps import PluginConfig
-from gdaps.exceptions import IncompatibleVersionsError
+from gdaps.exceptions import IncompatibleVersionsError, PluginError
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager
 from semantic_version import Version
