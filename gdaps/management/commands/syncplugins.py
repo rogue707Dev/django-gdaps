@@ -21,10 +21,6 @@ from semantic_version import Version
 logger = logging.getLogger(__name__)
 
 
-def _snake_case_to_spaces(name):
-    return string.capwords(name, "_").replace("_", " ")
-
-
 class Command(BaseCommand):
     """This is the management command to sync all installed plugins into the database."""
 
