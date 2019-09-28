@@ -20,9 +20,7 @@ class Command(StartPluginCommand):
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
-        "'{}/' directory from a template, including a frontend package.".format(
-            StartPluginCommand.plugin_path
-        )
+        f"'{StartPluginCommand.plugin_path}/' directory from a template, including a frontend package."
     )
 
     def handle(self, name, **options):
@@ -53,9 +51,7 @@ class Command(StartPluginCommand):
             plugins_file.write("]\n")
         except:
             raise PluginError(
-                "Could not open plugins.js for writing. Please check write permissions in {}.".format(
-                    frontend_path
-                )
+                f"Could not open plugins.js for writing. Please check write permissions in {frontend_path}."
             )
         finally:
             plugins_file.close()
