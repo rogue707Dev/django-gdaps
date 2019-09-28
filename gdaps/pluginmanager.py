@@ -114,8 +114,8 @@ class PluginManager:
     def plugins(skip_disabled: bool = False) -> List[PluginConfig]:
         """Returns a list of AppConfig classes that are GDAPS plugins.
 
-        This method basically checks for the presence of a ``PluginMeta`` class
-        within the AppConfig of all apps and returns a list of them.
+        This method basically checks for the presence of a ``pluginMeta`` attribute
+        within the AppConfig of all apps and returns a list of apps containing it.
         :param skip_disabled: If True, skips disabled plugins and only returns enabled ones. Defaults to ``False``.
         """
 
