@@ -56,18 +56,16 @@ class VueEngine:
     def update_plugins_list(plugins_list: List[str]) -> None:
         """Writes plugins into plugins.js file, to be collected dynamically by webpack."""
 
-        global_frontend_path = os.path.join(
-            settings.BASE_DIR, frontend_settings.FRONTEND_DIR
-        )
-        if not os.path.exists(global_frontend_path):
+        if not os.path.exists(frontend_settings.FRONTEND_DIR):
             try:
-                os.makedirs(global_frontend_path)
+                os.makedirs(frontend_settings.FRONTEND_DIR)
             except:
                 raise PluginError(
-                    f"Could not create frontend directory '{global_frontend_path}'."
+                    f"Could not create frontend directory '{frontend_settings.FRONTEND_DIR}'."
                 )
-        try:
-            plugins_file = open(os.path.join(global_frontend_path, "plugins.js"), "w")
+        with open(
+            os.path.join(frontend_settings.FRONTEND_DIR, "plugins.js"), "w"
+        ) as plugins_file:
 
             plugins_file.write("module.exports = [\n")
 
@@ -81,11 +79,3 @@ class VueEngine:
                 counter += 1
 
             plugins_file.write("]\n")
-        except Exception as e:
-            raise PluginError(
-                str(e)
-                + "\n "
-                + f"Could not open plugins.js for writing. Please check write permissions in {global_frontend_path}."
-            )
-        finally:
-            plugins_file.close()
