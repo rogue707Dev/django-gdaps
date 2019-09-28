@@ -319,12 +319,12 @@ GDAPS app can use a *frontend* directory which contains an installable npm modul
 
 When the ``gdaps.frontend`` app is activated in
 ``INSTALLED_APPS``, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a *frontend* directory in that plugin is
-initialized with a boilerplate javascript file ``index.js``, which is the plugin entry point in the frontend. This is accomplished by webpack and django-webpack-loader.
+initialized with a boilerplate javascript file ``index.js``, which is the plugin entry point of the frontend. This is accomplished by webpack and django-webpack-loader.
 
 So all you have to do is:
 
 #. Add ``gdaps.frontend`` to ``INSTALLED_APPS`` (before ``gdaps``)
-#. Call ``./manage.py initfrontend vue``, if you haven't already
+#. Call ``./manage.py initfrontend``, if you haven't already
 #. Call ``./manage.py startplugin fooplugin`` and fill out the questions
 #. start ``yarn serve`` in the *frontend* directory
 #. start Django server using ``./manage.py runserver``
