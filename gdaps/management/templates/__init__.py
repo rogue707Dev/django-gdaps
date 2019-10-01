@@ -26,7 +26,6 @@ class TemplateCommand(BaseCommand):
     templates = []
     target_path = None
     excluded = ["__pycache__"]  # Files excluded from copying
-    extensions = ()  # TODO:  extensions that are copied. If empty, all are taken.
 
     # A dict of options. Use self.context.update({...}) to append another dict to it
     context = {"docs_version": get_docs_version(), "django_version": django.__version__}
@@ -105,8 +104,8 @@ class TemplateCommand(BaseCommand):
                     # Only render intended files, as we don't want to
                     # accidentally render Django templates files
                     if (
-                        new_path.endswith(self.extensions)
-                        or filename in self.extra_files
+                        new_path.endswith(current_engine().extensions)
+                        or filename in current_engine().files
                     ):
                         with open(old_path, encoding="utf-8") as template_file:
                             content = template_file.read()

@@ -8,20 +8,20 @@ class IFrontendEngine(Interface):
         # FrontendEngines should not be instantiated.
         service = False
 
-    """a name of the frontend which can be used by GDAPS, e.g. 'vue', 'react', etc."""
+    """The name of the frontend which can be used by GDAPS, e.g. 'vue', 'react', etc."""
     name = None
 
-    """A list of (relative) file names that should be copied to the target directory."""
-    files = []
+    """General extensions that should be treated as templates and rendered."""
+    extensions = ("js",)
 
-    """A list of tuples for file endings that should be converged."""
+    """A list of tuples for template file endings that should be renamed."""
     rewrite_template_suffixes = (
         # Allow shipping invalid .js files without linting errors.
         (".js-tpl", ".js"),
     )
 
-    """Allowed extensions which are rendered."""
-    extensions = ("js",)
+    """A list of (relative) file names that also be treated as templates."""
+    files = []
 
     @staticmethod
     def initialize(frontend_dir: str):

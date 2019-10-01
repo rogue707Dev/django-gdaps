@@ -31,12 +31,9 @@ module.exports = {plugins}
 @implements(IFrontendEngine)
 class VueEngine:
     name = "vue"
-    files = []
-    rewrite_template_suffixes = (
-        # Allow shipping invalid .js files without linting errors.
-        (".js-tpl", ".js"),
-    )
     extensions = ("js",)
+    rewrite_template_suffixes = ((".js-tpl", ".js"),)
+    files = []
 
     @staticmethod
     def initialize(frontend_dir):
