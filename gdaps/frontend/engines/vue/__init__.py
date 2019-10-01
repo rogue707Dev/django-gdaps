@@ -30,7 +30,7 @@ module.exports = {plugins}
 @implements(IFrontendEngine)
 class VueEngine:
     name = "vue"
-    files = ["vue.config.js"]
+    files = []
     rewrite_template_suffixes = (
         # Allow shipping invalid .js files without linting errors.
         (".js-tpl", ".js"),

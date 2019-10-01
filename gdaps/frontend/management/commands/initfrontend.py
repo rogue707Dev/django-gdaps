@@ -63,7 +63,7 @@ class Command(TemplateCommand):
                 apps.get_app_config("frontend").path,
                 "engines",
                 current_engine().name,
-                "template",
+                "templates",
             )
         )
 
