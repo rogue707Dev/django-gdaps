@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import stat
@@ -11,6 +12,8 @@ from django.core.management.templates import TemplateCommand as TC
 from django.utils.version import get_docs_version
 
 from gdaps.frontend import current_engine
+
+logger = logging.getLogger(__file__)
 
 
 class TemplateCommand(BaseCommand):
@@ -90,13 +93,13 @@ class TemplateCommand(BaseCommand):
                             break  # Only rewrite once
 
                     if os.path.exists(new_path):
-                        self.stderr.write(
+                        logger.error(
                             f"{new_path} already exists, overlaying a "
                             f"template file {old_path} into an existing directory won't replace conflicting files"
                         )
 
                     if self.verbosity >= 2:
-                        self.stdout.write(f"Creating {new_path}.\n")
+                        logger.info(f"Creating {new_path}.\n")
 
                     # Only render intended files, as we don't want to
                     # accidentally render Django templates files
@@ -119,7 +122,7 @@ class TemplateCommand(BaseCommand):
                         shutil.copymode(old_path, new_path)
                         self.make_writeable(new_path)
                     except OSError:
-                        self.stderr.write(
+                        logger.error(
                             f"Notice: Couldn't set permission bits on {new_path}. You're "
                             "probably using an uncommon filesystem setup. No problem."
                         )
