@@ -54,13 +54,14 @@ class TemplateCommand(BaseCommand):
             )
 
     def copy_templates(self):
+        assert self.target_path is not None
+        assert self.templates is not None
+        assert self.rewrite_template_suffixes is not None
+
         # Setup a stub settings environment for template rendering
         if not settings.configured:
             settings.configure()
             django.setup()
-
-        if self.target_path is None:
-            raise CommandError("No target path defined.")
 
         top_dir = os.path.abspath(path.expanduser(self.target_path))
 
