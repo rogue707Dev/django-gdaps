@@ -21,7 +21,7 @@ header = """
 // This is a special file that is created by GDAPS automatically
 // using the 'startplugin' and 'syncplugins' management command.
 // Only touch this file if you exactly know what you are doing.
-// it will be overwritten with every run of 'manage.py startplugin/syncplugin'
+// It will be overwritten with every run of 'manage.py startplugin/syncplugin'
 
 module.exports = {plugins}
 """

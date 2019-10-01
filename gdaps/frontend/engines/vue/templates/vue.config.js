@@ -39,6 +39,7 @@ module.exports = {
             .hotOnly(true)
             .watchOptions({
                 poll: 1000
+                ignored: '/*/node_modules/'
             })
             .https(false)
             .headers({
