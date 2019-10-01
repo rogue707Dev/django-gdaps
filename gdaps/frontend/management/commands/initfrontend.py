@@ -22,9 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(TemplateCommand):
-    """This command basically comes from Django's TemplateCommand.
-
-    It creates a Javascript frontend from a boilerplate code."""
+    """This command creates a Javascript frontend from a boilerplate code."""
 
     help = "Initializes a Django GDAPS application with a Javascript frontend."
 
@@ -60,6 +58,7 @@ class Command(TemplateCommand):
             autoescape=False,
         )
 
+        # add template subdir per engine
         self.templates.append(
             os.path.join(
                 apps.get_app_config("frontend").path,
@@ -71,6 +70,7 @@ class Command(TemplateCommand):
 
         self.copy_templates()
 
+        # maintain a frontend's plugins list with all found plugin's frontends
         current_engine().update_plugins_list(
             [os.path.join(app.path, "frontend") for app in PluginManager.plugins()]
         )

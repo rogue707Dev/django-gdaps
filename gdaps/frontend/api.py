@@ -29,6 +29,9 @@ class IFrontendEngine(Interface):
 
         This method is called when the frontend is created, and will be only called once.
         It should install all frontend specific stuff, e.g. using Js libraries using 'yarn/npm install' etc.
+        It can assume that the BASE_DIR/frontend_dir/ exists.
+        :param frontend_dir: relative directory within BASE_DIR where the frontend lives.
+
         """
 
     @staticmethod
