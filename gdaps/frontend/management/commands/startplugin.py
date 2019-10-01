@@ -38,8 +38,8 @@ class Command(GdapsStartPluginCommand):
             for app in PluginManager.plugins()
         ] + [name]
         if options["verbosity"] >= 2:
-            sys.stdout.write("Found plugins:\n")
+            logger.info("Found plugins:\n")
             for plugin in all_plugin_names:
-                sys.stdout.write("  " + plugin + "\n")
+                logger.info("  " + plugin + "\n")
 
         current_engine().update_plugins_list(all_plugin_names)
