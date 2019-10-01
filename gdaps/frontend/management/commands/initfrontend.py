@@ -30,17 +30,19 @@ class Command(TemplateCommand):
 
     def handle(self, *args, **options):
         super().handle(*args, **options)
-        frontend_dir = os.path.expanduser(gdaps_settings.FRONTEND_DIR)
+        frontend_dir = gdaps_settings.FRONTEND_DIR
 
         # create a frontend/ directory in the Django root
-        frontend_path = os.path.abspath((os.path.join(settings.BASE_DIR, frontend_dir)))
+        self.target_path = os.path.abspath(
+            (os.path.join(settings.BASE_DIR, frontend_dir))
+        )
 
         self.rewrite_template_suffixes = current_engine().rewrite_template_suffixes
 
-        self.create_directory(frontend_path)
+        self.create_directory(self.target_path)
 
         # run initialisation of engine
-        current_engine().initialize(frontend_path)
+        current_engine().initialize(frontend_dir)
 
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")
@@ -51,7 +53,7 @@ class Command(TemplateCommand):
                 "project_name": project_name,
                 "project_title": project_title,
                 "frontend_dir": frontend_dir,
-                "frontend_path": frontend_path,
+                "frontend_path": self.target_path,
                 "docs_version": get_docs_version(),
                 "django_version": django.__version__,
             },

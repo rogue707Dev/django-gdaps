@@ -4,12 +4,13 @@ import shutil
 import subprocess
 from typing import List
 
+from django.conf import settings
+from django.core.management import CommandError
 
 from gdaps import implements
 from gdaps.exceptions import PluginError
 from gdaps.api import IGdapsPlugin
 from gdaps.frontend import frontend_settings
-from django.core.management import CommandError
 from gdaps.frontend.api import IFrontendEngine
 
 logger = logging.getLogger(__file__)
@@ -38,9 +39,13 @@ class VueEngine:
     extensions = ("js",)
 
     @staticmethod
-    def initialize(frontend_path):
+    def initialize(frontend_dir):
         """Initializes an already created frontend using 'yarn install'."""
+
+        # this method can assume that the frontend_path exists
+        frontend_path = None
         try:
+            frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
             # yarn install vue
             if shutil.which("yarn") is None:
                 raise CommandError("Yarn is not available. Aborting.")
@@ -51,14 +56,18 @@ class VueEngine:
                 )
 
             subprocess.check_call(
-                "vue create --no-git .", cwd=frontend_path, shell=True
+                f"vue create --packageManager yarn --no-git --force {frontend_dir}",
+                cwd=settings.BASE_DIR,
+                shell=True,
             )
 
             subprocess.check_call(
                 "yarn add webpack-bundle-tracker", cwd=frontend_path, shell=True
             )
         except Exception as e:
-            shutil.rmtree(frontend_path)
+            # FIXME: frontend_path/ was not created here - shouldn't be destroyed here!
+            if frontend_path:
+                shutil.rmtree(frontend_path)
             raise e
 
     @staticmethod

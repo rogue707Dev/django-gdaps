@@ -24,7 +24,7 @@ class IFrontendEngine(Interface):
     extensions = ("js",)
 
     @staticmethod
-    def initialize(frontend_path: str):
+    def initialize(frontend_dir: str):
         """Initializes engine.
 
         This method is called when the frontend is created, and will be only called once.
