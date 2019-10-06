@@ -36,7 +36,7 @@ class Command(GdapsStartPluginCommand):
                 "plugin",
             )
         )
-        self.extensions += current_engine().extensions
+        self.rewrite_template_suffixes += current_engine().rewrite_template_suffixes
         self.extra_files += current_engine().extra_files
 
         super().handle(name, **options)
@@ -53,7 +53,9 @@ class Command(GdapsStartPluginCommand):
 
         subprocess.check_call(
             "npm init",
-            cwd=os.path.join(GdapsStartPluginCommand.plugin_path, name, gdaps_settings.FRONTEND_DIR),
+            cwd=os.path.join(
+                GdapsStartPluginCommand.plugin_path, name, gdaps_settings.FRONTEND_DIR
+            ),
             shell=True,
         )
 

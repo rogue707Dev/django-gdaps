@@ -56,10 +56,16 @@ class Command(TemplateCommand):
 
         from django.core.validators import validate_email
 
-        self.extensions += ("py",)
-
         plugin_path = PluginManager.plugin_path()
         logger.debug("Using plugin directory: {}".format(self.plugin_path))
+
+        self.rewrite_template_suffixes += (
+            ("py-tpl", "py"),
+            ("md-tpl", "md"),
+            ("in-tpl", "in"),
+            ("cfg-tpl", "cfg"),
+            ("rst-tpl", "rst"),
+        )
 
         # override target directory
         self.target_path = os.path.join(*self.plugin_path.split("."), name)
@@ -73,9 +79,6 @@ class Command(TemplateCommand):
                 apps.get_app_config("gdaps").path, "management", "templates", "plugin"
             )
         )
-
-        # self.files += ["MANIFEST.in", "setup.cfg"]
-        self.extensions += ("md", "rst", "txt")
 
         parameters = [
             # key, value, default, validator/None

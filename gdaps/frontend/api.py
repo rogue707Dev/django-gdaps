@@ -11,17 +11,11 @@ class IFrontendEngine(Interface):
     """The name of the frontend which can be used by GDAPS, e.g. 'vue', 'react', etc."""
     name = None
 
-    """General extensions that should be treated as templates and rendered."""
-    extensions = ("js",)
+    """A list of tuples for template file endings that should be renamed and rendered as templates."""
+    rewrite_template_suffixes = ((".js-tpl", ".js"),)
 
     """A list of (relative) file names that also be treated as templates."""
     extra_files = []
-
-    """A list of tuples for template file endings that should be renamed."""
-    rewrite_template_suffixes = (
-        # Allow shipping invalid .js files without linting errors.
-        (".js-tpl", ".js"),
-    )
 
     @staticmethod
     def initialize(frontend_dir: str):
