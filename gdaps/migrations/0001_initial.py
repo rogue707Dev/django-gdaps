@@ -7,25 +7,35 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='GdapsPlugin',
+            name="GdapsPlugin",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('verbose_name', models.CharField(max_length=255)),
-                ('author', models.CharField(blank=True, max_length=255)),
-                ('author_email', models.EmailField(blank=True, max_length=254)),
-                ('vendor', models.CharField(blank=True, max_length=255)),
-                ('description', models.TextField(default=None, null=True)),
-                ('version', models.CharField(default='1.0.0', max_length=32)),
-                ('compatibility', models.CharField(default=None, max_length=255, null=True)),
-                ('category', models.CharField(blank=True, default='', max_length=255)),
-                ('visible', models.BooleanField(default=True)),
-                ('enabled', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("verbose_name", models.CharField(max_length=255)),
+                ("author", models.CharField(blank=True, max_length=255)),
+                ("author_email", models.EmailField(blank=True, max_length=254)),
+                ("vendor", models.CharField(blank=True, max_length=255)),
+                ("description", models.TextField(default=None, null=True)),
+                ("version", models.CharField(default="1.0.0", max_length=32)),
+                (
+                    "compatibility",
+                    models.CharField(default=None, max_length=255, null=True),
+                ),
+                ("category", models.CharField(blank=True, default="", max_length=255)),
+                ("visible", models.BooleanField(default=True)),
+                ("enabled", models.BooleanField(default=True)),
             ],
-        ),
+        )
     ]
