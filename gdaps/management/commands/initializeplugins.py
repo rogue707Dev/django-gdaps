@@ -56,7 +56,7 @@ class Command(BaseCommand):
             try:
                 # noinspection PyUnresolvedReferences
                 plugin = GdapsPlugin.objects.get(name=app.name)
-                file_version = app.pluginMeta.version
+                file_version = app.PluginMeta.version
                 if Version(file_version) > Version(plugin.version):
                     pass
                     # there is a newer version available on disk
@@ -78,7 +78,7 @@ class Command(BaseCommand):
                 plugin = GdapsPlugin()
                 plugin.name = app.name
 
-                meta = app.pluginMeta
+                meta = app.PluginMeta
 
                 plugin.verbose_name = getattr(
                     meta, "verbose_name", app.name.replace("_", " ").capitalize()

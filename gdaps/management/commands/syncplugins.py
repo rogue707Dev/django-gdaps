@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def _copy_plugin_to_db(app: PluginConfig, db_plugin: GdapsPlugin) -> None:
-        meta = app.pluginMeta
+        meta = app.PluginMeta
         db_plugin.name = app.name
         db_plugin.verbose_name = getattr(
             meta, "verbose_name", app.name.replace("_", " ").capitalize()
@@ -65,7 +65,7 @@ class Command(BaseCommand):
         db_plugin.category = getattr(meta, "category", _("Miscellaneous"))
         db_plugin.description = getattr(meta, "description", "")
         db_plugin.visible = getattr(meta, "visible", True)
-        db_plugin.version = app.pluginMeta.version
+        db_plugin.version = app.PluginMeta.version
         db_plugin.compatibility = getattr(meta, "compatibility", "")
 
         db_plugin.save()
@@ -89,11 +89,11 @@ class Command(BaseCommand):
                 # noinspection PyUnresolvedReferences
                 db_plugin = GdapsPlugin.objects.get(name=app.name)
 
-                file_version = app.pluginMeta.version
+                file_version = app.PluginMeta.version
                 if Version(file_version) > Version(db_plugin.version):
                     # there is a newer version available on disk
 
-                    # TODO: check pluginMeta.compatibility here
+                    # TODO: check PluginMeta.compatibility here
 
                     self.log(
                         0,
@@ -124,7 +124,7 @@ class Command(BaseCommand):
                 db_plugin = GdapsPlugin()
                 version = None
                 try:
-                    version = app.pluginMeta.version
+                    version = app.PluginMeta.version
                     v = Version(version)
                     db_plugin.version = version
                 except ValueError:
@@ -135,9 +135,9 @@ class Command(BaseCommand):
 
                 # TODO: add compatibility check
 
-                if hasattr(app.pluginMeta, "initialize"):
+                if hasattr(app.PluginMeta, "initialize"):
                     try:
-                        app.pluginMeta.initialize()
+                        app.PluginMeta.initialize()
                     except Exception as E:
                         raise PluginError(
                             f"Error calling initialize method of '{app.name}' plugin"

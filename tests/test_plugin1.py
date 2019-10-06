@@ -21,8 +21,8 @@ def test_plugin_meta():
     apps = PluginManager.plugins()
     assert len(apps) != 0
     for app_config in apps:
-        assert hasattr(app_config.pluginMeta, "verbose_name")
-        assert hasattr(app_config.pluginMeta, "version")
+        assert hasattr(app_config.PluginMeta, "verbose_name")
+        assert hasattr(app_config.PluginMeta, "version")
 
 
 @pytest.mark.django_db

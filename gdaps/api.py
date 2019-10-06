@@ -68,22 +68,22 @@ class PluginConfig(AppConfig):
     """
 
     name = None
-    pluginMeta = None
+    PluginMeta = None
 
     # shamelessly copied from Pretix
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if not hasattr(self, "pluginMeta"):
+        if not hasattr(self, "PluginMeta"):
             raise ImproperlyConfigured(
-                "A GDAPS plugin config must have a pluginMeta attribute pointing to a PluginMeta class."
+                "A GDAPS plugin config must have a PluginMeta attribute pointing to a PluginMeta class."
             )
 
-        if hasattr(self.pluginMeta, "compatibility"):
+        if hasattr(self.PluginMeta, "compatibility"):
             import pkg_resources
 
             try:
-                pkg_resources.require(self.pluginMeta.compatibility)
+                pkg_resources.require(self.PluginMeta.compatibility)
             except pkg_resources.VersionConflict as e:
                 print("Incompatible plugins found!")
                 print(

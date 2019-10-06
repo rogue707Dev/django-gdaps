@@ -13,9 +13,9 @@ from gdaps.apps import GdapsConfig
 class FrontendPluginMeta:
     version = gdaps.__version__
     visible = False
-    author = GdapsConfig.pluginMeta.author
-    email = GdapsConfig.pluginMeta.author_email
-    category = GdapsConfig.pluginMeta.category
+    author = GdapsConfig.PluginMeta.author
+    email = GdapsConfig.PluginMeta.author_email
+    category = GdapsConfig.PluginMeta.category
 
 
 class FrontendConfig(AppConfig):
@@ -23,7 +23,7 @@ class FrontendConfig(AppConfig):
     label = "frontend"
     verbose_name = "GDAPS frontend"
 
-    pluginMeta = FrontendPluginMeta
+    PluginMeta = FrontendPluginMeta
 
     def ready(self):
 

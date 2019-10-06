@@ -1,7 +1,7 @@
 from gdaps.api import PluginConfig
 
 
-class PluginMeta:
+class Plugin1Meta:
     verbose_name = "Plugin 2"
     version = "blah_foo"
 
@@ -9,4 +9,4 @@ class PluginMeta:
 class Plugin2Config(PluginConfig):
 
     name = "tests.plugins.plugin2"
-    pluginMeta = PluginMeta
+    PluginMeta = Plugin1Meta

@@ -26,9 +26,9 @@ class {{ camel_case_app_name }}PluginMeta:
 class {{ camel_case_app_name }}Config(PluginConfig):
     """A GDAPS Django app plugin.
 
-    It needs a special parameter named ``pluginMeta``. It is the key for GDAPS
+    It needs a special parameter named ``PluginMeta``. It is the key for GDAPS
     to recognize this app as a GDAPS plugin.
-    ``pluginMeta`` must point to a class that implements certain attributes
+    ``PluginMeta`` must point to a class that implements certain attributes
     and methods.
     """
 
@@ -37,7 +37,7 @@ class {{ camel_case_app_name }}Config(PluginConfig):
     name = '{{ plugin_group }}.{{ app_name }}'
 
     # This is the most important attribute of a GDAPS plugin app.
-    pluginMeta = {{ camel_case_app_name }}PluginMeta
+    PluginMeta = {{ camel_case_app_name }}PluginMeta
 
     def ready(self):
         # This function is called after the app and all models are loaded.

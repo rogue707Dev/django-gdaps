@@ -14,4 +14,4 @@ class GDAPSPluginMeta:
 
 class GdapsConfig(PluginConfig):
     name = "gdaps"
-    pluginMeta = GDAPSPluginMeta
+    PluginMeta = GDAPSPluginMeta
