@@ -17,8 +17,10 @@ class IFrontendEngine(Interface):
     """A list of (relative) file names that also be treated as templates."""
     extra_files = []
 
-    @staticmethod
-    def initialize(frontend_dir: str):
+    __package_manager = None
+
+    @classmethod
+    def initialize(cls, frontend_dir: str, package_manager: dict):
         """Initializes engine.
 
         This method is called when the frontend is created, and will be only called once.

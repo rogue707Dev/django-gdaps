@@ -79,6 +79,10 @@ FRONTEND_DIR
 
 FRONTEND_ENGINE
     The engine which is used for setting up a frontend. ATM it can only be "vue". In future, maybe other engines are supported (Angular, React, etc.). PRs welcome.
+
+FRONTEND_PKG_MANAGER
+    This is the package manager used to init/install packages. ATM you can use "yarn" or "npm". Default is *npm*.
+
 Now you can initialize the frontend with
 
 .. code-block::bash

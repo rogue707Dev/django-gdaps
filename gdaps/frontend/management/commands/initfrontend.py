@@ -9,12 +9,11 @@ from django.conf import settings
 from django.template import Context
 from django.utils.version import get_docs_version
 
-from gdaps.conf import gdaps_settings
-from gdaps.frontend import current_engine
+from gdaps.frontend import current_engine, frontend_settings
 
 # this imported is needed to add the plugin to the ExtensionPoint,
 # even if it's not used directly.
-from gdaps.frontend.engines import vue
+from gdaps.frontend.engines import vue, current_package_manager
 from gdaps.management.templates import TemplateCommand
 from gdaps.pluginmanager import PluginManager
 
@@ -28,7 +27,7 @@ class Command(TemplateCommand):
 
     def handle(self, *args, **options):
         super().handle(*args, **options)
-        frontend_dir = gdaps_settings.FRONTEND_DIR
+        frontend_dir = frontend_settings.FRONTEND_DIR
 
         # create a frontend/ directory in the Django root
         self.target_path = os.path.abspath(
@@ -40,7 +39,7 @@ class Command(TemplateCommand):
         self.create_directory(self.target_path)
 
         # run initialisation of engine
-        current_engine().initialize(frontend_dir)
+        current_engine().initialize(frontend_dir, current_package_manager())
 
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")

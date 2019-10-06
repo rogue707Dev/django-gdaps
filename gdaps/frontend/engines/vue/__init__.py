@@ -34,32 +34,41 @@ class VueEngine:
     extensions = ("js",)
     rewrite_template_suffixes = ((".js-tpl", ".js"),)
     extra_files = []
+    __package_manager = None
 
-    @staticmethod
-    def initialize(frontend_dir):
-        """Initializes an already created frontend using 'yarn install'."""
+    @classmethod
+    def initialize(cls, frontend_dir, package_manager):
+        """Initializes an already created frontend using 'npm/yarn install'."""
 
+        cls.__package_manager = package_manager
         # this method can assume that the frontend_path exists
         frontend_path = None
         try:
             frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
             # yarn install vue
-            if shutil.which("yarn") is None:
-                raise CommandError("Yarn is not available. Aborting.")
+            if shutil.which(package_manager["name"]) is None:
+                raise CommandError(
+                    f"'{package_manager['name']}' command is not available. Aborting."
+                )
 
             if shutil.which("vue") is None:
                 subprocess.check_call(
-                    "yarn global add @vue/cli @vue/cli-service-global", shell=True
+                    package_manager["installglobal"].format(
+                        pkg="@vue/cli @vue/cli-service-global"
+                    ),
+                    shell=True,
                 )
 
             subprocess.check_call(
-                f"vue create --packageManager yarn --no-git --force {frontend_dir}",
+                f"vue create --packageManager {package_manager['name']} --no-git --force {frontend_dir}",
                 cwd=settings.BASE_DIR,
                 shell=True,
             )
 
             subprocess.check_call(
-                "yarn add webpack-bundle-tracker", cwd=frontend_path, shell=True
+                package_manager["install"].format(pkg="webpack-bundle-tracker"),
+                cwd=frontend_path,
+                shell=True,
             )
         except Exception as e:
             # FIXME: frontend_path/ was not created here - shouldn't be destroyed here!
