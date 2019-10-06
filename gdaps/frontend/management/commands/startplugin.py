@@ -2,7 +2,6 @@ import logging
 import os
 import shutil
 import subprocess
-import sys
 
 from django.apps import apps
 from django.core.management import CommandError
@@ -37,6 +36,9 @@ class Command(GdapsStartPluginCommand):
                 "plugin",
             )
         )
+        self.extensions += current_engine().extensions
+        self.extra_files += current_engine().extra_files
+
         super().handle(name, **options)
 
         # get all plugins, including

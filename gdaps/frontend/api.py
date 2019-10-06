@@ -14,14 +14,14 @@ class IFrontendEngine(Interface):
     """General extensions that should be treated as templates and rendered."""
     extensions = ("js",)
 
+    """A list of (relative) file names that also be treated as templates."""
+    extra_files = []
+
     """A list of tuples for template file endings that should be renamed."""
     rewrite_template_suffixes = (
         # Allow shipping invalid .js files without linting errors.
         (".js-tpl", ".js"),
     )
-
-    """A list of (relative) file names that also be treated as templates."""
-    files = []
 
     @staticmethod
     def initialize(frontend_dir: str):

@@ -8,10 +8,7 @@ import django
 from django.conf import settings
 from django.core.management import BaseCommand, CommandError
 from django.template import Context
-from django.core.management.templates import TemplateCommand as TC
 from django.utils.version import get_docs_version
-
-from gdaps.frontend import current_engine
 
 logger = logging.getLogger(__file__)
 
@@ -23,9 +20,20 @@ class TemplateCommand(BaseCommand):
     # If there is a better way to do that - please let me know.
     _django_root: str = settings.ROOT_URLCONF.split(".")[0]
 
+    # Directories that are searched for template files
     templates = []
+
+    # Path where to copy to
     target_path = None
-    excluded = ["__pycache__"]  # Files excluded from copying
+
+    # Extensions of files which are rendered, not copied
+    extensions = ()
+
+    # extra files which are rendered too instead of copied
+    extra_files = []
+
+    # Files/directories that are generally excluded from copying
+    excluded = ["__pycache__"]
 
     # A dict of options. Use self.context.update({...}) to append another dict to it
     context = {"docs_version": get_docs_version(), "django_version": django.__version__}
@@ -38,10 +46,11 @@ class TemplateCommand(BaseCommand):
         ("cfg-tpl", "cfg"),
         ("js-tpl", "js"),
     )
+
+    # deprecated
     verbosity = 0
 
-    # extra files which are rendered too instead of copied
-    extra_files = []
+
 
     def create_directory(self, path):
         try:
@@ -80,10 +89,6 @@ class TemplateCommand(BaseCommand):
                         dirs.remove(dirname)
 
                 for filename in files:
-                    # FIXME: use Js specific file endings here
-                    # if filename.endswith((".pyo", ".pyc", ".py.class")):
-                    #     # Ignore some files as they cause various breakages.
-                    #     continue
                     old_path = os.path.join(root, filename)
 
                     new_path = os.path.join(top_dir, path_rest, filename)
@@ -104,8 +109,8 @@ class TemplateCommand(BaseCommand):
                     # Only render intended files, as we don't want to
                     # accidentally render Django templates files
                     if (
-                        new_path.endswith(current_engine().extensions)
-                        or filename in current_engine().files
+                        new_path.endswith(self.extensions)
+                        or filename in self.extra_files
                     ):
                         with open(old_path, encoding="utf-8") as template_file:
                             content = template_file.read()

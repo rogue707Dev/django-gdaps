@@ -33,7 +33,7 @@ class VueEngine:
     name = "vue"
     extensions = ("js",)
     rewrite_template_suffixes = ((".js-tpl", ".js"),)
-    files = []
+    extra_files = []
 
     @staticmethod
     def initialize(frontend_dir):

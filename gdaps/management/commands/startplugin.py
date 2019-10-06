@@ -1,13 +1,10 @@
 import os
 import string
 import logging
-import django
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
-from django.template import Context
-from django.utils.version import get_docs_version
 
 from gdaps.management.templates import TemplateCommand
 from django.apps import apps
@@ -47,7 +44,6 @@ class Command(TemplateCommand):
         f"'{plugin_path}/' directory from a template."
     )
     missing_args_message = "You must provide a plugin name."
-    extensions = ("py",)
 
     def add_arguments(self, parser):
         parser.add_argument("name")
@@ -55,6 +51,8 @@ class Command(TemplateCommand):
     def handle(self, name, **options):
 
         from django.core.validators import validate_email
+
+        self.extensions += ("py",)
 
         plugin_path = PluginManager.plugin_path()
         logger.debug("Using plugin directory: {}".format(self.plugin_path))
