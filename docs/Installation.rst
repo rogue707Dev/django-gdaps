@@ -71,7 +71,14 @@ You can leave that empty by now, it's just that it has to exist. Another section
         "FRONTEND_ENGINE": "vue",
     }
 
-The ``FRONTEND_ENGINE`` is used for the following command to setup the right frontend. ATM it can only be "vue".
+There are some keys here to configure:
+
+FRONTEND_DIR
+    This is the directory for the frontend, relative to DJANGO_ROOT.
+    Default is "frontend".
+
+FRONTEND_ENGINE
+    The engine which is used for setting up a frontend. ATM it can only be "vue". In future, maybe other engines are supported (Angular, React, etc.). PRs welcome.
 Now you can initialize the frontend with
 
 .. code-block::bash
