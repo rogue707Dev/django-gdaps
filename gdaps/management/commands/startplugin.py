@@ -36,6 +36,10 @@ def get_user_data(key):
 class Command(TemplateCommand):
     """This is the managemant command to add a plugin from a template to a Django application."""
 
+    # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
+    # If there is a better way to do that - please let me know.
+    _django_root: str = settings.ROOT_URLCONF.split(".")[0]
+
     # absolute path to internal plugins of application
     plugin_path = os.path.join(settings.BASE_DIR, *PluginManager.group.split("."))
 

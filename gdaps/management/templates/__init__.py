@@ -16,10 +16,6 @@ logger = logging.getLogger(__file__)
 class TemplateCommand(BaseCommand):
     help = "Copies a template to a given directory using Django template replacements"
 
-    # FIXME: Using ROOT_URLCONF here is a hack to determine the Django project's _name.
-    # If there is a better way to do that - please let me know.
-    _django_root: str = settings.ROOT_URLCONF.split(".")[0]
-
     # Directories that are searched for template files
     templates = []
 
