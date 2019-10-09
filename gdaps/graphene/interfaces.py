@@ -1,7 +1,8 @@
 from gdaps import Interface
 
 
-class IGrapheneQuery(Interface):
+@Interface
+class IGrapheneQuery:
     """Interface decorator class to collect all graphene queries
 
     Any GDAPS plugin that exposes data to the GraphQL API must implement this
@@ -11,11 +12,11 @@ class IGrapheneQuery(Interface):
     and they are included into the global GraphQL API automatically.
     """
 
-    class Meta:
-        service = False
+    __service__ = False
 
 
-class IGrapheneMutation(Interface):
+@Interface
+class IGrapheneMutation:
     """Interface decorator class to collect all graphene mutations
 
     Any GDAPS plugin that creates data mutations for the GraphQL API must implement this
@@ -25,5 +26,4 @@ class IGrapheneMutation(Interface):
     and they are included into the global GraphQL API automatically.
     """
 
-    class Meta:
-        service = False
+    __service__ = False
