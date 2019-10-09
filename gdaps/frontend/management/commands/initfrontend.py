@@ -11,7 +11,7 @@ from django.utils.version import get_docs_version
 
 from gdaps.frontend import current_engine, frontend_settings
 
-# this imported is needed to add the plugin to the ExtensionPoint,
+# this imported is needed to auto-recognize the plugin,
 # even if it's not used directly.
 from gdaps.frontend.engines import vue, current_package_manager
 from gdaps.management.templates import TemplateCommand

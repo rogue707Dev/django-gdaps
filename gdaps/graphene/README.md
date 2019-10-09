@@ -31,8 +31,7 @@ class UserType(DjangoObjectType):
         model = User
 
 
-@implements(IGrapheneQuery)
-class UserQuery:
+class UserQuery(IGrapheneQuery):
     users = graphene.List(UserType)
 
     @staticmethod

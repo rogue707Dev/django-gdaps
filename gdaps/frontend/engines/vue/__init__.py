@@ -7,8 +7,6 @@ from typing import List
 from django.conf import settings
 from django.core.management import CommandError
 
-from gdaps import implements
-from gdaps.exceptions import PluginError
 from gdaps.api import IGdapsPlugin
 from gdaps.frontend import frontend_settings
 from gdaps.frontend.api import IFrontendEngine
@@ -28,8 +26,7 @@ module.exports = {plugins}
 """
 
 
-@implements(IFrontendEngine)
-class VueEngine:
+class VueEngine(IFrontendEngine):
     name = "vue"
     extensions = ("js",)
     rewrite_template_suffixes = ((".js-tpl", ".js"),)
@@ -111,8 +108,7 @@ class VueEngine:
             plugins_file.write("]\n")
 
 
-@implements(IGdapsPlugin)
-class VuePlugin:
+class VuePlugin(IGdapsPlugin):
     def plugin_synchronized(self, app):
         if not os.path.exists(os.path.join(app.path, "frontend", "index.js")):
             logger.info(f"    - {app.name} - no frontend found.")

@@ -1,7 +1,6 @@
 import graphene
 
 from gdaps import PluginError
-from gdaps import ExtensionPoint
 from gdaps.graphene.interfaces import IGrapheneQuery, IGrapheneMutation
 from gdaps.pluginmanager import PluginManager
 
@@ -18,9 +17,8 @@ class EmptyMutation(graphene.ObjectType):
 
 PluginManager.load_plugin_submodule("schema")
 
-ep = ExtensionPoint(IGrapheneQuery)
-if len(ep) > 0:
-    GDAPSQuery = type("GDAPSQuery", tuple(ep) + (EmptyQuery, graphene.ObjectType), {})
+if len(IGrapheneQuery) > 0:
+    GDAPSQuery = type("GDAPSQuery", tuple(IGrapheneQuery) + (EmptyQuery, graphene.ObjectType), {})
 else:
     raise PluginError(
         "No plugin implements the <IGrapheneQuery> interface. "
@@ -28,8 +26,7 @@ else:
     )
 
 
-ep = ExtensionPoint(IGrapheneMutation)
-if len(ep) > 0:
-    GDAPSMutation = type("GDAPSMutation", tuple(ep) + (graphene.ObjectType,), {})
+if len(IGrapheneMutation) > 0:
+    GDAPSMutation = type("GDAPSMutation", tuple(IGrapheneMutation) + (graphene.ObjectType,), {})
 else:
     GDAPSMutation = None

@@ -1,25 +1,23 @@
-from gdaps import implements, Interface, ExtensionPoint, PluginError
+from gdaps import Interface, PluginError
 
 
-class INoop(Interface):
+@Interface
+class INoop:
     pass
 
 
-@implements(INoop)
-class Baz:
+class Baz(INoop):
     enabled = True
 
 
-@implements(INoop)
-class Bar:
+class Bar(INoop):
     pass
 
 
 def test_enabled_implementations():
 
-    ep = ExtensionPoint(INoop)
-    assert len(ep) == 2
-    for i in ep:
+    assert len(INoop) == 2
+    for i in INoop:
         # either plugins have .enabled=True, or (per default) are enabled by
         # not having this attr
         assert not hasattr(i, "enabled") or i.enabled
@@ -28,17 +26,16 @@ def test_enabled_implementations():
 # ------------------------------------------------------------
 
 
-class INoop2(Interface):
+@Interface
+class INoop2:
     pass
 
 
-@implements(INoop2)
-class Baz:
+class Baz2(INoop2):
     enabled = False
 
 
 def test_disabled_implementations():
 
-    ep = ExtensionPoint(INoop2)
-    for i in ep:
-        raise PluginError("Disabled extension was returned in Extensionpoint!")
+    for i in INoop2:
+        raise PluginError("Disabled extension was returned in Interface!")

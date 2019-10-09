@@ -1,6 +1,7 @@
 from gdaps import Interface
 
 
-class FirstInterface(Interface):
+@Interface
+class FirstInterface:
     def first_method(self):
         pass

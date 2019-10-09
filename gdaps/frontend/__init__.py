@@ -1,6 +1,5 @@
 import logging
 
-from gdaps import ExtensionPoint
 from gdaps.exceptions import PluginError
 from gdaps.frontend.api import IFrontendEngine
 from gdaps.frontend.conf import frontend_settings
@@ -21,8 +20,7 @@ def current_engine() -> IFrontendEngine:
     if __current_engine:
         return __current_engine
 
-    engines = ExtensionPoint(IFrontendEngine)
-    for engine in engines:
+    for engine in IFrontendEngine:
         if engine.name == frontend_settings.FRONTEND_ENGINE:
             __current_engine = engine
             return engine

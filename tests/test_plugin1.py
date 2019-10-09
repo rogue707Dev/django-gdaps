@@ -2,16 +2,14 @@ import pytest
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management import call_command
 
-from gdaps import ExtensionPoint
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager
 from .plugins import FirstInterface
 
 
 def test_plugin1():
-    ep = ExtensionPoint(FirstInterface)
-    assert len(ep) != 0
-    for plugin in ep:
+    assert len(FirstInterface) != 0
+    for plugin in FirstInterface:
         assert plugin.first_method() == "first"
 
 

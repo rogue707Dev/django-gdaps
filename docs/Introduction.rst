@@ -22,14 +22,13 @@ The "observer pattern" plugin system is completely decoupled from the PluginMana
 (which manages GDAPS pluggable Django apps), so basically you have two choices to use GDAPS:
 
 Simple
-    Use :ref:`Interfaces`, :ref:`ExtensionPoints`, and :ref:`Implementations`  **without a plugin/module
-    system**. It's not necessary to divide your application into GDAPS apps to use GDAPS.
+    Use :ref:`Interfaces`, and :ref:`Implementations`  **without a plugin/module system**. It's not necessary to divide your application into GDAPS apps to use GDAPS.
     Just code your application as usual and have an
     easy-to-use "observer pattern" plugin system.
 
     * Define an interface
     * Create one or more implementations for it and
-    * put an extensionpoint anywhere in your code.
+    * iterate over the interface to get all plugins.
 
     Just *importing* the python files with your implementations will make them work.
 
@@ -41,8 +40,7 @@ Full
     Use GDAPS as **complete module/app system**.
 
     * You'll have to add "gdaps" to your INSTALLED_APPS first.
-    * Create plugins using the ``startplugin`` managemant command, and install them via
-      pip/pipenv.
+    * Create plugins using the ``startplugin`` managemant command, and install them via pip/pipenv.
 
     You have a :ref:`PluginManager` available then, and after a ``manage.py migrate``
     and ``manage.py syncplugins``,

@@ -1,32 +1,32 @@
 import pytest
 
-from gdaps import implements, Interface, ExtensionPoint, Implements, PluginError
+from gdaps import Interface, PluginError
 
 
-class IFoo(Interface):
+@Interface
+class IFoo:
     def foo_method(self):
         pass
 
 
-class IAttribute1(Interface):
+@Interface
+class IAttribute1:
     """Implementations should contain a 'foo' attribute: list of str"""
 
     foo = []
 
 
-class IFooNonService(Interface):
-    class Meta:
-        service = False
+@Interface
+class IFooNonService:
+    __service__ = False
 
 
-@implements(IFoo)
-class Foo:
+class Foo(IFoo):
     def foo_method(self):
         pass
 
 
-@implements(IFooNonService)
-class Baz1:
+class Baz1(IFooNonService):
     pass
 
 
@@ -34,42 +34,40 @@ class Baz1:
 
 
 def test_nonservice_is_not_instantiated():
-    ep = ExtensionPoint(IFooNonService)
-    for i in ep:
+    for i in IFooNonService:
         assert i is Baz1
 
 
-def test_interface_attribute():
-    ep = ExtensionPoint(IFoo)
+def test_implementations_attribute():
+    # FIXME: maybe a test of a "protected" member is not necessary
+    assert hasattr(IFoo, "_implementations")
 
-    assert hasattr(ep, "_interface")
 
-
-# FIXME: does not work yet, see issue #1
 def test_service_is_instantiated():
-    ep = ExtensionPoint(IFoo)
-    for i in ep:
+    for i in IFoo:
         assert hasattr(i, "foo_method")
         assert isinstance(i, Foo)
 
 
 def test_service_method_call():
-    ep = ExtensionPoint(IFoo)
-    for i in ep:
+    for i in IFoo:
         i.foo_method()
 
 
 # def test_attribute_missing():
 #    with pytest.raises(PluginError):
 #
-#        @implements(IAttribute1)
-#        class MissingAttr:
+#        class MissingAttr(IAttribute1):
 #            pass
 
 
 def test_empty_implements():
-    with pytest.raises(PluginError):
+    with pytest.raises(TypeError):
 
-        @implements()  # implements must have an Interface as argument
+        @Interface()  # Interface must not have an argument
         class Foo:
+            pass
+
+        @Interface("baz")  # Interface must not have an argument
+        class Foo2:
             pass

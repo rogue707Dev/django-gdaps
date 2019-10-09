@@ -3,10 +3,10 @@ from typing import List
 from gdaps import Interface
 
 
-class IFrontendEngine(Interface):
-    class Meta:
-        # FrontendEngines should not be instantiated.
-        service = False
+@Interface
+class IFrontendEngine:
+    # FrontendEngines should not be instantiated.
+    __service__ = False
 
     """The name of the frontend which can be used by GDAPS, e.g. 'vue', 'react', etc."""
     name = None
@@ -16,6 +16,8 @@ class IFrontendEngine(Interface):
 
     """A list of (relative) file names that also be treated as templates."""
     extra_files = []
+
+    extensions = ()
 
     __package_manager = None
 

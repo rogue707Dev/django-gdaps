@@ -3,7 +3,8 @@ from gdaps import Interface
 # You can place your interfaces here, to be included from dependent plugins
 
 # from gdaps import Interface
-# class IMySpecial{{ camel_case_app_name }}Interface(Interface):
+# @Interface
+# class IMySpecial{{ camel_case_app_name }}Interface:
 #     """Please provide a detailed documentation of the interface."""
 #
 #     def do_something(self):
@@ -12,11 +13,9 @@ from gdaps import Interface
 #
 #     Then implement this interface in another, dependent plugin:
 #
-#     from gdaps import implements
 #     from {{ plugin_group }}.{{ app_name }}.api.interfaces import IMySpecial{{ camel_case_app_name }}Interface
 #
-#     @implements(IMySpecial{{ camel_case_app_name }}Interface)
-#     class OtherPluginClass:
+#     class OtherPluginClass(IMySpecial{{ camel_case_app_name }}Interface):
 #
 #        def do_something(self):
 #            """do something."""

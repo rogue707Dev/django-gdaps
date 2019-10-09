@@ -1,14 +1,16 @@
 import pytest
 
-from gdaps import Interface, implements, ExtensionPoint
+from gdaps import Interface
 from gdaps.exceptions import PluginError
 
 
-class ITestInterface1(Interface):
+@Interface
+class ITestInterface1:
     pass
 
 
-class ITestInterface2(Interface):
+@Interface
+class ITestInterface2:
     def required_method(self):
         pass
 
@@ -20,21 +22,18 @@ class TestPlugin:
     pass
 
 
-@implements(ITestInterface1)
-class TestPlugin1(TestPlugin):
+class TestPlugin1(TestPlugin, ITestInterface1):
     pass
 
 
-@implements(ITestInterface1)
-class TestPlugin3(TestPlugin):
+class TestPlugin3(TestPlugin, ITestInterface1):
     pass
 
 
 # def test_missing_method():
 #     with pytest.raises(PluginError):
 #
-#         @implements(ITestInterface2)
-#         class TestPlugin2(TestPlugin):
+#         class TestPlugin2(TestPlugin, ITestInterface2):
 #             # does not implement required_method()
 #             # this must raise an error at declaration time!
 #             def get_item(self):
@@ -43,45 +42,37 @@ class TestPlugin3(TestPlugin):
 
 def test_try_instanciate_interface():
     """Try to instantiate an interface directly. Should be forbidden"""
-    with pytest.raises(PluginError):
+    with pytest.raises(TypeError):
         Interface()
 
 
 def test_dont_implement_interface_directly():
-    """Try to implement an interface directly. Should be forbidden"""
-    with pytest.raises(PluginError):
+    """Try to implement an "Interface" directly. Should be forbidden"""
+    with pytest.raises(TypeError):
 
-        @implements(Interface)
-        class Dummy:
+        class Dummy(Interface):
             pass
 
 
+# FIXME: does not work yet
 def test_multiple_interfaces():
     """Try to implement more than one interfaces in one implementation"""
 
-    @implements(ITestInterface1, ITestInterface2)
-    class Dummy:
+    class Dummy(ITestInterface1, ITestInterface2):
         def required_method(self):
             pass
 
         def get_item(self):
             pass
 
-    ep1 = ExtensionPoint(ITestInterface1)
-    assert Dummy in ep1
-
-    ep2 = ExtensionPoint(ITestInterface2)
-    assert Dummy in ep2
-
-
-def test_interface_attr():
-    ep = ExtensionPoint(ITestInterface1)
-
-    assert hasattr(ep, "_interface")
+    assert Dummy in ITestInterface1
+    assert Dummy in ITestInterface2
 
 
 def test_interface_implementations_attr():
-    ep = ExtensionPoint(ITestInterface1)
 
-    assert hasattr(ep._interface, "_implementations")
-    assert len(ep._interface._implementations) == 3
+    assert hasattr(ITestInterface1, "_implementations")
+    assert len(ITestInterface1._implementations) == 3
+
+    assert hasattr(ITestInterface2, "_implementations")
+    assert len(ITestInterface2._implementations) == 1

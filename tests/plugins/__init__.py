@@ -1,8 +1,6 @@
-from gdaps import implements
 from tests.plugins.plugin1.api import FirstInterface
 
 
-@implements(FirstInterface)
-class Foo:
+class Foo(FirstInterface):
     def first_method(self):
         return "first"

@@ -1,13 +1,15 @@
 import pytest
 
-from gdaps import ExtensionPoint, Interface, PluginError, implements
+from gdaps import Interface, PluginError
 
 
-class ITestInterface1(Interface):
+@Interface
+class ITestInterface1:
     pass
 
 
-class ITestInterface2(Interface):
+@Interface
+class ITestInterface2:
     def required_method(self):
         pass
 
@@ -15,22 +17,20 @@ class ITestInterface2(Interface):
         pass
 
 
-class INonService(Interface):
-    class Meta:
-        service = False
+@Interface
+class INonService:
+    __service__ = False
 
     def foo(self):
         pass
 
 
-@implements(INonService)
-class NonService1:
+class NonService1(INonService):
     def foo(self):
         pass
 
 
-@implements(INonService)
-class NonService2:
+class NonService2(INonService):
     def foo(self):
         pass
 
@@ -40,19 +40,23 @@ class TestPlugin:
 
 
 # Test classes for interfaces and their implementations
-class ITestInterface3(Interface):
+@Interface
+class ITestInterface3:
     pass
 
 
-class ITestInterface4(Interface):
+@Interface
+class ITestInterface4:
     pass
 
 
-class ITestInterface5(Interface):
+@Interface
+class ITestInterface5:
     pass
 
 
-class IAttribute1Interface(Interface):
+@Interface
+class IAttribute1Interface:
     """Implementations should contain a 'foo' attribute: list of str"""
 
     foo = []
@@ -61,85 +65,64 @@ class IAttribute1Interface(Interface):
 # Test implementations
 
 
-@implements(ITestInterface3)
-class Foo:
+class Foo(ITestInterface3):
     pass
 
 
-@implements(ITestInterface4)
-class Bar:
+class Bar(ITestInterface4):
     pass
 
 
-@implements(ITestInterface4)
-class Baz:
+class Baz(ITestInterface4):
     pass
 
 
-@implements(IAttribute1Interface)
-class Attribute2Class:
+class Attribute2Class(IAttribute1Interface):
     foo = ["first", "second"]
 
 
-@implements(ITestInterface1)
-class TestPlugin1(TestPlugin):
+class TestPlugin1(TestPlugin, ITestInterface1):
     pass
 
 
-@implements(ITestInterface1)
-class TestPlugin3(TestPlugin):
+class TestPlugin3(TestPlugin, ITestInterface1):
     pass
 
 
 # Tests
 
 
-def test_empty_ep():
-    """Tests if Creating an extension point without an Interface fails"""
-
-    with pytest.raises(PluginError):
-        _ep = ExtensionPoint(None)
-
-
 def test_iterable_extensionpoint():
     """Raises an Error if an extension point is not iterable"""
-    ep = ExtensionPoint(ITestInterface1)
-    for _plugin in ep:
+    for _plugin in ITestInterface1:
         pass
 
 
 # def test_call_method():
 #    """Raises an error if an implemented method is not callable"""
 #
-#    ep = ExtensionPoint(ITestInterface2)
-#    for i in ep():
-#        _dummy = i().get_item()
+#    for i in ITestInterface2:
+#        _dummy = i.get_item()
 
 
 def test_direct_interface_extension():
     """Tests if direct implementation of "Interface" fails"""
 
-    with pytest.raises(PluginError):
-        _ep = ExtensionPoint(Interface)
+    with pytest.raises(TypeError):
+        for _plugin in Interface:
+            pass
 
     # This should pass
-    _ep = ExtensionPoint(ITestInterface2)
-
-
-def test_ep_repr():
-    ep = ExtensionPoint(ITestInterface2)
-    assert ep.__repr__() == "<ExtensionPoint for interface 'ITestInterface2'>"
+    for _plugin in ITestInterface2:
+        pass
 
 
 def test_ep_len():
-    ep = ExtensionPoint(ITestInterface5)
-    assert len(ep) == 0
+    assert len(ITestInterface5) == 0
 
-    ep = ExtensionPoint(ITestInterface3)
-    assert len(ep) == 1
+    assert len(ITestInterface3) == 1
 
-    ep = ExtensionPoint(ITestInterface4)
-    assert len(ep) == 2
+    assert len(ITestInterface4) == 2
 
 
 def test_attribute():
@@ -149,14 +132,13 @@ def test_attribute():
 
 
 def test_nonservice_plugins():
-    ep = ExtensionPoint(INonService)
-    for i in ep:
+    for i in INonService:
         # compare classes, not instances
-        assert NonService1 in ep
-        assert NonService2 in ep
+        assert NonService1 in INonService
+        assert NonService2 in INonService
 
         # don't accept arbitrary instances as comparison objects
-        assert NonService1() not in ep
+        assert NonService1() not in INonService
 
         # methods cannot be called, as there is no instance yet
         with pytest.raises(TypeError):

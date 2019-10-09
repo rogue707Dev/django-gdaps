@@ -144,7 +144,7 @@ class Command(BaseCommand):
                         )
 
             # plugin hook after plugins are synchronized to DB
-            for ep in gdaps.ExtensionPoint(IGdapsPlugin):
+            for ep in IGdapsPlugin:
                 ep.plugin_synchronized(app)
 
         # are there plugins in the database that do not exist on disk?

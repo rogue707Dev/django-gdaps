@@ -60,8 +60,6 @@ this also works when plugins are installed from PyPi, they don't have to
 be in the project's ``plugins`` folder. You can conveniently start
 developing plugins in there, and later move them to the PyPi repository.
 
-.. _Interfaces:
-
 
 The plugin AppConfig
 --------------------
@@ -70,6 +68,7 @@ Django recommends to point ot the app's AppConfig directly in INSTALLED_APPS. Yo
 
 Plugins' AppConfigs must inherit from ``gdaps.apps.PluginConfig``, and provide an inner class, or a pointer to an external ``PluginMeta`` class. For more information see :class:`gdaps.apps.PluginConfig`.
 
+.. _Interfaces:
 
 Interfaces
 ----------
@@ -82,11 +81,11 @@ It's not obligatory to put all Interface definitions in that module, but it is a
 
     from gdaps import Interface
 
-    class IFooInterface(Interface):
+    @Interface
+    class IFooInterface:
         """Documentation of the interface"""
 
-        class Meta:
-            service = True
+        __service__ = True  # is the default
 
         def do_something(self):
             pass
@@ -96,39 +95,23 @@ Available options:
 
 .. _service:
 
-service
-    If ``service=True`` (which is the default), then all implementations are
-    instantiated instantly at definition time, having a full class instance
-    availably at any time. Iterations over ExtensionPoints return the instances directly.
+__service__
+    If ``__service__ = True`` is set (which is the default), then all implementations are
+    instantiated directly at definition time, having a full class instance
+    availably at any time. Iterations over Interfaces return **instances**.
 
-    If you use ``service=False``, the plugin is not instantiated, and
-    iterations over ExtensionPoints will return **classes**, not instances.
+    .. code-block:: python
+
+        for plugin in IFooInterface:
+            plugin.do_something()
+
+..
+
+    If you use ``__service__ = False``, the plugins are not instantiated, and
+    iterations over Instances will return **classes**, not instances.
     This sometimes may be the desired functionality, e.g. for data classes, or classes that
-    just return staticmethods.
+    just contain static methods.
 
-ExtensionPoints
----------------
-
-An ExtensionPoint (EP) is a plugin hook that refers to an Interface. An
-EP can be defined anywhere in code. You can then get all the plugins
-that implement that interface by just iterating over that
-ExtensionPoint:
-
-.. code-block:: python
-
-    from gdaps import ExtensionPoint from
-    myproject.plugins.fooplugin.api.interfaces import IFooInterface
-
-    class MyPlugin:
-
-        ep = ExtensionPoint(IFooInterface)
-
-        def foo_method(self):
-            for plugin in ep:
-                print plugin().do_domething()
-
-Depending on the `service <#service>`__ Meta flag, iterating over an ExtensionPoint
-returns either a **class** (``service = False``) or an already instantiated **object** (``service = True``). Depending on your needs, just set *service* to the correct value. The default is *True*.
 
 .. _Implementations:
 
@@ -136,24 +119,35 @@ Implementations
 ---------------
 
 You can then easily implement this interface in any other file (in this
-plugin or in another plugin) using the ``@implements`` decorator syntax:
+plugin or in another plugin) by subclassing the interface:
 
 .. code-block:: python
 
-    from gdaps import implements
     from myproject.plugins.fooplugin.api.interfaces import IFooInterface
 
-    @implements(IFooInterface)
-    class OtherPluginClass:
+    class OtherPluginClass(IFooInterface):
 
         def do_something(self):
             print('I did something!')
 
-I didn't want to force implementations to inherit a ``Plugin`` base
-class, like some other plugin systems do. This would mean that
-implementations won't be as flexible as I wanted them. When just using a
-decorator, you can easily use ANY, even your already existing, class and
-just ducktype-implement the methods the Interface demands.
+
+Using Implementations
+---------------------
+You can straight-forwardly use implementations that are bound to an interface by iterating over that interface,
+anywhere in your code.
+
+.. code-block:: python
+
+    from myproject.plugins.fooplugin.api.interfaces import IFooInterface
+
+    class MyPlugin:
+
+        def foo_method(self):
+            for plugin in IFooInterface:
+                print plugin().do_domething()
+
+Depending on the `__service__ <#service>`__ Meta flag, iterating over an Interface
+returns either a **class** (``__service__ = False``) or an already instantiated **object** (``__service__ = True``), which is the default.
 
 
 Extending Django's URL patterns
