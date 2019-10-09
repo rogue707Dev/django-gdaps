@@ -144,7 +144,7 @@ anywhere in your code.
 
         def foo_method(self):
             for plugin in IFooInterface:
-                print plugin().do_domething()
+                print plugin.do_domething()
 
 Depending on the `__service__ <#service>`__ Meta flag, iterating over an Interface
 returns either a **class** (``__service__ = False``) or an already instantiated **object** (``__service__ = True``), which is the default.
