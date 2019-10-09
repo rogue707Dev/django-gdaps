@@ -7,7 +7,7 @@ from gdaps.exceptions import PluginError
 
 
 __all__ = ["Interface", "require_app"]
-__version__ = "0.3.11"
+__version__ = "0.4.0"
 
 default_app_config = "gdaps.apps.GdapsConfig"
 
