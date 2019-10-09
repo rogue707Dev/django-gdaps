@@ -1,4 +1,4 @@
-__all__ = ["PluginError"]
+__all__ = ["PluginError", "IncompatibleVersionsError"]
 
 
 class PluginError(Exception):
