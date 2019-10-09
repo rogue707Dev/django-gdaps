@@ -13,14 +13,13 @@ INSTALLED_APPS = [
 ]
 ```
 
-It introduces an `IGrapheneQuery` interface that you must use for creating Queries which are automatically found and installed. Just create a `schema.py`file and decorate any of your Graphene queries like:
+It introduces an `IGrapheneQuery` interface that you must use for creating Queries which are automatically found and installed. Just create a `schema.py`file and any of your Graphene queries like:
 
 ```python
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 
-from gdaps import implements
 from gdaps.graphene.interfaces import IGrapheneQuery
 
 

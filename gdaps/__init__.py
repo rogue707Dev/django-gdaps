@@ -85,7 +85,7 @@ class InterfaceMeta(type):
 def Interface(cls):
     """Decorator for classes that are interfaces.
 
-    Declare an interface using the ``@interface`` decorator, optionally add add attributes/methods to that class:
+    Declare an interface using the ``@Interface`` decorator, optionally add add attributes/methods to that class:
 
         .. code-block:: python
 
