@@ -89,7 +89,7 @@ def Interface(cls):
 
         .. code-block:: python
 
-            @interface
+            @Interface
             class IFooInterface:
                 def do_something(self):
                     pass
@@ -102,7 +102,7 @@ def Interface(cls):
 
 
 def require_app(appconfig: AppConfig, required_app_name: str) -> None:
-    """Helper function for AppConfig.ready - checks if an app is loaded.
+    """Helper function for AppConfig.ready - checks if an app is installed.
 
     An ``ImproperlyConfigured`` Exception is raised if the required app is not present.
 

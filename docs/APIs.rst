@@ -1,13 +1,10 @@
 API
 ===
 
-Interfaces/Imeplementations
+Interfaces/Implementations
 --------------------------
 
 .. automodule:: gdaps
-    :members:
-
-.. autoclass:: Interface
     :members:
 
 

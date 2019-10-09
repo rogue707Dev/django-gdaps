@@ -147,7 +147,7 @@ anywhere in your code.
                 print plugin.do_domething()
 
 Depending on the `__service__ <#service>`__ Meta flag, iterating over an Interface
-returns either a **class** (``__service__ = False``) or an already instantiated **object** (``__service__ = True``), which is the default.
+returns either a **class** (``__service__ = False``) or an **instance** (``__service__ = True``), which is the default.
 
 
 Extending Django's URL patterns
@@ -177,7 +177,7 @@ A typical ``fooplugin/urls.py`` would look like this:
 
     from . import views
 
-    app_name = fooplugin
+    app_name = "fooplugin"
 
     urlpatterns =  [
         path("/fooplugin/myurl", views.MyUrlView.as_view()),
@@ -252,7 +252,7 @@ REMOVED_SETTINGS
 Admin site
 ----------
 GDAPS provides support for the Django admin site. The built-in ``GdapsPlugin`` model automatically
-are added to Django'S admin site, and can be administered there.
+are added to Django's admin site, and can be administered there.
 
 .. note::
 
