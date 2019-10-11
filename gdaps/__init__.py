@@ -47,12 +47,14 @@ class InterfaceMeta(type):
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
             if getattr(cls, "__service__", True):
-                cls = cls()
+                plugin = cls()
+            else:
+                plugin = cls
 
             for base in bases:
                 if hasattr(base, "___interface__"):
                     # FIXME: make sure that classes and instances are not mixed here!
-                    base._implementations.append(cls)
+                    base._implementations.append(plugin)
 
     def __iter__(mcs):
         return iter(
