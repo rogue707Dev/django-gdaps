@@ -32,7 +32,7 @@ class InterfaceMeta(type):
             )
         return cls
 
-    def __init__(cls, name: str, bases: dict, dct: dict):
+    def __init__(cls, name, bases, dct):
 
         if not hasattr(cls, "_implementations"):
             # This branch only executes when processing the interface itself.
@@ -47,12 +47,13 @@ class InterfaceMeta(type):
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
             if getattr(cls, "__service__", True):
-                cls._implementations.append(cls())
+                for base in bases:
+                    base._implementations.append(cls())
             else:
-                cls._implementations.append(cls)
+                for base in bases:
+                    base._implementations.append(cls)
 
     def __iter__(mcs):
-        # TODO: test
         return iter(
             # return only enabled plugins
             impl
@@ -62,7 +63,6 @@ class InterfaceMeta(type):
 
     def __len__(self):
         """Return the number of plugins that implement this interface."""
-        # TODO: test
         return len(self._implementations)
 
     def __contains__(self, cls: type) -> bool:
