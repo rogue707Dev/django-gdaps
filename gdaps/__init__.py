@@ -55,7 +55,8 @@ class InterfaceMeta(type):
             for base in bases:
                 # if hasattr(base, "___interface__"):
                 # if getattr(base, "__service__", True) == service:
-                base._implementations.append(plugin)
+                if hasattr(base, "_implementations"):
+                    base._implementations.append(plugin)
                 # else:
                 #     raise PluginError(
                 #         "A Plugin can't implement service AND non-service "
