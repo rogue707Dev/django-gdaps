@@ -46,15 +46,21 @@ class InterfaceMeta(type):
             # This must be a plugin implementation, which should be registered.
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
-            if getattr(cls, "__service__", True):
+            service = getattr(cls, "__service__", True)
+            if service:
                 plugin = cls()
             else:
                 plugin = cls
 
             for base in bases:
-                if hasattr(base, "___interface__"):
-                    # FIXME: make sure that classes and instances are not mixed here!
-                    base._implementations.append(plugin)
+                # if hasattr(base, "___interface__"):
+                # if getattr(base, "__service__", True) == service:
+                base._implementations.append(plugin)
+                # else:
+                #     raise PluginError(
+                #         "A Plugin can't implement service AND non-service "
+                #         "interfaces at the same time. "
+                #     )
 
     def __iter__(mcs):
         return iter(
@@ -78,10 +84,11 @@ class InterfaceMeta(type):
 
     def __repr__(self):
         """Returns a textual representation of the interface/implementation."""
-        if self.___interface__:
+        # FIXME: fix repr of Interfaces
+        if getattr(self, "___interface__", False):
             return f"<Interface '{self.__name__}'>"
         else:
-            return f"<Implementation '{self.__name__} of Interface {self.__class__}'>"
+            return f"<Implementation '{self.__name__}' of {self.__class__}'>"
 
 
 # noinspection PyPep8Naming
