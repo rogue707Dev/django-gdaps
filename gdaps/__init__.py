@@ -47,11 +47,10 @@ class InterfaceMeta(type):
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
             if getattr(cls, "__service__", True):
-                for base in bases:
-                    base._implementations.append(cls())
-            else:
-                for base in bases:
-                    base._implementations.append(cls)
+                cls = cls()
+
+            for base in bases:
+                base._implementations.append(cls)
 
     def __iter__(mcs):
         return iter(
