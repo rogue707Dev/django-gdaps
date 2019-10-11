@@ -40,9 +40,9 @@ class InterfaceMeta(type):
             # class shouldn't be registered as a plugin. Instead, it sets up a
             # list where plugins can be registered later.
             cls._implementations = []
-            cls._interface = True
+            cls.__interface__ = True
         else:
-            cls._interface = False
+            cls.___interface__ = False
             # This must be a plugin implementation, which should be registered.
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
@@ -50,7 +50,9 @@ class InterfaceMeta(type):
                 cls = cls()
 
             for base in bases:
-                base._implementations.append(cls)
+                if hasattr(base, "___interface__"):
+                    # FIXME: make sure that classes and instances are not mixed here!
+                    base._implementations.append(cls)
 
     def __iter__(mcs):
         return iter(
@@ -74,7 +76,7 @@ class InterfaceMeta(type):
 
     def __repr__(self):
         """Returns a textual representation of the interface/implementation."""
-        if self._interface:
+        if self.___interface__:
             return f"<Interface '{self.__name__}'>"
         else:
             return f"<Implementation '{self.__name__} of Interface {self.__class__}'>"
