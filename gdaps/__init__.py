@@ -32,7 +32,7 @@ class InterfaceMeta(type):
             )
         return cls
 
-    def __init__(cls, name: str, bases: dict, dct: dict):
+    def __init__(cls, name, bases, dct):
 
         if not hasattr(cls, "_implementations"):
             # This branch only executes when processing the interface itself.
@@ -40,19 +40,29 @@ class InterfaceMeta(type):
             # class shouldn't be registered as a plugin. Instead, it sets up a
             # list where plugins can be registered later.
             cls._implementations = []
-            cls._interface = True
+            cls.__interface__ = True
         else:
-            cls._interface = False
+            cls.___interface__ = False
             # This must be a plugin implementation, which should be registered.
             # Simply appending it to the list is all that's needed to keep
             # track of it later.
-            if getattr(cls, "__service__", True):
-                cls._implementations.append(cls())
+            service = getattr(cls, "__service__", True)
+            if service:
+                plugin = cls()
             else:
-                cls._implementations.append(cls)
+                plugin = cls
+
+            for base in bases:
+                # if hasattr(base, "___interface__"):
+                # if getattr(base, "__service__", True) == service:
+                base._implementations.append(plugin)
+                # else:
+                #     raise PluginError(
+                #         "A Plugin can't implement service AND non-service "
+                #         "interfaces at the same time. "
+                #     )
 
     def __iter__(mcs):
-        # TODO: test
         return iter(
             # return only enabled plugins
             impl
@@ -62,7 +72,6 @@ class InterfaceMeta(type):
 
     def __len__(self):
         """Return the number of plugins that implement this interface."""
-        # TODO: test
         return len(self._implementations)
 
     def __contains__(self, cls: type) -> bool:
@@ -75,10 +84,11 @@ class InterfaceMeta(type):
 
     def __repr__(self):
         """Returns a textual representation of the interface/implementation."""
-        if self._interface:
+        # FIXME: fix repr of Interfaces
+        if getattr(self, "___interface__", False):
             return f"<Interface '{self.__name__}'>"
         else:
-            return f"<Implementation '{self.__name__} of Interface {self.__class__}'>"
+            return f"<Implementation '{self.__name__}' of {self.__class__}'>"
 
 
 # noinspection PyPep8Naming
