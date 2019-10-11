@@ -1,6 +1,6 @@
 import pytest
 
-from gdaps import Interface, PluginError
+from gdaps import Interface
 
 
 @Interface
