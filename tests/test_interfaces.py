@@ -187,3 +187,30 @@ def test_nonservice_plugins():
             i.foo()
 
         i().foo()
+
+
+def test_interface_called():
+    with pytest.raises(TypeError):
+
+        @Interface()  # Interface must not be "called"
+        class Foo:
+            pass
+
+
+def test_interface_with_str_argument():
+    with pytest.raises(TypeError):
+
+        @Interface("baz")  # Interface must not have an argument
+        class Foo:
+            pass
+
+
+def test_interface_with_class_as_argument():
+    with pytest.raises(TypeError):
+
+        class Baz:
+            pass
+
+        @Interface(Baz)  # Interface must not have an argument
+        class Foo:
+            pass

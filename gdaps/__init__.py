@@ -107,7 +107,8 @@ def Interface(cls):
 
         You can choose whatever name you want for your interfaces, but we recommend you start the name with a capital "I".
         Read more about interfaces in the :ref:`Interfaces` section."""
-
+    if type(cls) != type:
+        raise TypeError(f"@Interface must decorate a class, not {type(cls)}")
     interface_meta = InterfaceMeta(cls.__name__, cls.__bases__, dict(cls.__dict__))
     return interface_meta
 

@@ -38,11 +38,6 @@ def test_nonservice_is_not_instantiated():
         assert i is Baz1
 
 
-def test_implementations_attribute():
-    # FIXME: maybe a test of a "protected" member is not necessary
-    assert hasattr(IFoo, "_implementations")
-
-
 def test_service_is_instantiated():
     for i in IFoo:
         assert hasattr(i, "foo_method")
@@ -61,13 +56,3 @@ def test_service_method_call():
 #            pass
 
 
-def test_empty_implements():
-    with pytest.raises(TypeError):
-
-        @Interface()  # Interface must not have an argument
-        class Foo:
-            pass
-
-        @Interface("baz")  # Interface must not have an argument
-        class Foo2:
-            pass
