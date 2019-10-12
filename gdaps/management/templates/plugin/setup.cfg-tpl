@@ -44,7 +44,7 @@ python_requires = >=3.6
 
 [options.entry_points]
 {{ plugin_group }} =
-    {{ app_name }} = {{ plugin_group }}.{{ app_name }}
+    {{ app_name }} = {{ plugin_group }}.{{ app_name }}:apps.{{ camel_case_app_name }}Config
 
 [options.extras_require]
 dev =
