@@ -7,7 +7,7 @@ from django.apps import apps
 from django.core.management import CommandError
 
 from gdaps.frontend import current_engine, frontend_settings
-from gdaps.frontend.engines import package_managers, current_package_manager
+from gdaps.frontend.engines import current_package_manager
 from gdaps.pluginmanager import PluginManager
 from gdaps.management.commands.startplugin import Command as GdapsStartPluginCommand
 from gdaps.conf import gdaps_settings
@@ -26,9 +26,9 @@ class Command(GdapsStartPluginCommand):
 
     def handle(self, name, **options):
 
-        if shutil.which(current_package_manager["name"]) is None:
+        if shutil.which(current_package_manager().name) is None:
             raise CommandError(
-                f"{current_package_manager['name']} is not available, please install it."
+                f"{current_package_manager().name} is not available, please install it."
             )
 
         self.templates.append(
@@ -55,9 +55,11 @@ class Command(GdapsStartPluginCommand):
                 logger.info("  " + plugin + "\n")
 
         subprocess.check_call(
-            current_package_manager["init"],
+            current_package_manager().init,
             cwd=os.path.join(
-                GdapsStartPluginCommand.plugin_path, name, gdaps_settings.FRONTEND_DIR
+                GdapsStartPluginCommand.plugin_path,
+                name,
+                frontend_settings.FRONTEND_DIR,
             ),
             shell=True,
         )

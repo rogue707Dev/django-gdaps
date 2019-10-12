@@ -9,7 +9,7 @@ from django.core.management import CommandError
 
 from gdaps.api import IGdapsPlugin
 from gdaps.frontend import frontend_settings
-from gdaps.frontend.api import IFrontendEngine
+from gdaps.frontend.api import IFrontendEngine, IPackageManager
 
 logger = logging.getLogger(__file__)
 
@@ -34,7 +34,7 @@ class VueEngine(IFrontendEngine):
     __package_manager = None
 
     @classmethod
-    def initialize(cls, frontend_dir, package_manager):
+    def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
         """Initializes an already created frontend using 'npm/yarn install'."""
 
         cls.__package_manager = package_manager
@@ -43,27 +43,27 @@ class VueEngine(IFrontendEngine):
         try:
             frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
             # yarn install vue
-            if shutil.which(package_manager["name"]) is None:
+            if shutil.which(package_manager.name) is None:
                 raise CommandError(
-                    f"'{package_manager['name']}' command is not available. Aborting."
+                    f"'{package_manager.name}' command is not available. Aborting."
                 )
 
             if shutil.which("vue") is None:
                 subprocess.check_call(
-                    package_manager["installglobal"].format(
+                    package_manager.installglobal.format(
                         pkg="@vue/cli @vue/cli-service-global"
                     ),
                     shell=True,
                 )
 
             subprocess.check_call(
-                f"vue create --packageManager {package_manager['name']} --no-git --force {frontend_dir}",
+                f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
                 cwd=settings.BASE_DIR,
                 shell=True,
             )
 
             subprocess.check_call(
-                package_manager["install"].format(pkg="webpack-bundle-tracker"),
+                package_manager.install.format(pkg="webpack-bundle-tracker"),
                 cwd=frontend_path,
                 shell=True,
             )

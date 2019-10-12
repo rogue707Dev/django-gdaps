@@ -40,3 +40,19 @@ class IFrontendEngine:
         module that exports an [array] of paths that point to modules that e.g. webpack then imports.
         :param plugin_names: a list of module names that contain a frontend directory with a Javascript module.
         """
+
+
+@Interface
+class IPackageManager:
+    """Interface for package manager representation.
+
+    :var name: The name of the command
+    :var init: the init command to create a repository
+    :var install: the command to install a package. use '{pkg}' as replacement for the package.
+    :var installglobal: the command to install a package globally. use '{pkg}' as replacement for the package.
+    """
+
+    name = ""
+    init = ""
+    install = ""
+    installglobal = ""
