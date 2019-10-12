@@ -196,9 +196,7 @@ class PluginManager:
             pattern = getattr(module, "urlpatterns", None)
             if pattern:
                 logger.info(
-                    "Added urlpatterns from module '{}' to global list.".format(
-                        module.__name__
-                    )
+                    f" ✓ Added urlpatterns from module '{module.__name__}' to global list."
                 )
                 urlpatterns += pattern
 
