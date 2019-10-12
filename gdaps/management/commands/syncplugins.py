@@ -133,7 +133,7 @@ class Command(BaseCommand):
                         app.PluginMeta.initialize()
                     except Exception as E:
                         raise PluginError(
-                            f"Error calling initialize method of '{app.name}' plugin"
+                            f"Error calling initialize() method of '{app.name}' plugin"
                         )
 
             # plugin hook after plugins are synchronized to DB
