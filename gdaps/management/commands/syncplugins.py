@@ -1,4 +1,3 @@
-import string
 import logging
 import sys
 
@@ -9,7 +8,6 @@ from django.db import connections
 from django.db.migrations.executor import MigrationExecutor
 from django.utils.translation import gettext_lazy as _
 
-import gdaps
 from gdaps.api import IGdapsPlugin, PluginConfig
 from gdaps.exceptions import PluginError
 from gdaps.models import GdapsPlugin
