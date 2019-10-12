@@ -101,12 +101,12 @@ class Command(TemplateCommand):
                         s = ""
 
             options[key] = s
-
+        camel_cased_name = "".join(x for x in name.title() if x != "_")
         self.context.update(
             {
                 **options,
                 "app_name": name,
-                "camel_case_app_name": "".join(x for x in name.title() if x != "_"),
+                "camel_case_app_name": camel_cased_name,
                 "upper_cased_app_name": name.upper(),
                 "spaced_app_name": _snake_case_to_spaces(name),
                 "project_name": self._django_root,
@@ -120,7 +120,10 @@ class Command(TemplateCommand):
 
         self.copy_templates()
 
-        self.stdout.write(f"Successfully created plugin: {self.target_path}\n")
-        self.stdout.write(
+        logger.info(f"Successfully created plugin: {self.target_path}\n")
+        logger.info(
+            f"Add '{PluginManager.group}.{name}.{camel_cased_name}Config' to your INSTALLED_APPS or install it via pip/pipenv"
+        )
+        logger.info(
             f"Please adapt '{os.path.join(self.target_path, 'setup.cfg')}' to your needs.\n"
         )
