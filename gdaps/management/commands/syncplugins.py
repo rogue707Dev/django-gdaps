@@ -78,7 +78,7 @@ class Command(BaseCommand):
         for app in PluginManager.plugins():
             # first, try to fetch this plugin from the DB - if doesn't exist, create and initialize it.
             # if it exists, check if there is an update available.
-            logger.info(f"  ➤ {app.name}")
+            logger.info(f"   ➤ {app.name}")
             try:
                 # noinspection PyUnresolvedReferences
                 db_plugin = GdapsPlugin.objects.get(name=app.name)
@@ -141,13 +141,13 @@ class Command(BaseCommand):
                 ep.plugin_synchronized(app)
 
         # are there plugins in the database that do not exist on disk?
-        logger.info(" ⌛ Searching for orphaned plugins...")
+        logger.info(" ⌛ Searching for orphaned plugins in database...")
 
         for plugin in PluginManager.orphaned_plugins():  # type: GdapsPlugin
             if self.is_database_synchronized(options["database"] or None):
                 plugin.delete()
-                logger.info(f" ➤ {plugin.name} removed from database.")
+                logger.info(f"  ➤ {plugin.name} removed from database.")
             else:
-                logger.info(f" ➤ {plugin.name}")
+                logger.info(f"  ➤ {plugin.name}")
         else:
-            logger.info("  None found.")
+            logger.info("   None found.")
