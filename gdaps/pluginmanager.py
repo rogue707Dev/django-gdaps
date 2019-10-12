@@ -158,21 +158,17 @@ class PluginManager:
             dotted_name = f"{app.name}.{submodule}"
             try:
                 module = importlib.import_module(dotted_name)
-                logger.info("Successfully loaded submodule {}".format(dotted_name))
+                logger.info(f" ✓ Successfully loaded submodule {dotted_name}")
                 modules.append(module)
-                logger.info("Loading plugin {}".format(dotted_name))
+                logger.info(f" ✓ Loading plugin {dotted_name}")
             except ImportError as e:
                 if mandatory:
                     raise PluginError(
-                        "The '{plugin_name}' app does not contain a (mandatory) '{module}' module".format(
-                            module=submodule, plugin_name=app.name
-                        )
+                        f"The '{app.name}' app does not contain a (mandatory) '{submodule}' module"
                     )
                 # ignore non-existing <submodule>.py files
                 # in plugins
-                logger.info(
-                    "Error loading submodule '{}':\n   {}".format(dotted_name, e)
-                )
+                logger.info(f" ✘ Ignoring missing submodule '{dotted_name}'.")
         return modules
 
     @staticmethod

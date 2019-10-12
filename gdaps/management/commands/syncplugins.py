@@ -25,10 +25,6 @@ class Command(BaseCommand):
 
     __db_synchronized = False
 
-    def log(self, verbosity, message):
-        if self.verbosity >= verbosity:
-            sys.stdout.write(message)
-
     def add_arguments(self, parser):
         parser.add_argument(
             "--database",
@@ -78,11 +74,11 @@ class Command(BaseCommand):
         if not options["database"]:
             options["database"] = "default"
 
-        self.log(3, "Searching for plugins...\n")
+        logger.info(" ⌛ Searching for plugins...")
         for app in PluginManager.plugins():
             # first, try to fetch this plugin from the DB - if doesn't exist, create and initialize it.
             # if it exists, check if there is an update available.
-            self.log(3, f"  * {app.name}\n")
+            logger.info(f"  ➤ {app.name}")
             try:
                 # noinspection PyUnresolvedReferences
                 db_plugin = GdapsPlugin.objects.get(name=app.name)
@@ -93,9 +89,8 @@ class Command(BaseCommand):
 
                     # TODO: check PluginMeta.compatibility here
 
-                    self.log(
-                        0,
-                        f"There is a newer version of the '{app.verbose_name}' plugin available.\n",
+                    logger.warning(
+                        f"There is a newer version of the '{app.verbose_name}' plugin available."
                     )
 
                     for database in settings.DATABASES.keys():
@@ -118,7 +113,7 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 # if it doesn't exist, it is a new plugin.
                 # Let's initialize it.
-                self.log(3, f"Found new plugin '{app.verbose_name}'.\n")
+                logger.info(f" ✔ Found new plugin '{app.verbose_name}'.")
                 db_plugin = GdapsPlugin()
                 version = None
                 try:
@@ -146,14 +141,13 @@ class Command(BaseCommand):
                 ep.plugin_synchronized(app)
 
         # are there plugins in the database that do not exist on disk?
-        self.log(2, "Searching for orphaned plugins...\n")
+        logger.info(" ⌛ Searching for orphaned plugins...")
 
         for plugin in PluginManager.orphaned_plugins():  # type: GdapsPlugin
-            self.log(2, f"  * {plugin.name}: ")
             if self.is_database_synchronized(options["database"] or None):
                 plugin.delete()
-                self.log(2, "removed from database.\n")
+                logger.info(f" ➤ {plugin.name} removed from database.")
             else:
-                self.log(2, "\n")
+                logger.info(f" ➤ {plugin.name}")
         else:
-            self.log(3, "  None found.\n")
+            logger.info("  None found.")
