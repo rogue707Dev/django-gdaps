@@ -1,15 +1,18 @@
+import json
 import logging
 import os
 import shutil
 import subprocess
-from typing import List
 
 from django.conf import settings
 from django.core.management import CommandError
 
 from gdaps.api import IGdapsPlugin
-from gdaps.frontend import frontend_settings
+from gdaps.apps import GdapsConfig
 from gdaps.frontend.api import IFrontendEngine, IPackageManager
+from gdaps.frontend.conf import frontend_settings
+from gdaps.frontend.pkgmgr import current_package_manager
+from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__file__)
 
@@ -74,38 +77,79 @@ class VueEngine(IFrontendEngine):
             raise e
 
     @staticmethod
-    def update_plugins_list(plugin_names: List[str]) -> None:
-        """Writes plugins into plugins.js file, to be collected dynamically by webpack."""
+    def update_plugins_list() -> None:
+        """Updates the list of installed frontend plugins.
 
-        if not os.path.exists(frontend_settings.FRONTEND_DIR):
+        This implementation makes sure that all paths are installed by the package manager,
+        to be collected dynamically by webpack.
+        """
+
+        # first get a list of plugins which have a frontend part.
+        # we ignore gdaps itself and then check for a "frontend" directory int the plugin's dir.
+        plugins_with_frontends = PluginManager.plugins()
+        for plugin in plugins_with_frontends:
+            if plugin.label == "gdaps":
+                plugins_with_frontends.remove(plugin)
+                continue
+            if not os.path.exists(os.path.join(plugin.path, "frontend")):
+                plugins_with_frontends.remove(plugin)
+
+        global_frontend_path = os.path.join(
+            settings.BASE_DIR, frontend_settings.FRONTEND_DIR
+        )
+        with open(
+            os.path.join(
+                settings.BASE_DIR, frontend_settings.FRONTEND_DIR, "package.json"
+            ),
+            "r",
+            encoding="utf-8",
+        ) as packages_file:
+            try:
+                dependencies = json.load(packages_file)["dependencies"]
+                for plugin in plugins_with_frontends:
+                    frontend_dir = (
+                        f"{PluginManager.group.replace('.','-')}-{plugin.label}"
+                    )
+                    plugin.path = os.path.join(plugin.path, "frontend", frontend_dir)
+
+                    if not frontend_dir in dependencies:
+                        # install missing dependencies
+                        subprocess.check_call(
+                            current_package_manager().install.format(pkg=frontend_dir),
+                            cwd=global_frontend_path,
+                        )
+            except:
+                raise CommandError("Error parsing package.json.")
+
+        if not os.path.exists(global_frontend_path):
             logger.warning(
-                f"Could not find frontend directory '{frontend_settings.FRONTEND_DIR}'."
+                f"Could not find frontend directory '{global_frontend_path}'."
             )
             return
 
-        with open(
-            os.path.join(frontend_settings.FRONTEND_DIR, "plugins.js"), "w"
-        ) as plugins_file:
-
-            plugins_file.write("module.exports = [\n")
-
-            counter = 1
-            total = len(plugin_names)
-            for app_name in plugin_names:
-                plugin_frontend_entry_point = os.path.join(app_name, "frontend")
-                if os.path.exists(
-                    os.path.join(plugin_frontend_entry_point, "index.js")
-                ):
-                    logger.info(f"Found entry point in GDAPS plugin {app_name}.")
-                    plugins_file.write(f'  "{plugin_frontend_entry_point}"')
-                    if counter < total:
-                        plugins_file.write(",")
-                    plugins_file.write("\n")
-                    counter += 1
-                else:
-                    logger.info(f"No entry point found in {app_name}. Skipping")
-
-            plugins_file.write("]\n")
+        # with open(
+        #     os.path.join(global_frontend_path, "plugins.js"), "w"
+        # ) as plugins_file:
+        #
+        #     plugins_file.write("module.exports = [\n")
+        #
+        #     counter = 1
+        #     total = len(plugin_paths)
+        #     for app_name in plugin_paths:
+        #         plugin_frontend_entry_point = os.path.join(app_name, "frontend")
+        #         if os.path.exists(
+        #             os.path.join(plugin_frontend_entry_point, "index.js")
+        #         ):
+        #             logger.info(f"Found entry point in GDAPS plugin {app_name}.")
+        #             plugins_file.write(f'  "{plugin_frontend_entry_point}"')
+        #             if counter < total:
+        #                 plugins_file.write(",")
+        #             plugins_file.write("\n")
+        #             counter += 1
+        #         else:
+        #             logger.info(f"No entry point found in {app_name}. Skipping")
+        #
+        #     plugins_file.write("]\n")
 
 
 class VuePlugin(IGdapsPlugin):

@@ -6,7 +6,8 @@ import subprocess
 from django.apps import apps
 from django.core.management import CommandError
 
-from gdaps.frontend import current_engine, frontend_settings, current_package_manager
+from gdaps.frontend import current_engine, frontend_settings
+from gdaps.frontend.pkgmgr import current_package_manager
 from gdaps.pluginmanager import PluginManager
 from gdaps.management.commands.startplugin import Command as GdapsStartPluginCommand
 
@@ -29,6 +30,8 @@ class Command(GdapsStartPluginCommand):
                 f"{current_package_manager().name} is not available, please install it."
             )
 
+        plugin_frontend_name = f"{PluginManager.group.replace('.', '-')}-{name}"
+
         self.templates.append(
             os.path.join(
                 apps.get_app_config("frontend").path,
@@ -39,10 +42,11 @@ class Command(GdapsStartPluginCommand):
         )
         self.rewrite_template_suffixes += current_engine().rewrite_template_suffixes
         self.extra_files += current_engine().extra_files
+        self.context.update({"plugin_frontend_name": plugin_frontend_name})
 
         super().handle(name, **options)
 
-        # get all plugins, including
+        # get all plugins, including new one
         all_plugin_names = [
             app.name.replace(PluginManager.group + ".", "")
             for app in PluginManager.plugins()
@@ -58,6 +62,7 @@ class Command(GdapsStartPluginCommand):
                 GdapsStartPluginCommand.plugin_path,
                 name,
                 frontend_settings.FRONTEND_DIR,
+                plugin_frontend_name,
             ),
             shell=True,
         )

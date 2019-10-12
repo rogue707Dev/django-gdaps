@@ -33,12 +33,12 @@ class IFrontendEngine:
         """
 
     @staticmethod
-    def update_plugins_list(plugin_names: List[str]) -> None:
+    def update_plugins_list(plugin_paths: List[str]) -> None:
         """Updates a list of plugins that the frontend can include dynamically then.
 
         This can be different from frontend to frontend. Easiest way is to create a Javascript
         module that exports an [array] of paths that point to modules that e.g. webpack then imports.
-        :param plugin_names: a list of module names that contain a frontend directory with a Javascript module.
+        :param plugin_paths: a list of module names that contain a frontend directory with a Javascript module.
         """
 
 
@@ -56,4 +56,3 @@ class IPackageManager:
     init = ""
     install = ""
     installglobal = ""
-    uninstall = ""

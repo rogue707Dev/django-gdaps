@@ -53,6 +53,14 @@ class TemplateCommand(BaseCommand):
                 f"Please delete the '{path}' directory before you expand a template there."
             )
 
+    def _render_path(self, path: str) -> str:
+        """Replaces context variables in path."""
+        if not "{" in path:
+            return path
+        for var, replacement in self.context.items():
+            path = path.replace("{" + var + "}", str(replacement))
+        return path
+
     def copy_templates(self):
         assert self.target_path is not None
         assert self.templates is not None
@@ -71,8 +79,9 @@ class TemplateCommand(BaseCommand):
             for root, dirs, files in os.walk(template_dir):
 
                 path_rest = root[prefix_length:]
-                if path_rest:
-                    target_dir = path.join(top_dir, path_rest)
+                relative_dir = self._render_path(path_rest)
+                if relative_dir:
+                    target_dir = path.join(top_dir, relative_dir)
                     if not path.exists(target_dir):
                         os.mkdir(target_dir)
 
@@ -83,7 +92,11 @@ class TemplateCommand(BaseCommand):
                 for filename in files:
                     old_path = os.path.join(root, filename)
 
-                    new_path = os.path.join(top_dir, path_rest, filename)
+                    new_path = os.path.join(
+                        top_dir,
+                        self._render_path(path_rest),
+                        self._render_path(filename),
+                    )
                     for (old_suffix, new_suffix) in self.rewrite_template_suffixes:
                         if new_path.endswith(old_suffix):
                             new_path = new_path[: -len(old_suffix)] + new_suffix

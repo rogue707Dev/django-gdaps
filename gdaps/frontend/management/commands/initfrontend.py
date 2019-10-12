@@ -10,10 +10,11 @@ from django.template import Context
 from django.utils.version import get_docs_version
 
 from gdaps.frontend import current_engine, frontend_settings
+from gdaps.frontend.pkgmgr import current_package_manager
 
 # this imported is needed to auto-recognize the plugin,
 # even if it's not used directly.
-from gdaps.frontend.engines import vue, current_package_manager
+from gdaps.frontend.engines import vue
 from gdaps.management.templates import TemplateCommand
 from gdaps.pluginmanager import PluginManager
 
@@ -70,9 +71,7 @@ class Command(TemplateCommand):
         self.copy_templates()
 
         # maintain a frontend's plugins list with all found plugin's frontends
-        current_engine().update_plugins_list(
-            [os.path.join(app.path, "frontend") for app in PluginManager.plugins()]
-        )
+        current_engine().update_plugins_list()
         # build
         # subprocess.check_call(
         #     "npm run build --prefix {base_dir}/{plugin}/frontend".format(
