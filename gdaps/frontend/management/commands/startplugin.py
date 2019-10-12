@@ -6,11 +6,9 @@ import subprocess
 from django.apps import apps
 from django.core.management import CommandError
 
-from gdaps.frontend import current_engine, frontend_settings
-from gdaps.frontend.engines import current_package_manager
+from gdaps.frontend import current_engine, frontend_settings, current_package_manager
 from gdaps.pluginmanager import PluginManager
 from gdaps.management.commands.startplugin import Command as GdapsStartPluginCommand
-from gdaps.conf import gdaps_settings
 
 logger = logging.getLogger(__name__)
 

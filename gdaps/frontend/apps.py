@@ -1,12 +1,7 @@
-import os
-
 from django.apps import AppConfig, apps
-from django.conf import settings
-from gdaps.apps import GdapsConfig
 
 import gdaps
 from gdaps import PluginError
-from gdaps.conf import gdaps_settings
 from gdaps.apps import GdapsConfig
 
 
