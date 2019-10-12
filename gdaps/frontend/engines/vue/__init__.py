@@ -52,12 +52,7 @@ class VueEngine(IFrontendEngine):
                 )
 
             if shutil.which("vue") is None:
-                subprocess.check_call(
-                    package_manager.installglobal.format(
-                        pkg="@vue/cli @vue/cli-service-global"
-                    ),
-                    shell=True,
-                )
+                package_manager.installglobal("@vue/cli @vue/cli-service-global"),
 
             subprocess.check_call(
                 f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
@@ -65,11 +60,7 @@ class VueEngine(IFrontendEngine):
                 shell=True,
             )
 
-            subprocess.check_call(
-                package_manager.install.format(pkg="webpack-bundle-tracker"),
-                cwd=frontend_path,
-                shell=True,
-            )
+            package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
         except Exception as e:
             # FIXME: frontend_path/ was not created here - shouldn't be destroyed here!
             if frontend_path:
@@ -86,13 +77,13 @@ class VueEngine(IFrontendEngine):
 
         # first get a list of plugins which have a frontend part.
         # we ignore gdaps itself and then check for a "frontend" directory int the plugin's dir.
-        plugins_with_frontends = PluginManager.plugins()
-        for plugin in plugins_with_frontends:
-            if plugin.label == "gdaps":
-                plugins_with_frontends.remove(plugin)
+        plugins_with_frontends = []
+        for plugin in PluginManager.plugins():
+            if plugin.label in ["gdaps", "frontend"]:
                 continue
-            if not os.path.exists(os.path.join(plugin.path, "frontend")):
-                plugins_with_frontends.remove(plugin)
+            else:
+                if os.path.exists(os.path.join(plugin.path, "frontend")):
+                    plugins_with_frontends.append(plugin)
 
         global_frontend_path = os.path.join(
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR
@@ -106,20 +97,20 @@ class VueEngine(IFrontendEngine):
         ) as packages_file:
             try:
                 dependencies = json.load(packages_file)["dependencies"]
-                for plugin in plugins_with_frontends:
-                    frontend_dir = (
-                        f"{PluginManager.group.replace('.','-')}-{plugin.label}"
-                    )
-                    plugin.path = os.path.join(plugin.path, "frontend", frontend_dir)
-
-                    if not frontend_dir in dependencies:
-                        # install missing dependencies
-                        subprocess.check_call(
-                            current_package_manager().install.format(pkg=frontend_dir),
-                            cwd=global_frontend_path,
-                        )
             except:
                 raise CommandError("Error parsing package.json.")
+
+            # check if plugin frontend is listed in package.json dependencies.
+            # If not, install this plugin frontend package
+            for plugin in plugins_with_frontends:
+                frontend_dir = f"{PluginManager.group.replace('.','-')}-{plugin.label}"
+                plugin_path = os.path.join(plugin.path, "frontend", frontend_dir)
+
+                if not frontend_dir in dependencies:
+                    # install missing dependencies
+                    current_package_manager().install(
+                        plugin_path, cwd=global_frontend_path
+                    )
 
         if not os.path.exists(global_frontend_path):
             logger.warning(

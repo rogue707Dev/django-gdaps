@@ -1,4 +1,3 @@
-import subprocess
 
 from django.core.management import CommandError
 
@@ -31,15 +30,30 @@ def current_package_manager() -> IPackageManager:
 class NpmPackageManager(IPackageManager):
     name = "npm"
 
-    init = "npm init"
-    install = "npm install {pkg}"
-    installglobal = "npm install --global {pkg}"
-    uninstall = "npm uninstall {pkg}"
+    def init(self, cwd):
+        self._exec("npm init", cwd)
+
+    def install(self, pkg, cwd):
+        self._exec(f"npm install {pkg}", cwd)
+
+    def installglobal(self, pkg):
+        self._exec(f"npm install --global {pkg}")
+
+    def uninstall(self, pkg, cwd):
+        self._exec(f"npm uninstall {pkg}", cwd)
 
 
 class YarnPackageManager(IPackageManager):
     name = "yarn"
-    init = "yarn init"
-    install = "yarn add {pkg}"
-    installglobal = "yarn global add {pkg}"
-    uninstall = "yarn remove {pkg}"
+
+    def init(self, cwd):
+        self._exec("yarn init", cwd)
+
+    def install(self, pkg, cwd):
+        self._exec(f"yarn add {pkg}", cwd)
+
+    def installglobal(self, pkg):
+        self._exec(f"yarn global add {pkg}")
+
+    def uninstall(self, pkg, cwd):
+        self._exec(f"yarn remove {pkg}", cwd)

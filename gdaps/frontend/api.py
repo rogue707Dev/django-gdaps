@@ -1,3 +1,4 @@
+import subprocess
 from typing import List
 
 from gdaps import Interface
@@ -52,7 +53,20 @@ class IPackageManager:
     :var installglobal: the command to install a package globally. use '{pkg}' as replacement for the package.
     """
 
-    name = ""
-    init = ""
-    install = ""
-    installglobal = ""
+    name = None
+
+    def _exec(self, command: str, cwd: str):
+        """Convenience function for implementers to exec a command in the shell."""
+        subprocess.check_call(command, cwd=cwd, shell=True)
+
+    def init(self, cwd):
+        raise NotImplementedError
+
+    def install(self, pkg, cwd):
+        raise NotImplementedError
+
+    def installglobal(self, pkg):
+        raise NotImplementedError
+
+    def uninstall(self, pkg, cwd):
+        raise NotImplementedError

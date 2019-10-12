@@ -1,7 +1,6 @@
 import logging
 import os
 import shutil
-import subprocess
 
 from django.apps import apps
 from django.core.management import CommandError
@@ -56,13 +55,11 @@ class Command(GdapsStartPluginCommand):
             for plugin in all_plugin_names:
                 logger.info("  " + plugin + "\n")
 
-        subprocess.check_call(
-            current_package_manager().init,
-            cwd=os.path.join(
+        current_package_manager().init(
+            os.path.join(
                 GdapsStartPluginCommand.plugin_path,
                 name,
                 frontend_settings.FRONTEND_DIR,
                 plugin_frontend_name,
-            ),
-            shell=True,
+            )
         )

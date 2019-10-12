@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - allow using variables in template file/dir names
+- provide pluggable Javascript (and other) package manager support
 
 ## [0.4.0] - 2019-10-12
 - Change API to an easier one, following Marty Alchin's Simple Plugin Framework
