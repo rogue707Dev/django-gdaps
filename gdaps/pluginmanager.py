@@ -191,11 +191,6 @@ class PluginManager:
         # if gdaps.drf or gdaps.frontend is installed, use their urlpatterns automatically
         module_list = PluginManager.load_plugin_submodule("urls")
 
-        if "gdaps.frontend" in [app.name for app in apps.get_app_configs()]:
-            from gdaps.frontend import urls
-
-            module_list += [urls]
-
         urlpatterns = []
         for module in module_list:
             pattern = getattr(module, "urlpatterns", None)
