@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from gdaps.api import PluginConfig
-from gdaps.conf import gdaps_settings
+from gdaps.conf import frontend_settings
 from . import __version__
 
 
@@ -54,7 +54,7 @@ class {{ camel_case_app_name }}Config(PluginConfig):
         except ImportError:
             pass
 
-        if os.path.exists(os.path.join(settings.BASE_DIR, gdaps_settings.FRONTEND_DIR)):
+        if os.path.exists(os.path.join(settings.BASE_DIR, frontend_settings.FRONTEND_DIR)):
 
             settings.WEBPACK_LOADER.update({
                 '{{ app_name }}': {
