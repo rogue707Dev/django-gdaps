@@ -20,6 +20,7 @@ def current_package_manager() -> IPackageManager:
     assert len(IPackageManager) > 0, "No Package manager plugins found."
     for pm in IPackageManager:
         if pm.name == name:
+            __current_pm = pm
             return pm
     else:
         raise CommandError(
