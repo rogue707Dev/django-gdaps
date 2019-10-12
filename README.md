@@ -16,6 +16,7 @@ The reason you want to use GDAPS is: **you want to create an application that sh
 
 I was majorly influenced by other plugin systems when writing this code, big thanks to them:
 
+* Marty Alchin's [Simple plugin framework](http://martyalchin.com/2008/jan/10/simple-plugin-framework/)
 * The [PyUtilib](https://github.com/PyUtilib/pyutilib) library
 * [The Pretix ecosystem](https://pretix.eu/)
 * [Yapsy](http://yapsy.sourceforge.net/)
