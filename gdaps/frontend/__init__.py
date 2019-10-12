@@ -1,9 +1,9 @@
 import logging
 
 from gdaps.exceptions import PluginError
-from gdaps.frontend.api import IFrontendEngine
-from gdaps.frontend.conf import frontend_settings
-from gdaps.frontend.engines import vue
+from .api import IFrontendEngine, IPackageManager
+from .conf import frontend_settings
+from .engines import vue
 
 default_app_config = "gdaps.frontend.apps.FrontendConfig"
 logger = logging.getLogger(__file__)
