@@ -1,5 +1,6 @@
 import logging
-from typing import List, Type
+import typing
+from typing import Iterable
 
 from django.apps import AppConfig
 
@@ -32,7 +33,7 @@ class InterfaceMeta(type):
             )
         return cls
 
-    def __init__(cls, name, bases, dct):
+    def __init__(cls, name, bases, dct) -> None:
 
         if not hasattr(cls, "_implementations"):
             # This branch only executes when processing the interface itself.
@@ -63,7 +64,7 @@ class InterfaceMeta(type):
                 #         "interfaces at the same time. "
                 #     )
 
-    def __iter__(mcs):
+    def __iter__(mcs) -> typing.Iterable:
         return iter(
             # return only enabled plugins
             impl
@@ -71,7 +72,10 @@ class InterfaceMeta(type):
             if getattr(impl, "enabled", True)
         )
 
-    def __len__(self):
+    def all_plugins(cls) -> Iterable:
+        return iter(cls._implementations)
+
+    def __len__(self) -> int:
         """Return the number of plugins that implement this interface."""
         return len(self._implementations)
 
@@ -83,7 +87,7 @@ class InterfaceMeta(type):
         else:
             return cls in self._implementations
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Returns a textual representation of the interface/implementation."""
         # FIXME: fix repr of Interfaces
         if getattr(self, "___interface__", False):

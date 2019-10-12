@@ -1,38 +1,41 @@
 import pytest
 
-from gdaps import Interface
-from gdaps.exceptions import PluginError
+from gdaps import Interface, InterfaceMeta
 
 
 @Interface
-class ITestInterface1:
+class IEmptyInterface:
     pass
 
 
 @Interface
-class ITestInterface2:
+class IEmptyInterface2:
+    pass
+
+
+@Interface
+class ICount3Interface:
+    pass
+
+
+class CountImpl1(ICount3Interface):
+    pass
+
+
+class CountImpl2(ICount3Interface):
+    pass
+
+
+class CountImpl3(ICount3Interface):
+    pass
+
+
+@Interface
+class ITestInterfacwWith2Methods:
     def required_method(self):
         pass
 
     def get_item(self):
-        pass
-
-
-@Interface
-class INonService:
-    __service__ = False
-
-    def foo(self):
-        pass
-
-
-class NonService1(INonService):
-    def foo(self):
-        pass
-
-
-class NonService2(INonService):
-    def foo(self):
         pass
 
 
@@ -79,13 +82,19 @@ class Attribute2Class(IAttribute1Interface):
     foo = ["first", "second"]
 
 
-class TestPlugin1(TestPlugin, ITestInterface1):
+class ChildClassPlugin1(TestPlugin, IEmptyInterface):
     pass
 
 
-class TestPlugin3(TestPlugin, ITestInterface1):
+class ChildClassPlugin2(TestPlugin, IEmptyInterface2):
     pass
 
+
+# def test_missing_attribute():
+#    with pytest.raises(PluginError):
+#
+#        class MissingAttr(IAttribute1):
+#            pass
 
 # def test_missing_method():
 #     with pytest.raises(PluginError):
@@ -97,7 +106,7 @@ class TestPlugin3(TestPlugin, ITestInterface1):
 #                 return "something"
 
 
-def test_try_instanciate_interface():
+def test_dont_instanciate_interface():
     """Try to instantiate an interface directly. Should be forbidden"""
     with pytest.raises(TypeError):
         Interface()
@@ -111,39 +120,61 @@ def test_dont_implement_interface_directly():
             pass
 
 
-# FIXME: does not work yet
-def test_multiple_interfaces():
+def test_class_implementing_2_interfaces():
     """Try to implement more than one interfaces in one implementation"""
 
-    class Dummy(ITestInterface1, ITestInterface2):
+    class Dummy(IEmptyInterface, ITestInterfacwWith2Methods):
         def required_method(self):
             pass
 
         def get_item(self):
             pass
 
-    assert Dummy in ITestInterface1
-    assert Dummy in ITestInterface2
+    assert Dummy in IEmptyInterface
+    assert Dummy in ITestInterfacwWith2Methods
+
+
+def test_class_implementing_3_interfaces():
+    """Try to implement more than one interfaces in one implementation"""
+
+    class Dummy(IEmptyInterface, IEmptyInterface2, ITestInterfacwWith2Methods):
+        def required_method(self):
+            pass
+
+        def get_item(self):
+            pass
+
+    assert Dummy in IEmptyInterface
+    assert Dummy in IEmptyInterface2
+    assert Dummy in ITestInterfacwWith2Methods
+
+
+def test_class_inheriting_class_and_implementing_interface():
+    """Try to implement more than one interfaces in one implementation"""
+
+    class Dummy(ChildClassPlugin1, IEmptyInterface2):
+        pass
+
+    assert Dummy in IEmptyInterface
+    assert Dummy in IEmptyInterface2
 
 
 def test_interface_implementations_attr():
-
-    assert hasattr(ITestInterface1, "_implementations")
-    assert len(ITestInterface1._implementations) == 3
-
-    assert hasattr(ITestInterface2, "_implementations")
-    assert len(ITestInterface2._implementations) == 1
+    """tests if _implementations attribute is existing and accessible"""
+    # FIXME: protected members should not be accessed...
+    assert hasattr(IEmptyInterface, "_implementations")
+    assert hasattr(ITestInterfacwWith2Methods, "_implementations")
 
 
 def test_iterable_interface():
     """Raises an Error if an extension point is not iterable"""
-    iter(ITestInterface1)
+    iter(IEmptyInterface)
 
 
 def test_call_method():
     """Raises an error if an implemented method is not callable"""
 
-    for i in ITestInterface2:
+    for i in ITestInterfacwWith2Methods:
         _dummy = i.get_item()
 
 
@@ -155,11 +186,16 @@ def test_direct_interface_extension():
             pass
 
     # This should pass
-    for _plugin in ITestInterface2:
+    for _plugin in ITestInterfacwWith2Methods:
         pass
 
 
+def test_count_implementations():
+    assert len(ICount3Interface._implementations) == 3
+
+
 def test_ep_len():
+    """tests countability of plugins via interface"""
     assert len(ITestInterface5) == 0
 
     assert len(ITestInterface3) == 1
@@ -171,22 +207,6 @@ def test_attribute():
     # directly instantiate a class, which should contain an attribute.
     a = Attribute2Class()
     assert a.foo == ["first", "second"]
-
-
-def test_nonservice_plugins():
-    for i in INonService:
-        # compare classes, not instances
-        assert NonService1 in INonService
-        assert NonService2 in INonService
-
-        # don't accept arbitrary instances as comparison objects
-        assert NonService1() not in INonService
-
-        # methods cannot be called, as there is no instance yet
-        with pytest.raises(TypeError):
-            i.foo()
-
-        i().foo()
 
 
 def test_interface_called():

@@ -61,7 +61,7 @@ def test_notexisting_setting_access():
 
 def test_notallowed_removed_setting_access():
     defaults = {"FOO": 234}
-    removed_settings = "BAR"
+    removed_settings = "REMOVED_SETTING"
     settings = PluginSettings(
         namespace=NAMESPACE,
         defaults=defaults,
@@ -70,4 +70,4 @@ def test_notallowed_removed_setting_access():
     )
 
     with pytest.raises(AttributeError):
-        settings.BAR
+        settings.REMOVED_SETTING
