@@ -63,5 +63,3 @@ class Command(GdapsStartPluginCommand):
             ),
             shell=True,
         )
-
-        current_engine().update_plugins_list(all_plugin_names)
