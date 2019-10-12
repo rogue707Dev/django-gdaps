@@ -1,10 +1,10 @@
 import os
 
-from django.conf import settings
+# from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from gdaps.api import PluginConfig
-from gdaps.conf import frontend_settings
+# from gdaps.frontend.conf import frontend_settings
 from . import __version__
 
 
@@ -54,18 +54,18 @@ class {{ camel_case_app_name }}Config(PluginConfig):
         except ImportError:
             pass
 
-        if os.path.exists(os.path.join(settings.BASE_DIR, frontend_settings.FRONTEND_DIR)):
-
-            settings.WEBPACK_LOADER.update({
-                '{{ app_name }}': {
-                    'BUNDLE_DIR_NAME': '',
-                    'STATS_FILE': os.path.join(
-                        os.path.abspath(os.path.dirname(__file__)),
-                        "frontend",
-                        "webpack-stats.json"
-                    ),
-                    # 'POLL_INTERVAL': 0.1,
-                    # 'TIMEOUT': None,
-                    # 'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
-                }
-            })
+        # if os.path.exists(os.path.join(settings.BASE_DIR, frontend_settings.FRONTEND_DIR)):
+        #
+        #     settings.WEBPACK_LOADER.update({
+        #         '{{ app_name }}': {
+        #             'BUNDLE_DIR_NAME': '',
+        #             'STATS_FILE': os.path.join(
+        #                 os.path.abspath(os.path.dirname(__file__)),
+        #                 "frontend",
+        #                 "webpack-stats.json"
+        #             ),
+        #             # 'POLL_INTERVAL': 0.1,
+        #             # 'TIMEOUT': None,
+        #             # 'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
+        #         }
+        #     })
