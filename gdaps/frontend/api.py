@@ -1,6 +1,7 @@
 import subprocess
 from typing import List
 
+import gdaps
 from gdaps import Interface
 
 
@@ -59,7 +60,7 @@ class IPackageManager:
         """Convenience function for implementers to exec a command in the shell."""
         subprocess.check_call(command, cwd=cwd, shell=True)
 
-    def init(self, cwd):
+    def init(self, cwd, version=gdaps.__version__, description="", license=None):
         raise NotImplementedError
 
     def install(self, pkg, cwd):

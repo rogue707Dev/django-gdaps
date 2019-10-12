@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import importlib
 
 from django.apps import apps
 from django.core.management import CommandError
@@ -55,11 +56,13 @@ class Command(GdapsStartPluginCommand):
             for plugin in all_plugin_names:
                 logger.info("  " + plugin + "\n")
 
+        module = importlib.import_module(f"{PluginManager.group}.{name}")
         current_package_manager().init(
             os.path.join(
                 GdapsStartPluginCommand.plugin_path,
                 name,
                 frontend_settings.FRONTEND_DIR,
                 plugin_frontend_name,
-            )
+            ),
+            version=module.__version__,
         )

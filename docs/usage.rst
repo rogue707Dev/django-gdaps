@@ -97,8 +97,8 @@ Available options:
 
 __service__
     If ``__service__ = True`` is set (which is the default), then all implementations are
-    instantiated directly at definition time, having a full class instance
-    availably at any time. Iterations over Interfaces return **instances**.
+    instantiated directly at loading time, having a full class instance
+    availably at any time. Iterations over Interfaces return **instances**:
 
     .. code-block:: python
 
@@ -112,6 +112,17 @@ __service__
     This sometimes may be the desired functionality, e.g. for data classes, or classes that
     just contain static methods.
 
+    .. code-block:: python
+
+        for plugin in INonServiceInterface:
+            print(plugin.name)  # class attribute
+            plugin.classmethod()
+
+            # if you need instances, you have to instantiate the plugin here.
+            # this is not recommended.
+            p = plugin()
+            p.do_something()
+..
 
 .. _Implementations:
 
@@ -291,8 +302,10 @@ This creates a /frontend/ directory in the project root, and installs a Javascri
 Vue.js
     It is recommended to install vue globally, you can do that with
     ``yarn global add @vue/cli @vue/cli-service-global``.
+    GDAPS tries to do that for you when you call ``./manage.py initfrontend``.
 
-Now you can start ``yarn serve`` in the frontend directory. This starts
+Now you can start ``yarn serve`` (or ``npm run serve``, depending on your choice)
+in the frontend directory. This starts
 a development web server that bundles the frontend app using webpack
 automatically. You then need to start Django using
 ``./manage.py runserver`` to enable the Django backend. GDAPS manages
@@ -313,18 +326,15 @@ GDAPS is a plugin system. It provides backend plugins (Django apps). But using `
 GDAPS app can use a *frontend* directory which contains an installable npm module, that is automatically installed when the app is added to the system.
 
 When the ``gdaps.frontend`` app is activated in
-``INSTALLED_APPS``, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a *frontend* directory in that plugin is
-initialized with a boilerplate javascript file ``index.js``, which is the plugin entry point of the frontend. This is accomplished by webpack and django-webpack-loader.
+``INSTALLED_APPS``, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a *frontend/myproject-plugin-fooplugin* directory wth some boilerplate files in that plugin is
+created. The ``index.js`` file is the plugin entry point for the frontend.
 
 So all you have to do is:
 
 #. Add ``gdaps.frontend`` to ``INSTALLED_APPS`` (before ``gdaps``)
 #. Call ``./manage.py initfrontend``, if you haven't already
-#. Call ``./manage.py startplugin fooplugin`` and fill out the questions
+#. Call ``./manage.py startplugin fooplugin``
 #. start ``yarn serve`` in the *frontend* directory
 #. start Django server using ``./manage.py runserver``
 
-Webpack aggregates all you need into a package, using the ``frontend/plugins.js`` file as index where to find plugin entry points.
-You shouldn't manually edit that file, but just install GDAPS plugins as usual (pip, pipenv, or by adding them to INSTALLED_APPS) and call ``manage.py syncplugins`` then.
-
-This command scans your app for plugins, updates the database with plugin data, and recreates the plugins.js entry file.
+To remove a plugin from the frontend, just remove tha backend part (remove it from INSTALLED_APPS or uninstall it using pip/pipenv) and call ``manage.py syncplugins`` afterwords. It will take caer of the database models, and the npm/yarn uninstallation of the frontend part.

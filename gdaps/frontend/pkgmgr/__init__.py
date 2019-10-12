@@ -1,6 +1,6 @@
-
 from django.core.management import CommandError
 
+import gdaps
 from gdaps.frontend import IPackageManager, frontend_settings
 
 __current_pm: IPackageManager or None = None
@@ -30,8 +30,13 @@ def current_package_manager() -> IPackageManager:
 class NpmPackageManager(IPackageManager):
     name = "npm"
 
-    def init(self, cwd):
-        self._exec("npm init", cwd)
+    def init(self, cwd, version=gdaps.__version__, description="", license=None):
+        exec_str = f"npm init --yes --init-version='{version}' >/dev/null"
+        if license:
+            exec_str += f" --license'{license}'"
+        if description:
+            exec_str += f" --description '{description}'"
+        self._exec(exec_str, cwd)
 
     def install(self, pkg, cwd):
         self._exec(f"npm install {pkg}", cwd)
@@ -46,7 +51,7 @@ class NpmPackageManager(IPackageManager):
 class YarnPackageManager(IPackageManager):
     name = "yarn"
 
-    def init(self, cwd):
+    def init(self, cwd, version=gdaps.__version__, description="", license=None):
         self._exec("yarn init", cwd)
 
     def install(self, pkg, cwd):

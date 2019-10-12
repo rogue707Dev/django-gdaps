@@ -3,6 +3,7 @@ import logging
 import os
 import shutil
 import subprocess
+from typing import Dict
 
 from django.conf import settings
 from django.core.management import CommandError
@@ -88,59 +89,65 @@ class VueEngine(IFrontendEngine):
         global_frontend_path = os.path.join(
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR
         )
-        with open(
-            os.path.join(
-                settings.BASE_DIR, frontend_settings.FRONTEND_DIR, "package.json"
-            ),
-            "r",
-            encoding="utf-8",
-        ) as packages_file:
+        global_package_file = os.path.join(
+            settings.BASE_DIR, frontend_settings.FRONTEND_DIR, "package.json"
+        )
+        with open(global_package_file, "r", encoding="utf-8") as f:
             try:
-                dependencies = json.load(packages_file)["dependencies"]
+                global_package_data = json.load(f)
+                dependencies = global_package_data["dependencies"]  # type:Dict[str,str]
             except:
-                raise CommandError("Error parsing package.json.")
+                raise CommandError("Error parsing global package.json.")
 
             # check if plugin frontend is listed in package.json dependencies.
             # If not, install this plugin frontend package
             for plugin in plugins_with_frontends:
-                frontend_dir = f"{PluginManager.group.replace('.','-')}-{plugin.label}"
-                plugin_path = os.path.join(plugin.path, "frontend", frontend_dir)
+                frontend_package_name = (
+                    f"{PluginManager.group.replace('.','-')}-{plugin.label}"
+                )
+                plugin_path = os.path.join(
+                    plugin.path, "frontend", frontend_package_name
+                )
 
-                if not frontend_dir in dependencies:
+                # replace/update js package version with gdaps plugin version
+                with open(
+                    os.path.join(plugin_path, "package.json"), "r+"
+                ) as plugin_package_file:
+                    data = json.load(plugin_package_file)
+                    data["version"] = plugin.PluginMeta.version
+                    plugin_package_file.seek(0)
+                    json.dump(data, plugin_package_file, indent=2)
+                    plugin_package_file.truncate()
+
+                # if installed plugin with frontend support is not listed in global package.json,
+                # install it with package manager
+                if not frontend_package_name in dependencies:
                     # install missing dependencies
                     current_package_manager().install(
                         plugin_path, cwd=global_frontend_path
                     )
+
+            # if global package.json lists an orphaned Js package
+            # which is not installed on the python side any more,
+            # uninstall that package. If that fails, remove the line?
+            for dep in dependencies:
+                if not dep.startswith(f"{PluginManager.group.replace('.','-')}"):
+                    # ignore foreign dependency packages like webpack-bundle-tracker etc.
+                    continue
+
+                if not dep in [
+                    f"{PluginManager.group.replace('.','-')}-{plugin.label}"
+                    for plugin in plugins_with_frontends
+                ]:
+                    # dependency has no corresponding installed plugin any more. Uninstall.
+                    logger.info(f" ✘ Uninstalling '{dep}'")
+                    current_package_manager().uninstall(dep, cwd=global_frontend_path)
 
         if not os.path.exists(global_frontend_path):
             logger.warning(
                 f"Could not find frontend directory '{global_frontend_path}'."
             )
             return
-
-        # with open(
-        #     os.path.join(global_frontend_path, "plugins.js"), "w"
-        # ) as plugins_file:
-        #
-        #     plugins_file.write("module.exports = [\n")
-        #
-        #     counter = 1
-        #     total = len(plugin_paths)
-        #     for app_name in plugin_paths:
-        #         plugin_frontend_entry_point = os.path.join(app_name, "frontend")
-        #         if os.path.exists(
-        #             os.path.join(plugin_frontend_entry_point, "index.js")
-        #         ):
-        #             logger.info(f"Found entry point in GDAPS plugin {app_name}.")
-        #             plugins_file.write(f'  "{plugin_frontend_entry_point}"')
-        #             if counter < total:
-        #                 plugins_file.write(",")
-        #             plugins_file.write("\n")
-        #             counter += 1
-        #         else:
-        #             logger.info(f"No entry point found in {app_name}. Skipping")
-        #
-        #     plugins_file.write("]\n")
 
 
 class VuePlugin(IGdapsPlugin):
