@@ -56,3 +56,4 @@ class IPackageManager:
     init = ""
     install = ""
     installglobal = ""
+    uninstall = ""

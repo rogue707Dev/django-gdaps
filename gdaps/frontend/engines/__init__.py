@@ -10,6 +10,7 @@ class NpmPackageManager(IPackageManager):
     init = "npm init"
     install = "npm install {pkg}"
     installglobal = "npm install --global {pkg}"
+    uninstall = "npm uninstall {pkg}"
 
 
 class YarnPackageManager(IPackageManager):
@@ -28,3 +29,4 @@ def current_package_manager() -> IPackageManager:
         raise CommandError(
             f"'FRONTEND_PKG_MANAGER' settings has invalid value: '{name}' not found."
         )
+    uninstall = "yarn remove {pkg}"
