@@ -56,11 +56,11 @@ from django.urls import path
 from graphene_django.views import GraphQLView
 
 PluginManager.load_plugin_submodule("schema")
-schema = graphene.Schema(query=GDAPSQuery)
+schema = graphene.Schema(query=GDAPSQuery, mutations=GDAPSMutation)
 
 urlpatterns = [
     # ...
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=GDAPSQuery, mutations=GDAPSMutation)),
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
 ]
 
 ```
