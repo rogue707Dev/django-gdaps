@@ -8,19 +8,19 @@ To enable it, add graphene_django and gdaps.graphene to INSTALLED_APPS:
 INSTALLED_APPS = [
     # ...
     "graphene_django",
-    "gdaps",
     "gdaps.graphene"
+    "gdaps",
 ]
 ```
 
-It introduces an `IGrapheneQuery` interface that you must use for creating Queries which are automatically found and installed. Just create a `schema.py`file and any of your Graphene queries like:
+It introduces an `IGraphenePlugin` interface that you must use for creating queries and mutations which are automatically found and installed. Just create a `schema.py`file and any of your graphene queries/mutations like:
 
 ```python
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 
-from gdaps.graphene.interfaces import IGrapheneQuery
+from gdaps.graphene.api import IGraphenePlugin
 
 
 class UserType(DjangoObjectType):
@@ -30,29 +30,37 @@ class UserType(DjangoObjectType):
         model = User
 
 
-class UserQuery(IGrapheneQuery):
+class UserQuery:
     users = graphene.List(UserType)
 
     @staticmethod
     def resolve_users(self, info, **kwargs):
         return User.objects.all()
+
+# Here comes the magic:
+class UserPlugin(IGraphenePlugin):
+    query = UserQuery
 ```
 
-Side note: you have to create at least one Query implementing `IGraphQuery`. If gdaps.graphene finds no plugin implementing it, it raises a PluginError. This is due to a small limitation in graphene_django. PRs welcome ;-).
 
-Now add your Graphene URL to your root urls.py:
+Side note: you have to create at least one *schema.py* implementing `IGraphenePlugin`. If gdaps.graphene finds no plugin implementing it, it raises a PluginError.
+
+All plugins inheriting from IGraphenePlugin are automatically found and exposed in your application API.
+You just need add your Graphene URL to your root urls.py as usual, and use GDAPSQuery and GDAPSMutation as parameters for the view.
 ```python
 
 import graphene
-from gdaps.graphene import GDAPSQuery
+from gdaps.graphene.schema import GDAPSQuery, GDAPSMutation
 from gdaps.pluginmanager import PluginManager
+from django.urls import path
+from graphene_django.views import GraphQLView
 
 PluginManager.load_plugin_submodule("schema")
 schema = graphene.Schema(query=GDAPSQuery)
 
 urlpatterns = [
     # ...
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=GDAPSQuery)),
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=GDAPSQuery, mutations=GDAPSMutation)),
 ]
 
 ```
