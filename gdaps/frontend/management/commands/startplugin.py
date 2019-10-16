@@ -13,6 +13,8 @@ from gdaps.management.commands.startplugin import Command as GdapsStartPluginCom
 
 logger = logging.getLogger(__name__)
 
+from nltk.stem import PorterStemmer
+
 
 class Command(GdapsStartPluginCommand):
     """Overrides gdaps' startplugin command and adds frontend features to it."""
@@ -24,13 +26,17 @@ class Command(GdapsStartPluginCommand):
     )
 
     def handle(self, name, **options):
-
         if shutil.which(current_package_manager().name) is None:
             raise CommandError(
                 f"{current_package_manager().name} is not available, please install it."
             )
 
-        plugin_frontend_name = f"{PluginManager.group.replace('.', '-')}-{name}"
+        stemmer = PorterStemmer()
+        # use singular name for plugin frontend packages,
+        #  e.g. "myproject-plugins" -> "myproject-plugin-foobar" - mind the missing s
+        plugin_frontend_name = (
+            f"{stemmer.stem(PluginManager.group.replace('.', '-'))}-{name}"
+        )
 
         self.templates.append(
             os.path.join(
