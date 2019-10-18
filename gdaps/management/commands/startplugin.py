@@ -5,6 +5,7 @@ import logging
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.management.base import CommandError
+from nltk import PorterStemmer
 
 from gdaps.management.templates import TemplateCommand
 from django.apps import apps
@@ -38,6 +39,9 @@ class Command(TemplateCommand):
 
     # absolute path to internal plugins of application
     plugin_path = os.path.join(settings.BASE_DIR, *PluginManager.group.split("."))
+    # use singular name for plugin frontend packages,
+    #  e.g. "myproject-plugins" -> "myproject-plugin-foobar" - mind the missing s
+    plugin_name = ""
 
     help = (
         "Creates a basic GDAPS plugin structure in the "
@@ -65,6 +69,11 @@ class Command(TemplateCommand):
 
         # override target directory
         self.target_path = os.path.join(*self.plugin_path.split("."), name)
+
+        self.plugin_name = (
+            f"{PorterStemmer().stem(PluginManager.group.replace('.', '-'))}-{name}"
+        )
+        self.context.update({"plugin_name": self.plugin_name})
 
         if os.path.exists(self.target_path):
             raise CommandError("'{}' already exists".format(self.target_path))

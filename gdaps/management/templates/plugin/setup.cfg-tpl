@@ -7,7 +7,7 @@ ignore =
 
 
 [metadata]
-name = {{ plugin_group }}.{{ app_name }}
+name = {{ plugin_name }}
 version = attr:{{ plugin_group }}.{{ app_name }}.__version__
 description = "A {{ project_title }} plugin app."
 long_description = file: README.rst
