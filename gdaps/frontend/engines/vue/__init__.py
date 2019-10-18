@@ -3,7 +3,6 @@ import logging
 import os
 import shutil
 import subprocess
-from typing import Dict
 
 from django.conf import settings
 from django.core.management import CommandError

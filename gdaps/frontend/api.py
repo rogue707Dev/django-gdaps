@@ -35,7 +35,7 @@ class IFrontendEngine:
         """
 
     @staticmethod
-    def update_plugins_list(plugin_paths: List[str]) -> None:
+    def update_plugins_list() -> None:
         """Updates a list of plugins that the frontend can include dynamically then.
 
         This can be different from frontend to frontend. Easiest way is to create a Javascript
