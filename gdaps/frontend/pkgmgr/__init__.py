@@ -33,7 +33,7 @@ class NpmPackageManager(IPackageManager):
     def init(self, cwd, version=gdaps.__version__, description="", license=None):
         exec_str = f"npm init --yes --init-version='{version}' >/dev/null"
         if license:
-            exec_str += f" --license'{license}'"
+            exec_str += f" --license' {license}'"
         if description:
             exec_str += f" --description '{description}'"
         self._exec(exec_str, cwd)
