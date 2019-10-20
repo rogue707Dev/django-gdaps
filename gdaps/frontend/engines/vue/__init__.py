@@ -69,7 +69,7 @@ class VueEngine(IFrontendEngine):
 
     @staticmethod
     def update_plugins_list() -> None:
-        """Updates the list of installed frontend plugins.
+        """Updates the list of installed Vue frontend plugins.
 
         This implementation makes sure that all paths are installed by the package manager,
         to be collected dynamically by webpack.
