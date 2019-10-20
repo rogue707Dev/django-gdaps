@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from django.apps import AppConfig
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.core.management.base import BaseCommand, no_translations
@@ -8,7 +9,7 @@ from django.db import connections
 from django.db.migrations.executor import MigrationExecutor
 from django.utils.translation import gettext_lazy as _
 
-from gdaps.api import IGdapsPlugin, PluginConfig
+from gdaps.api import IGdapsPlugin
 from gdaps.exceptions import PluginError
 from gdaps.models import GdapsPlugin
 from gdaps.pluginmanager import PluginManager
@@ -47,7 +48,7 @@ class Command(BaseCommand):
         return self.__db_synchronized
 
     @staticmethod
-    def _copy_plugin_to_db(app: PluginConfig, db_plugin: GdapsPlugin) -> None:
+    def _copy_plugin_to_db(app: AppConfig, db_plugin: GdapsPlugin) -> None:
         meta = app.PluginMeta
         db_plugin.name = app.name
         db_plugin.verbose_name = getattr(

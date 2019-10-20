@@ -1,4 +1,4 @@
-from gdaps.api import PluginConfig
+from django.apps import AppConfig
 
 
 class Plugin1Meta:
@@ -6,7 +6,7 @@ class Plugin1Meta:
     version = "blah_foo"
 
 
-class Plugin2Config(PluginConfig):
+class Plugin2Config(AppConfig):
 
     name = "tests.plugins.plugin2"
     PluginMeta = Plugin1Meta

@@ -38,7 +38,8 @@ class VueEngine(IFrontendEngine):
 
     @classmethod
     def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
-        """Initializes an already created frontend using 'npm/yarn install'."""
+        """Initializes an already created frontend using 'npm/yarn install'.
+        """
 
         cls.__package_manager = package_manager
         # this method can assume that the frontend_path exists

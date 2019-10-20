@@ -27,7 +27,7 @@ Static plugins
 In most of the cases, you will ship your application with a few
 "standard" plugins that are statically installed. These plugins must be
 loaded *after* the ``gdaps`` app.
-
+f
 .. code-block:: python
 
     # ...
@@ -66,7 +66,7 @@ The plugin AppConfig
 
 Django recommends to point ot the app's AppConfig directly in INSTALLED_APPS. You should do that too with GDAPS plugins. Plugins that are installed via pip(env) are found automatically, as their AppConfig class must be named after the Plugin.
 
-Plugins' AppConfigs must inherit from ``gdaps.apps.PluginConfig``, and provide an inner class, or a pointer to an external ``PluginMeta`` class. For more information see :class:`gdaps.apps.PluginConfig`.
+Plugins' AppConfigs must provide an inner class named ``PluginMeta``, or a so named attribute pointing to an external class. For more information see :class:`gdaps.apps.PluginMeta`.
 
 .. _Interfaces:
 
