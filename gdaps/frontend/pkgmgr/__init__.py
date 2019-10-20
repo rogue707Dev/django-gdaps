@@ -51,8 +51,15 @@ class NpmPackageManager(IPackageManager):
 class YarnPackageManager(IPackageManager):
     name = "yarn"
 
-        self._exec("yarn init", cwd)
     def init(self, cwd, version=gdaps.__version__, description="", license=None) -> None:
+        """
+        :param description: not used here.
+        """
+        if license:
+            # FIXME: check license validity
+            self._exec(f"yarn config set init-license {license}", cwd)
+        self._exec(f"yarn config set init-version {version}", cwd)
+        self._exec("yarn init --private", cwd)
 
     def install(self, pkg, cwd):
         self._exec(f"yarn add {pkg}", cwd)
