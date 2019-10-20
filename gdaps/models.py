@@ -19,7 +19,7 @@ class GdapsPlugin(models.Model):
         return self.verbose_name
 
     def __repr__(self):
-        return "<'{}' Plugin>".format(self.name)
+        return f"<'{self.name}' Plugin>"
 
     class Meta:
         verbose_name = "GDAPS plugin"
