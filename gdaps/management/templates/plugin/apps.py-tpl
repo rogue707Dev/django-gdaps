@@ -3,7 +3,7 @@ import os
 # from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-from gdaps.api import PluginConfig
+from django.apps import AppConfig
 # from gdaps.frontend.conf import frontend_settings
 from . import __version__
 
@@ -23,7 +23,7 @@ class {{ camel_case_app_name }}PluginMeta:
     # compatibility = "myproject.core>=2.3.0"
 
 
-class {{ camel_case_app_name }}Config(PluginConfig):
+class {{ camel_case_app_name }}Config(AppConfig):
     """A GDAPS Django app plugin.
 
     It needs a special parameter named ``PluginMeta``. It is the key for GDAPS
