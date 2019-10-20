@@ -30,7 +30,7 @@ def current_package_manager() -> IPackageManager:
 class NpmPackageManager(IPackageManager):
     name = "npm"
 
-    def init(self, cwd, version=gdaps.__version__, description="", license=None):
+    def init(self, cwd, version=gdaps.__version__, description="", license=None) -> None:
         exec_str = f"npm init --yes --init-version='{version}' >/dev/null"
         if license:
             exec_str += f" --license' {license}'"
@@ -51,8 +51,8 @@ class NpmPackageManager(IPackageManager):
 class YarnPackageManager(IPackageManager):
     name = "yarn"
 
-    def init(self, cwd, version=gdaps.__version__, description="", license=None):
         self._exec("yarn init", cwd)
+    def init(self, cwd, version=gdaps.__version__, description="", license=None) -> None:
 
     def install(self, pkg, cwd):
         self._exec(f"yarn add {pkg}", cwd)
