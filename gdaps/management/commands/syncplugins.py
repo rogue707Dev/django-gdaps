@@ -59,7 +59,7 @@ class Command(BaseCommand):
         db_plugin.vendor = getattr(meta, "vendor", "")
         db_plugin.category = getattr(meta, "category", _("Miscellaneous"))
         db_plugin.description = getattr(meta, "description", "")
-        db_plugin.visible = getattr(meta, "visible", True)
+        db_plugin.hidden = getattr(meta, "hidden", False)
         db_plugin.version = app.PluginMeta.version
         db_plugin.compatibility = getattr(meta, "compatibility", "")
 
@@ -136,10 +136,6 @@ class Command(BaseCommand):
                         raise PluginError(
                             f"Error calling initialize() method of '{app.name}' plugin"
                         )
-
-            # plugin hook after plugins are synchronized to DB
-            for ep in IGdapsPlugin:
-                ep.plugin_synchronized(app)
 
         # are there plugins in the database that do not exist on disk?
         logger.info(" ⌛ Searching for orphaned plugins in database...")

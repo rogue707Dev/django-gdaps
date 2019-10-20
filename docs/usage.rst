@@ -338,3 +338,17 @@ So all you have to do is:
 #. start Django server using ``./manage.py runserver``
 
 To remove a plugin from the frontend, just remove tha backend part (remove it from INSTALLED_APPS or uninstall it using pip/pipenv) and call ``manage.py syncplugins`` afterwords. It will take caer of the database models, and the npm/yarn uninstallation of the frontend part.
+
+
+Signals
+^^^^^^^
+If you are using Django signals in your plugin, we recommend to put them into a ``signals`` submodule. Import it then from the ``AppConfig.ready()`` method.
+
+.. code-block:: python
+
+        def ready(self):
+            # Import signals if necessary:
+            from . import signals  # NOQA
+
+.. seealso::
+    Don't overuse the ``ready`` method. Have a look at the `Django documentation of ready() <https://docs.djangoproject.com/en/2.2/ref/applications/#django.apps.AppConfig.ready>`_.

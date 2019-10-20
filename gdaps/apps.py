@@ -13,65 +13,79 @@ logger = logging.getLogger(__file__)
 class PluginMeta:
     """Inner class of GDAPS plugins.
 
-    All GDAPS plugin AppConfig classes need to have an inner class named ``PluginMeta``. This
-    PluginMeta provides some basic attributes and  methods that are needed when interacting with a
-    plugin during its life cycle.
-
-    .. note::
-        If ``PluginMeta`` is missing, the plugin is not recognized. You don't have to inherit this class
-        here, just name it "PluginMeta".
-
-    .. code-block:: python
-
-        from django.utils.translation import gettext_lazy as _
-        from django.apps import AppConfig
-
-        class FooPluginConfig(AppConfig):
-
-            class PluginMeta:
-                # the plugin machine "name" is taken from the Appconfig, so no name here
-                verbose_name = _('Foo Plugin')
-                author = 'Me Personally'
-                description = _('A foo plugin')
-                visible = True
-                version = '1.0.0'
-                compatibility = "myproject.core>=2.3.0"
-
-
-
-
-    .. seealso::
-        Don't overuse the ``ready`` method. Have a look at the `Django documentation of ready()
-        <https://docs.djangoproject.com/en/2.2/ref/applications/#django.apps.AppConfig.ready>`_.
-
-    If your plugin needs to install some data into the database at the first run, you can provide a ``initialize``
-    method to ``PluginMeta``, which will be called using the ``initializeplugins`` management command:
-
-    .. code-block::bash
-
-        ./manage.py initializeplugins
-
-    Do all necessary things there that need to be done when the plugin is available the first time, e.g. after
-    installing a plugin using pip/pipenv.
-
-    .. code-block:: python
-
-        class PluginMeta:
-            def initialize(self):
-                # install some fixtures, etc.
-                pass
-
-    Signals
-        If you are using signals in your plugin, we recommend to put them into a ``signals`` submodule.
-        Import them from the ``AppConfig.ready()`` method.
+        All GDAPS plugin AppConfig classes need to have an inner class named ``PluginMeta``. This
+        PluginMeta provides some basic attributes and  methods that are needed when interacting with a
+        plugin during its life cycle.
 
         .. code-block:: python
 
-                def ready(self):
-                    # Import signals if necessary:
-                    from . import signals  # NOQA
-    """
+            from django.utils.translation import gettext_lazy as _
+            from django.apps import AppConfig
 
+            class FooPluginConfig(AppConfig):
+
+                class PluginMeta:
+                    # the plugin machine "name" is taken from the Appconfig, so no name here
+                    verbose_name = _('Foo Plugin')
+                    author = 'Me Personally'
+                    description = _('A foo plugin')
+                    visible = True
+                    version = '1.0.0'
+                    compatibility = "myproject.core>=2.3.0"
+
+        .. note::
+            If ``PluginMeta`` is missing, the plugin is not recognized by GDAPS.
+        """
+
+    #: The version of the plugin, following `Semantic Versioning <https://semver.org/>`_. This is
+    #: used for dependency checking as well, see ``compatibility``.
+    version = "0.0.0"
+
+    verbose_name = "My special plugin"
+
+    #: The author of the plugin. Not translatable.
+    author = "Me, myself and Irene"
+
+    #: The email address of the author
+    author_email = "me@example.com"
+
+    #: A longer text to describe the plugin.
+    description = ""
+
+    #: A freetext category where your plugin belongs to.
+    #: This can be used in your application to group plugins.
+    category = "GDAPS"
+
+    #: A boolean value whether the plugin should be visible, or hidden.
+    #:
+    #:     .. deprecated:: 0.4.2
+    #:         Use `hidden` instead.
+    visible = True
+
+    #:A boolean value whether the plugin should be hidden, or visible. False by default.
+    hidden = False
+
+    #: A string containing one or more other plugins that this plugin is known being compatible with, e.g.
+    #: "myproject.core>=1.0.0<2.0.0" - meaning: This plugin is compatible with ``myplugin.core`` from version
+    #: 1.0.0 to 1.x - v2.0 and above is incompatible.
+    #:
+    #:         .. note:: Work In Progress.
+
+    compatibility = "gdaps>=1.0.0"
+
+    def initialize(self):
+        """
+        Callback to initialize the plugin.
+
+        If your plugin needs to install some data into the database at the first run, you can provide this
+        method to ``PluginMeta``. It will be called when ``manage.py syncplugins`` is called and the plugin
+        is run the first time.
+
+        An example would be installing some fixtures, providing a message to the user etc.
+        """
+
+
+class GdapsPluginMeta:
     version = gdaps.__version__
     verbose_name = "Generic Django Application Plugin System"
     author = "Christian Gonzalez"
@@ -82,7 +96,7 @@ class PluginMeta:
 
 class GdapsConfig(AppConfig):
     name = "gdaps"
-    PluginMeta = PluginMeta
+    PluginMeta = GdapsPluginMeta
 
     def ready(self):
         # walk through all installed plugins and check some things

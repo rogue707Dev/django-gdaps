@@ -87,7 +87,7 @@ class Command(BaseCommand):
                 plugin.author_email = getattr(meta, "author_email", "")
                 plugin.category = getattr(meta, "category", _("Miscellaneous"))
                 plugin.description = getattr(meta, "description", "")
-                plugin.visible = getattr(meta, "visible", True)
+                plugin.hidden = not getattr(meta, "hidden", False)
 
                 try:
                     version = getattr(meta, "version", "1.0.0")

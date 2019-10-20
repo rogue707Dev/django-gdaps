@@ -7,7 +7,6 @@ import subprocess
 from django.conf import settings
 from django.core.management import CommandError
 
-from gdaps.api import IGdapsPlugin
 from gdaps.apps import GdapsConfig
 from gdaps.frontend.api import IFrontendEngine, IPackageManager
 from gdaps.frontend.conf import frontend_settings
@@ -148,11 +147,3 @@ class VueEngine(IFrontendEngine):
                 f"Could not find frontend directory '{global_frontend_path}'."
             )
             return
-
-
-class VuePlugin(IGdapsPlugin):
-    def plugin_synchronized(self, app):
-        if not os.path.exists(os.path.join(app.path, "frontend", "index.js")):
-            logger.info(f"    - {app.name} - no frontend found.")
-        else:
-            logger.info((f"    - {app.name} - frontend found."))
