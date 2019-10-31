@@ -41,8 +41,8 @@ class NpmPackageManager(IPackageManager):
     def install(self, pkg, cwd):
         self._exec(f"npm install {pkg}", cwd)
 
-    def installglobal(self, pkg):
-        self._exec(f"npm install --global {pkg}")
+    def installglobal(self, pkg, cwd):
+        self._exec(f"npm install --global {pkg}", cwd)
 
     def uninstall(self, pkg, cwd):
         self._exec(f"npm uninstall {pkg}", cwd)
@@ -64,7 +64,7 @@ class YarnPackageManager(IPackageManager):
     def install(self, pkg, cwd):
         self._exec(f"yarn add {pkg}", cwd)
 
-    def installglobal(self, pkg):
+    def installglobal(self, pkg, cwd):
         self._exec(f"yarn global add {pkg}")
 
     def uninstall(self, pkg, cwd):

@@ -3,6 +3,7 @@ import logging
 import os
 import shutil
 import subprocess
+from typing import Dict
 
 from django.conf import settings
 from django.core.management import CommandError
@@ -41,31 +42,27 @@ class VueEngine(IFrontendEngine):
         """
 
         cls.__package_manager = package_manager
+
+        if shutil.which(package_manager.name) is None:
+            raise CommandError(
+                f"'{package_manager.name}' command is not available. Aborting."
+            )
+        if shutil.which("vue") is None:
+            package_manager.installglobal("@vue/cli @vue/cli-service-global", cwd=settings.BASE_DIR),
+
         # this method can assume that the frontend_path exists
         frontend_path = None
-        try:
-            frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
-            # yarn install vue
-            if shutil.which(package_manager.name) is None:
-                raise CommandError(
-                    f"'{package_manager.name}' command is not available. Aborting."
-                )
+        frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
+        # yarn install vue
 
-            if shutil.which("vue") is None:
-                package_manager.installglobal("@vue/cli @vue/cli-service-global"),
+        subprocess.check_call(
+            f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
+            cwd=settings.BASE_DIR,
+            shell=True,
+        )
 
-            subprocess.check_call(
-                f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
-                cwd=settings.BASE_DIR,
-                shell=True,
-            )
+        package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
 
-            package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
-        except Exception as e:
-            # FIXME: frontend_path/ was not created here - shouldn't be destroyed here!
-            if frontend_path:
-                shutil.rmtree(frontend_path)
-            raise e
 
     @staticmethod
     def update_plugins_list() -> None:

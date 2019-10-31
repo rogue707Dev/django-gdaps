@@ -281,7 +281,7 @@ If you want to disable the built-in admin site for GDAPS, or provide a custom GD
     }
 
 
-.. _frontend-support:
+.. _usage-frontend-support:
 
 Frontend support
 ----------------
