@@ -71,3 +71,4 @@ class IFrontendEngine:
         module that exports an [array] of paths that point to modules that e.g. webpack then imports.
         :param plugin_paths: a list of module names that contain a frontend directory with a Javascript module.
         """
+        # TODO: rename to syncplugins
