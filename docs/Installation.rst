@@ -28,8 +28,6 @@ Now add "gdaps" to the ``INSTALLED_APPS`` section, and add a special line below 
 
 You can use whatever you want for your plugin path, but we recommend that you use "**<myproject>.plugins**" here to make things easier. See :doc:`usage`.
 
-For further frontend specific instructions, see :ref:`frontend-support`.
-
 Basically, this is all you really need so far, for a minimal working
 GDAPS-enabled Django application.
 
@@ -38,7 +36,7 @@ Frontend support
 
 If you want to add frontend support too your project, you need to do as follows:
 
-First, add *gdaps*, *gdaps.frontend*, and *webpack_loader* to Django.
+Add ``gdaps.frontend`` (before  ``gdaps``), and ``webpack_loader`` to Django.
 
 .. code-block::bash
 
@@ -91,4 +89,4 @@ Now you can initialize the frontend with
 
 This creates a basic boilerplate (previously created with 'vue create' and calls *yarn install* to
 install the needed javascript packages.
-.. _Usage: usage
+
