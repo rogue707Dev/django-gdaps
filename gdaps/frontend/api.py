@@ -27,7 +27,7 @@ class IPackageManager:
     def install(self, pkg, cwd):
         raise NotImplementedError
 
-    def installglobal(self, pkg):
+    def installglobal(self, pkg, cwd):
         raise NotImplementedError
 
     def uninstall(self, pkg, cwd):

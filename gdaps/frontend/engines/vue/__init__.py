@@ -52,7 +52,7 @@ class VueEngine(IFrontendEngine):
                 )
 
             if shutil.which("vue") is None:
-                package_manager.installglobal("@vue/cli @vue/cli-service-global"),
+                package_manager.installglobal("@vue/cli @vue/cli-service-global", cwd=settings.BASE_DIR),
 
             subprocess.check_call(
                 f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
