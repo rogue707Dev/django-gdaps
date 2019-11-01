@@ -43,7 +43,7 @@ class IFrontendEngine:
     name = None
 
     """A list of tuples for template file endings that should be renamed and rendered as templates."""
-    rewrite_template_suffixes = ((".js-tpl", ".js"),)
+    rewrite_template_suffixes = ()  # e.g. (".js-tpl", ".js")
 
     """A list of (relative) file names that also be treated as templates."""
     extra_files = []
