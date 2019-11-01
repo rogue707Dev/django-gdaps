@@ -94,7 +94,12 @@ class Command(TemplateCommand):
                 get_user_data("plugin_version", "0.0.1"),
                 None,
             ),
-            ("license", "License", get_user_data("license", "GPL-3.0-or-later"), None),
+            (
+                "license",
+                "License (see https://spdx.org/licenses/)",
+                get_user_data("license", "GPL-3.0-or-later"),
+                None,
+            ),
         ]
         for key, prompt, default, validator in parameters:
             s = ""
