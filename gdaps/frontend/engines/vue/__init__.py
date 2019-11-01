@@ -111,10 +111,8 @@ class VueEngine(IFrontendEngine):
                     os.path.join(plugin_path, "package.json"), "r+"
                 ) as plugin_package_file:
                     data = json.load(plugin_package_file)
+                    # sync frontend plugin versions to backend
                     data["version"] = plugin.PluginMeta.version
-
-                    # set plugins as private. They should keep with the Django part, and never be uploaded into a repo.
-                    data["private"] = True
 
                     plugin_package_file.seek(0)
                     json.dump(data, plugin_package_file, indent=2)
