@@ -142,8 +142,8 @@ class Command(BaseCommand):
         for plugin in PluginManager.orphaned_plugins():  # type: GdapsPlugin
             if self.is_database_synchronized(options["database"] or None):
                 plugin.delete()
-                logger.info(f"  ➤ {plugin.name} removed from database.")
+                logger.info(f"   ➤ {plugin.name} removed from database.")
             else:
-                logger.info(f"  ➤ {plugin.name}")
+                logger.info(f"   ➤ {plugin.name}")
         else:
             logger.info("   None found.")
