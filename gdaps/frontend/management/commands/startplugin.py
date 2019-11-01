@@ -50,4 +50,3 @@ class Command(GdapsStartPluginCommand):
             logger.info("Found plugins:\n")
             for plugin in all_plugin_names:
                 logger.info("  " + plugin + "\n")
-

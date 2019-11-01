@@ -21,7 +21,9 @@ class IPackageManager:
         """Convenience function for implementers to exec a command in the shell."""
         subprocess.check_call(command, cwd=cwd, shell=True)
 
-    def init(self, cwd, version=gdaps.__version__, description="", license=None) -> None:
+    def init(
+        self, cwd, version=gdaps.__version__, description="", license=None
+    ) -> None:
         raise NotImplementedError
 
     def install(self, pkg, cwd):
