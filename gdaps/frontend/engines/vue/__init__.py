@@ -114,7 +114,7 @@ class VueEngine(IFrontendEngine):
                     data["version"] = plugin.PluginMeta.version
 
                     # set plugins as private. They should keep with the Django part, and never be uploaded into a repo.
-                    data["private"] = "true"
+                    data["private"] = True
 
                     plugin_package_file.seek(0)
                     json.dump(data, plugin_package_file, indent=2)
