@@ -70,7 +70,7 @@ class PluginManager:
         This is basically the Django root + the dotted entry point.
         CAVE: this is not callable from within the settings.py file.
         """
-        if cls.group == "":
+        if not cls.group:
             raise ImproperlyConfigured(
                 "Plugin path could not be determinded. Please run PluginManager.find_plugins() in your settings.py first."
             )
