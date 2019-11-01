@@ -143,6 +143,9 @@ class VueEngine(IFrontendEngine):
                         plugin_path, cwd=global_frontend_path
                     )
 
+            # are there plugins in the database that do not exist on disk?
+            logger.info(" ⌛ Searching for orphaned plugins in js dependencies...")
+
             # if global package.json lists an orphaned Js package
             # which is not installed on the python side any more,
             # uninstall that package. If that fails, remove the line?
