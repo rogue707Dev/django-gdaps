@@ -125,14 +125,14 @@ class VueEngine(IFrontendEngine):
 
                 # replace/update js package version with gdaps plugin version
                 with open(
-                    os.path.join(plugin_path, "package.json"), "r+"
+                    os.path.join(plugin_path, "package.json"), "r+", encoding="utf-8"
                 ) as plugin_package_file:
                     data = json.load(plugin_package_file)
                     # sync frontend plugin versions to backend
                     data["version"] = plugin.PluginMeta.version
 
                     plugin_package_file.seek(0)
-                    json.dump(data, plugin_package_file, indent=2)
+                    json.dump(data, plugin_package_file, ensure_ascii=False, indent=2)
                     plugin_package_file.truncate()
 
                 # if installed plugin with frontend support is not listed in global package.json,
