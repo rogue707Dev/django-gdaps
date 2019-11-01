@@ -27,9 +27,9 @@ def _snake_case_to_spaces(name):
     return string.capwords(name, "_").replace("_", " ")
 
 
-def get_user_data(key):
+def get_user_data(key, default=""):
     if reader:
-        return reader.get_value("user", key, default="")
+        return reader.get_value("user", key, default)
     else:
         return ""
 
