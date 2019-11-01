@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+package="gdaps"
+
 die() {
     # die with a message
     echo " ✘ $1"
@@ -15,8 +17,8 @@ check_prereq(){
 }
 
 #version=$(grep "version=" setup.py| cut -d '"' -f2)
-version=$(grep "__version__" gdaps/__init__.py | cut -d '"' -f2)
-[[ "$version" == "" ]] && die "Could not determine current version. Please check setup.py file."
+version=$(grep "__version__" ${package}/__init__.py | cut -d '"' -f2)
+[[ "$version" == "" ]] && die "Could not determine current version. Please check your __version__ attribute in ${package}/__init__.py."
 
 check_prereq twine
 check_prereq keyring
@@ -37,13 +39,12 @@ fi
 echo -e "\nShould I upload the package to ${repo}? [Y/n]."
 read yn
 if [ "$yn" != "n" ]; then
-    python -m twine upload --repository-url ${repo} dist/* || die "Not able to upload tp ${repo}"
+    python -m twine upload --repository-url ${repo} dist/${package}-${version}* || die "Not able to upload tp ${repo}"
 
     echo "Now test-install your package using:"
     echo
     [[ $testing ]] && export arg=" -i https://test.pypi.org/simple" || export arg=""
-    echo "pip install${arg} --no-deps gdaps"
-    echo "pipenv install${arg} gdaps"
+    echo "pip install${arg} --no-deps ${package}"
+    echo "pipenv install${arg} ${package}"
     echo
 fi
-
