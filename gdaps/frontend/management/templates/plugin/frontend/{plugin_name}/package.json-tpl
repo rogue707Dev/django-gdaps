@@ -1,0 +1,13 @@
+{
+  "name": "{{ plugin_name }}",
+  "version": "{{ plugin_version }}",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "private": true,
+  "author": "{{ author }} <{{ author_email }}>",
+  "license": "ISC"
+}

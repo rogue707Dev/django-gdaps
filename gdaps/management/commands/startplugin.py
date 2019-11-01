@@ -74,6 +74,7 @@ class Command(TemplateCommand):
             f"{PorterStemmer().stem(PluginManager.group.replace('.', '-'))}-{name}"
         )
         self.context.update({"plugin_name": self.plugin_name})
+        self.context.update({"plugin_version": "0.0.1"})
 
         if os.path.exists(self.target_path):
             raise CommandError("'{}' already exists".format(self.target_path))

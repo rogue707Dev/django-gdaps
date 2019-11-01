@@ -32,7 +32,7 @@ module.exports = {plugins}
 class VueEngine(IFrontendEngine):
     name = "vue"
     extensions = ("js",)
-    rewrite_template_suffixes = ((".js-tpl", ".js"),)
+    rewrite_template_suffixes = ((".js-tpl", ".js"), (".json-tpl", ".json"))
     extra_files = []
     __package_manager = None
 
@@ -48,7 +48,9 @@ class VueEngine(IFrontendEngine):
                 f"'{package_manager.name}' command is not available. Aborting."
             )
         if shutil.which("vue") is None:
-            package_manager.installglobal("@vue/cli @vue/cli-service-global", cwd=settings.BASE_DIR),
+            package_manager.installglobal(
+                "@vue/cli @vue/cli-service-global", cwd=settings.BASE_DIR
+            ),
 
         # this method can assume that the frontend_path exists
         frontend_path = None
@@ -62,7 +64,6 @@ class VueEngine(IFrontendEngine):
         )
 
         package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
-
 
     @staticmethod
     def update_plugins_list() -> None:
@@ -111,6 +112,10 @@ class VueEngine(IFrontendEngine):
                 ) as plugin_package_file:
                     data = json.load(plugin_package_file)
                     data["version"] = plugin.PluginMeta.version
+
+                    # set plugins as private. They should keep with the Django part, and never be uploaded into a repo.
+                    data["private"] = "true"
+
                     plugin_package_file.seek(0)
                     json.dump(data, plugin_package_file, indent=2)
                     plugin_package_file.truncate()
