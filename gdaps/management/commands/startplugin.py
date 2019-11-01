@@ -73,8 +73,6 @@ class Command(TemplateCommand):
         self.plugin_name = (
             f"{PorterStemmer().stem(PluginManager.group.replace('.', '-'))}-{name}"
         )
-        self.context.update({"plugin_name": self.plugin_name})
-        self.context.update({"plugin_version": "0.0.1"})
 
         if os.path.exists(self.target_path):
             raise CommandError("'{}' already exists".format(self.target_path))
@@ -90,6 +88,13 @@ class Command(TemplateCommand):
             # key, value, default, validator/None
             ("author", "Author", get_user_data("name"), None),
             ("author_email", "Email", get_user_data("email"), validate_email),
+            (
+                "plugin_version",
+                "Version",
+                get_user_data("plugin_version", "0.0.1"),
+                None,
+            ),
+            ("license", "License", get_user_data("license", "GPL-3.0-or-later"), None),
         ]
         for key, prompt, default, validator in parameters:
             s = ""
@@ -120,6 +125,7 @@ class Command(TemplateCommand):
                 "upper_cased_app_name": name.upper(),
                 "spaced_app_name": _snake_case_to_spaces(name),
                 "project_name": self._django_root,
+                "plugin_name": self.plugin_name,
                 "plugin_path": plugin_path,
                 "project_title": self._django_root.capitalize(),
                 "plugin_group": PluginManager.group,

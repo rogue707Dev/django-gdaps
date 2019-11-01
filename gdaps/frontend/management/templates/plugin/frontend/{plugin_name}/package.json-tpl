@@ -9,5 +9,5 @@
   "keywords": [],
   "private": true,
   "author": "{{ author }} <{{ author_email }}>",
-  "license": "ISC"
+  "license": "{{ license }}"
 }
