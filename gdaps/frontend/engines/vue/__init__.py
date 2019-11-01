@@ -7,6 +7,7 @@ from typing import Dict
 
 from django.conf import settings
 from django.core.management import CommandError
+from nltk import PorterStemmer
 
 from gdaps.apps import GdapsConfig
 from gdaps.frontend.api import IFrontendEngine, IPackageManager
@@ -99,9 +100,8 @@ class VueEngine(IFrontendEngine):
             # check if plugin frontend is listed in package.json dependencies.
             # If not, install this plugin frontend package
             for plugin in plugins_with_frontends:
-                frontend_package_name = (
-                    f"{PluginManager.group.replace('.','-')}-{plugin.label}"
-                )
+                frontend_package_name = f"{PorterStemmer().stem(PluginManager.group.replace('.','-'))}-{plugin.label}"
+
                 plugin_path = os.path.join(
                     plugin.path, "frontend", frontend_package_name
                 )
