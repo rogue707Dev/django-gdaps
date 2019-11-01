@@ -36,6 +36,15 @@ class VueEngine(IFrontendEngine):
     rewrite_template_suffixes = ((".js-tpl", ".js"), (".json-tpl", ".json"))
     extra_files = []
     __package_manager = None
+    __stemmed_group = None
+
+    @classmethod
+    def _singular_plugin_name(cls, plugin):
+        if not cls.__stemmed_group:
+            cls.__stemmed_group = PorterStemmer().stem(
+                PluginManager.group.replace(".", "-")
+            )
+        return f"{cls.__stemmed_group}-{plugin.label}"
 
     @classmethod
     def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
@@ -66,8 +75,8 @@ class VueEngine(IFrontendEngine):
 
         package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
 
-    @staticmethod
-    def update_plugins_list() -> None:
+    @classmethod
+    def update_plugins_list(cls) -> None:
         """Updates the list of installed Vue frontend plugins.
 
         This implementation makes sure that all paths are installed by the package manager,
@@ -75,13 +84,21 @@ class VueEngine(IFrontendEngine):
         """
 
         # first get a list of plugins which have a frontend part.
-        # we ignore gdaps itself and then check for a "frontend" directory int the plugin's dir.
+        # we ignore gdaps itself and then check for a package.json in the frontend directory of the plugin's dir.
         plugins_with_frontends = []
+        stemmed_group = PorterStemmer().stem(PluginManager.group.replace(".", "-"))
         for plugin in PluginManager.plugins():
             if plugin.label in ["gdaps", "frontend"]:
                 continue
             else:
-                if os.path.exists(os.path.join(plugin.path, "frontend")):
+                if os.path.exists(
+                    os.path.join(
+                        plugin.path,
+                        "frontend",
+                        cls._singular_plugin_name(plugin),
+                        "package.json",
+                    )
+                ):
                     plugins_with_frontends.append(plugin)
 
         global_frontend_path = os.path.join(
@@ -100,7 +117,7 @@ class VueEngine(IFrontendEngine):
             # check if plugin frontend is listed in package.json dependencies.
             # If not, install this plugin frontend package
             for plugin in plugins_with_frontends:
-                frontend_package_name = f"{PorterStemmer().stem(PluginManager.group.replace('.','-'))}-{plugin.label}"
+                frontend_package_name = cls._singular_plugin_name(plugin)
 
                 plugin_path = os.path.join(
                     plugin.path, "frontend", frontend_package_name
@@ -130,17 +147,18 @@ class VueEngine(IFrontendEngine):
             # which is not installed on the python side any more,
             # uninstall that package. If that fails, remove the line?
             for dep in dependencies:
-                if not dep.startswith(f"{PluginManager.group.replace('.','-')}"):
+                if dep.startswith(stemmed_group):
                     # ignore foreign dependency packages like webpack-bundle-tracker etc.
-                    continue
 
-                if not dep in [
-                    f"{PluginManager.group.replace('.','-')}-{plugin.label}"
-                    for plugin in plugins_with_frontends
-                ]:
-                    # dependency has no corresponding installed plugin any more. Uninstall.
-                    logger.info(f" ✘ Uninstalling '{dep}'")
-                    current_package_manager().uninstall(dep, cwd=global_frontend_path)
+                    if not dep in [
+                        cls._singular_plugin_name(plugin)
+                        for plugin in plugins_with_frontends
+                    ]:
+                        # dependency has no corresponding installed plugin any more. Uninstall.
+                        logger.info(f" ✘ Uninstalling '{dep}'")
+                        current_package_manager().uninstall(
+                            dep, cwd=global_frontend_path
+                        )
 
         if not os.path.exists(global_frontend_path):
             logger.warning(
