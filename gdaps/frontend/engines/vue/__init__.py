@@ -18,15 +18,13 @@ from gdaps.pluginmanager import PluginManager
 logger = logging.getLogger(__name__)
 
 # TODO: use header text replacing instead of manually writing a file.
-header = """
+config_file_header = """
 // plugins.js
 //
 // This is a special file that is created by GDAPS automatically
-// using the 'startplugin' and 'syncplugins' management command.
-// Only touch this file if you exactly know what you are doing.
-// It will be overwritten with every run of 'manage.py startplugin/syncplugin'
+// using the 'syncplugins' management command.
+// It will be overwritten with every run of 'manage.py syncplugin'
 
-module.exports = {plugins}
 """
 
 
@@ -92,76 +90,65 @@ class VueEngine(IFrontendEngine):
                 continue
             else:
                 if os.path.exists(
-                    os.path.join(
-                        plugin.path,
-                        "frontend",
-                        cls._singular_plugin_name(plugin),
-                        "package.json",
-                    )
+                    os.path.join(plugin.path, "frontend", "package.json")
                 ):
                     plugins_with_frontends.append(plugin)
 
         global_frontend_path = os.path.join(
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR
         )
+        frontend_plugins_path = os.path.join(global_frontend_path, "src", "plugins")
         global_package_file = os.path.join(
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR, "package.json"
         )
-        with open(global_package_file, "r", encoding="utf-8") as f:
-            try:
-                global_package_data = json.load(f)
-                dependencies = global_package_data["dependencies"]  # type:Dict[str,str]
-            except:
-                raise CommandError("Error parsing global package.json.")
 
-            # check if plugin frontend is listed in package.json dependencies.
-            # If not, install this plugin frontend package
-            for plugin in plugins_with_frontends:
-                frontend_package_name = cls._singular_plugin_name(plugin)
+        # check if plugin frontend is listed in global /frontend/plugins.
+        # If not, install this plugin frontend package via link
+        for plugin in plugins_with_frontends:
+            frontend_package_name = cls._singular_plugin_name(plugin)
 
-                plugin_path = os.path.join(
-                    plugin.path, "frontend", frontend_package_name
+            plugin_path = os.path.join(plugin.path, "frontend")
+
+            # replace/update js package version with gdaps plugin version
+            with open(
+                os.path.join(plugin_path, "package.json"), "r+", encoding="utf-8"
+            ) as plugin_package_file:
+                data = json.load(plugin_package_file)
+                # sync frontend plugin versions to backend
+                data["version"] = plugin.PluginMeta.version
+
+                plugin_package_file.seek(0)
+                json.dump(data, plugin_package_file, ensure_ascii=False, indent=2)
+                plugin_package_file.truncate()
+
+            # if installed plugin with frontend support is not listed in global package.json,
+            # link it to frontend plugins
+            if not plugin.label in os.listdir(frontend_plugins_path):
+                os.symlink(
+                    plugin_path,
+                    os.path.join(frontend_plugins_path, plugin.label),
+                    target_is_directory=True,
                 )
+                logger.info(f" ✓ Installing frontend plugin '{plugin.verbose_name}'")
+                # # install missing dependencies
+                # current_package_manager().install(
+                #     plugin_path, cwd=global_frontend_path
+                # )
 
-                # replace/update js package version with gdaps plugin version
-                with open(
-                    os.path.join(plugin_path, "package.json"), "r+", encoding="utf-8"
-                ) as plugin_package_file:
-                    data = json.load(plugin_package_file)
-                    # sync frontend plugin versions to backend
-                    data["version"] = plugin.PluginMeta.version
-
-                    plugin_package_file.seek(0)
-                    json.dump(data, plugin_package_file, ensure_ascii=False, indent=2)
-                    plugin_package_file.truncate()
-
-                # if installed plugin with frontend support is not listed in global package.json,
-                # install it with package manager
-                if not frontend_package_name in dependencies:
-                    # install missing dependencies
-                    current_package_manager().install(
-                        plugin_path, cwd=global_frontend_path
-                    )
-
-            # are there plugins in the database that do not exist on disk?
-            logger.info(" ⌛ Searching for orphaned plugins in js dependencies...")
-
-            # if global package.json lists an orphaned Js package
-            # which is not installed on the python side any more,
-            # uninstall that package. If that fails, remove the line?
-            for dep in dependencies:
-                if dep.startswith(stemmed_group):
-                    # ignore foreign dependency packages like webpack-bundle-tracker etc.
-
-                    if not dep in [
-                        cls._singular_plugin_name(plugin)
-                        for plugin in plugins_with_frontends
-                    ]:
-                        # dependency has no corresponding installed plugin any more. Uninstall.
-                        logger.info(f" ✘ Uninstalling '{dep}'")
-                        current_package_manager().uninstall(
-                            dep, cwd=global_frontend_path
-                        )
+        # if global plugins list contains an orphaned link to a Js package
+        # which is not installed (=listed in INSTALLED_APPS) any more,
+        # remove that package link.
+        logger.info(
+            " ⌛ Searching for orphaned plugins in frontend plugins directory..."
+        )
+        for link in os.listdir(frontend_plugins_path):
+            if not plugins_with_frontends or not link in [
+                plugin.label for plugin in plugins_with_frontends
+            ]:
+                # dependency has no corresponding installed plugin any more. Uninstall.
+                logger.info(f" ✘ Uninstalling frontend plugin '{link}'")
+                os.remove(os.path.join(frontend_plugins_path, link))
+                # current_package_manager().uninstall(link, cwd=global_frontend_path)
 
         if not os.path.exists(global_frontend_path):
             logger.warning(
