@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 import gdaps
 from gdaps.pluginmanager import PluginManager
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class PluginMeta:

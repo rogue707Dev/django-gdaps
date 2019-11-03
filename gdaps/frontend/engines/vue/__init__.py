@@ -15,7 +15,7 @@ from gdaps.frontend.conf import frontend_settings
 from gdaps.frontend.pkgmgr import current_package_manager
 from gdaps.pluginmanager import PluginManager
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 # TODO: use header text replacing instead of manually writing a file.
 header = """

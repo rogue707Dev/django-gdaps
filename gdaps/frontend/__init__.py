@@ -7,7 +7,7 @@ from .conf import frontend_settings
 import gdaps.frontend.engines
 
 default_app_config = "gdaps.frontend.apps.FrontendConfig"
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 __current_engine: IFrontendEngine or None = None
 

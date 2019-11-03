@@ -10,7 +10,7 @@ from django.core.management import BaseCommand, CommandError
 from django.template import Context
 from django.utils.version import get_docs_version
 
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 class TemplateCommand(BaseCommand):
