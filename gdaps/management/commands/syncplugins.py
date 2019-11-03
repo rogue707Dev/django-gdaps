@@ -145,5 +145,3 @@ class Command(BaseCommand):
                 logger.info(f"   ➤ {plugin.name} removed from database.")
             else:
                 logger.info(f"   ➤ {plugin.name}")
-        else:
-            logger.info("   None found.")
