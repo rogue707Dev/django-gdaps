@@ -13,14 +13,14 @@ INSTALLED_APPS = [
 ]
 ```
 
-It introduces an `IGraphenePlugin` interface that you must use for creating queries and mutations which are automatically found and installed. Just create a `schema.py`file and any of your graphene queries/mutations like:
+It introduces an `IGrapheneSchema` interface that you must use for creating queries and mutations which are automatically found and installed. Just create a `schema.py`file and any of your graphene queries/mutations like:
 
 ```python
 import graphene
 from django.contrib.auth.models import User
 from graphene_django import DjangoObjectType
 
-from gdaps.graphene.api import IGraphenePlugin
+from gdaps.graphene.api import IGrapheneSchema
 
 
 class UserType(DjangoObjectType):
@@ -38,14 +38,14 @@ class UserQuery:
         return User.objects.all()
 
 # Here comes the magic:
-class UserPlugin(IGraphenePlugin):
+class UserSchema(IGrapheneSchema):
     query = UserQuery
 ```
 
 
-Side note: you have to create at least one *schema.py* implementing `IGraphenePlugin`. If gdaps.graphene finds no plugin implementing it, it raises a PluginError.
+Side note: you have to create at least one *schema.py* implementing `IGrapheneSchema`. If gdaps.graphene finds no plugin implementing it, it raises a PluginError.
 
-All plugins inheriting from IGraphenePlugin are automatically found and exposed in your application API.
+All plugins inheriting from IGrapheneSchema are automatically found and exposed in your application API.
 You just need add your Graphene URL to your root urls.py as usual, and use GDAPSQuery and GDAPSMutation as parameters for the view.
 ```python
 

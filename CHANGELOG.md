@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- automatically link frontend plugins for dynamic import
+
+## [0.4.3] - 2019-10-??
+- use Porterstemmer to get correct singular fontend plugin name
+- ease package creation
+- make license configureable at startplugin time
 
 ## [0.4.2] - 2019-10-16
 - allow using variables in template file/dir names

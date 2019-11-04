@@ -5,7 +5,7 @@ from gdaps import Interface, InterfaceMeta
 
 
 @Interface
-class IGraphenePlugin:
+class IGrapheneSchema:
     """Interface class to collect all graphene queries/mutations
 
     Any GDAPS plugin that exposes data to the GraphQL API must implement this

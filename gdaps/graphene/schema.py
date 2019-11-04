@@ -1,7 +1,7 @@
 import graphene
 
 from gdaps.exceptions import PluginError
-from gdaps.graphene.api import IGraphenePlugin
+from gdaps.graphene.api import IGrapheneSchema
 from gdaps.pluginmanager import PluginManager
 
 __all__ = ["GDAPSQuery", "GDAPSMutation"]
@@ -23,15 +23,15 @@ GDAPSMutation = None
 
 PluginManager.load_plugin_submodule("schema")
 
-if len(IGraphenePlugin) > 0:
+if len(IGrapheneSchema) > 0:
     query_objects = tuple(
-        [obj.query for obj in IGraphenePlugin if obj.query is not None]
+        [obj.query for obj in IGrapheneSchema if obj.query is not None]
     )
     GDAPSQuery = type(
         "GDAPSQuery", query_objects + (__EmptyQuery, graphene.ObjectType), {}
     )
     mutation_objects = tuple(
-        [obj.mutation for obj in IGraphenePlugin if obj.mutation is not None]
+        [obj.mutation for obj in IGrapheneSchema if obj.mutation is not None]
     )
     if mutation_objects:
         GDAPSMutation = type(
