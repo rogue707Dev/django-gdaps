@@ -2,7 +2,7 @@
 
 GDAPS supports Django-Graphene out of the box, and eases working with it.
 
-To enable it, add graphene_django and gdaps.graphene to INSTALLED_APPS:
+To enable it, add `graphene_django` and `gdaps.graphene` to INSTALLED_APPS:
 
 ```python
 INSTALLED_APPS = [
