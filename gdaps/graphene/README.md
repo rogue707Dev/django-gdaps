@@ -56,7 +56,7 @@ from django.urls import path
 from graphene_django.views import GraphQLView
 
 PluginManager.load_plugin_submodule("schema")
-schema = graphene.Schema(query=GDAPSQuery, mutations=GDAPSMutation)
+schema = graphene.Schema(query=GDAPSQuery, mutation=GDAPSMutation)
 
 urlpatterns = [
     # ...
