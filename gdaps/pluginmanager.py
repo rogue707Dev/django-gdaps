@@ -7,10 +7,10 @@ from django.apps import apps, AppConfig
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import QuerySet
-from gdaps.apps import PluginConfig
 from pkg_resources import iter_entry_points
 from typing import List
 
+from gdaps.api import PluginConfig
 from gdaps.exceptions import PluginError
 
 __all__ = ["PluginManager"]

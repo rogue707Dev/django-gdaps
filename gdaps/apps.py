@@ -93,16 +93,6 @@ class GdapsPluginMeta:
     visible = False
 
 
-class PluginConfig(AppConfig):
-    """Convenience class for GDAPS plugins to inherit from.
-
-    While it is not sttrictly necessary to inherit from this class - duck typing is ok -
-    it simplifies the type suggestions of IDEs like PyCharm, as PluginMeta is already declared here.
-    """
-
-    PluginMeta: GdapsPluginMeta = None
-
-
 class GdapsConfig(AppConfig):
     name = "gdaps"
     PluginMeta = GdapsPluginMeta
