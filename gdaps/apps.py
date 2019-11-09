@@ -2,7 +2,6 @@ import logging
 import sys
 
 from django.apps import AppConfig
-from django.core.exceptions import ImproperlyConfigured
 
 import gdaps
 from gdaps.pluginmanager import PluginManager
