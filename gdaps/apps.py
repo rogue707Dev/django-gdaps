@@ -39,8 +39,9 @@ class PluginMeta:
 
     #: The version of the plugin, following `Semantic Versioning <https://semver.org/>`_. This is
     #: used for dependency checking as well, see ``compatibility``.
-    version = "0.0.0"
+    version = "1.0.0"
 
+    #: The verbose name, as shown to the user
     verbose_name = "My special plugin"
 
     #: The author of the plugin. Not translatable.
@@ -52,7 +53,7 @@ class PluginMeta:
     #: A longer text to describe the plugin.
     description = ""
 
-    #: A freetext category where your plugin belongs to.
+    #: A free-text category where your plugin belongs to.
     #: This can be used in your application to group plugins.
     category = "GDAPS"
 
@@ -70,7 +71,6 @@ class PluginMeta:
     #: 1.0.0 to 1.x - v2.0 and above is incompatible.
     #:
     #:         .. note:: Work In Progress.
-
     compatibility = "gdaps>=1.0.0"
 
     def initialize(self):
@@ -81,7 +81,7 @@ class PluginMeta:
         method to ``PluginMeta``. It will be called when ``manage.py syncplugins`` is called and the plugin
         is run the first time.
 
-        An example would be installing some fixtures, providing a message to the user etc.
+        An example would be installing some fixtures, or providing a message to the user.
         """
 
 
