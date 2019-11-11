@@ -61,7 +61,7 @@ class Command(TemplateCommand):
         # add template subdir per engine
         self.templates.append(
             os.path.join(
-                apps.get_app_config("frontend").path,
+                apps.get_app_config("gdaps_frontend").path,
                 "engines",
                 current_engine().name,
                 "templates",

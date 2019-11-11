@@ -15,7 +15,7 @@ class FrontendPluginMeta:
 
 class FrontendConfig(AppConfig):
     name = "gdaps.frontend"
-    label = "frontend"
+    label = "gdaps_frontend"
     verbose_name = "GDAPS frontend"
 
     PluginMeta = FrontendPluginMeta

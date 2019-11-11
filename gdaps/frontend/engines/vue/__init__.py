@@ -86,7 +86,7 @@ class VueEngine(IFrontendEngine):
         plugins_with_frontends = []
         stemmed_group = PorterStemmer().stem(PluginManager.group.replace(".", "-"))
         for plugin in PluginManager.plugins():
-            if plugin.label in ["gdaps", "frontend"]:
+            if plugin.name in ["gdaps", "gdaps.frontend"]:
                 continue
             else:
                 if os.path.exists(

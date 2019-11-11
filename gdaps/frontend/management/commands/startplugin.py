@@ -30,7 +30,7 @@ class Command(GdapsStartPluginCommand):
 
         self.templates.append(
             os.path.join(
-                apps.get_app_config("frontend").path,
+                apps.get_app_config("gdaps_frontend").path,
                 "management",
                 "templates",
                 "plugin",
