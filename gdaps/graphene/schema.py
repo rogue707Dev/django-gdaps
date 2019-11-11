@@ -42,7 +42,5 @@ if len(IGrapheneSchema) > 0:
 
 
 else:
-    raise PluginError(
-        "No plugin implements the <IGrapheneObject> interface. "
-        "Create a schema.py file in a plugin and create one there."
-    )
+    GDAPSQuery = None
+    GDAPSMutation = None
