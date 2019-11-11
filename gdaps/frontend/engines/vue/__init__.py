@@ -3,16 +3,13 @@ import logging
 import os
 import shutil
 import subprocess
-from typing import Dict
 
 from django.conf import settings
 from django.core.management import CommandError
 from nltk import PorterStemmer
 
-from gdaps.apps import GdapsConfig
 from gdaps.frontend.api import IFrontendEngine, IPackageManager
 from gdaps.frontend.conf import frontend_settings
-from gdaps.frontend.pkgmgr import current_package_manager
 from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__name__)
@@ -61,9 +58,7 @@ class VueEngine(IFrontendEngine):
             ),
 
         # this method can assume that the frontend_path exists
-        frontend_path = None
         frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
-        # yarn install vue
 
         subprocess.check_call(
             f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
@@ -84,7 +79,6 @@ class VueEngine(IFrontendEngine):
         # first get a list of plugins which have a frontend part.
         # we ignore gdaps itself and then check for a package.json in the frontend directory of the plugin's dir.
         plugins_with_frontends = []
-        stemmed_group = PorterStemmer().stem(PluginManager.group.replace(".", "-"))
         for plugin in PluginManager.plugins():
             if plugin.name in ["gdaps", "gdaps.frontend"]:
                 continue
@@ -98,15 +92,10 @@ class VueEngine(IFrontendEngine):
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR
         )
         frontend_plugins_path = os.path.join(global_frontend_path, "src", "plugins")
-        global_package_file = os.path.join(
-            settings.BASE_DIR, frontend_settings.FRONTEND_DIR, "package.json"
-        )
 
         # check if plugin frontend is listed in global /frontend/plugins.
         # If not, install this plugin frontend package via link
         for plugin in plugins_with_frontends:
-            frontend_package_name = cls._singular_plugin_name(plugin)
-
             plugin_path = os.path.join(plugin.path, "frontend")
 
             # replace/update js package version with gdaps plugin version
@@ -124,16 +113,12 @@ class VueEngine(IFrontendEngine):
             # if installed plugin with frontend support is not listed in global package.json,
             # link it to frontend plugins
             if not plugin.label in os.listdir(frontend_plugins_path):
+                logger.info(f" ✓ Installing frontend plugin '{plugin.verbose_name}'")
                 os.symlink(
                     plugin_path,
                     os.path.join(frontend_plugins_path, plugin.label),
                     target_is_directory=True,
                 )
-                logger.info(f" ✓ Installing frontend plugin '{plugin.verbose_name}'")
-                # # install missing dependencies
-                # current_package_manager().install(
-                #     plugin_path, cwd=global_frontend_path
-                # )
 
         # if global plugins list contains an orphaned link to a Js package
         # which is not installed (=listed in INSTALLED_APPS) any more,
@@ -148,7 +133,6 @@ class VueEngine(IFrontendEngine):
                 # dependency has no corresponding installed plugin any more. Uninstall.
                 logger.info(f" ✘ Uninstalling frontend plugin '{link}'")
                 os.remove(os.path.join(frontend_plugins_path, link))
-                # current_package_manager().uninstall(link, cwd=global_frontend_path)
 
         if not os.path.exists(global_frontend_path):
             logger.warning(
