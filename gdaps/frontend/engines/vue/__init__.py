@@ -92,33 +92,48 @@ class VueEngine(IFrontendEngine):
             settings.BASE_DIR, frontend_settings.FRONTEND_DIR
         )
         frontend_plugins_path = os.path.join(global_frontend_path, "src", "plugins")
+        plugins_file_path = os.path.join(frontend_plugins_path, "plugins.js")
+        with open(plugins_file_path, "w") as plugins_file:
+            plugins_file.write("export default {\n")
+            # check if plugin frontend is listed in global /frontend/plugins.
+            # If not, install this plugin frontend package via link
+            for plugin in plugins_with_frontends:
+                plugin_path = os.path.join(plugin.path, "frontend")
 
-        # check if plugin frontend is listed in global /frontend/plugins.
-        # If not, install this plugin frontend package via link
-        for plugin in plugins_with_frontends:
-            plugin_path = os.path.join(plugin.path, "frontend")
+                # replace/update js package version with gdaps plugin version
+                with open(
+                    os.path.join(plugin_path, "package.json"), "r+", encoding="utf-8"
+                ) as plugin_package_file:
+                    data = json.load(plugin_package_file)
+                    # sync frontend plugin versions to backend
+                    data["version"] = plugin.PluginMeta.version
 
-            # replace/update js package version with gdaps plugin version
-            with open(
-                os.path.join(plugin_path, "package.json"), "r+", encoding="utf-8"
-            ) as plugin_package_file:
-                data = json.load(plugin_package_file)
-                # sync frontend plugin versions to backend
-                data["version"] = plugin.PluginMeta.version
+                    plugin_package_file.seek(0)
+                    json.dump(data, plugin_package_file, ensure_ascii=False, indent=2)
+                    plugin_package_file.truncate()
 
-                plugin_package_file.seek(0)
-                json.dump(data, plugin_package_file, ensure_ascii=False, indent=2)
-                plugin_package_file.truncate()
-
-            # if installed plugin with frontend support is not listed in global package.json,
-            # link it to frontend plugins
-            if not plugin.label in os.listdir(frontend_plugins_path):
+                # if installed plugin with frontend support is not listed in global package.json,
+                # link it to frontend plugins
+                # if not plugin.label in os.listdir(frontend_plugins_path):
                 logger.info(f" ✓ Installing frontend plugin '{plugin.verbose_name}'")
-                os.symlink(
-                    plugin_path,
-                    os.path.join(frontend_plugins_path, plugin.label),
-                    target_is_directory=True,
-                )
+                try:
+                    os.symlink(
+                        plugin_path,
+                        os.path.join(frontend_plugins_path, plugin.label),
+                        target_is_directory=True,
+                    )
+                except FileExistsError:
+                    # recreate link (maybe to another, changed directory?)
+                    os.remove(os.path.join(frontend_plugins_path, plugin.label))
+                    os.symlink(
+                        plugin_path,
+                        os.path.join(frontend_plugins_path, plugin.label),
+                        target_is_directory=True,
+                    )
+                plugins_file.write(f"  {plugin.label}: '@/plugins/{plugin.label}',\n")
+
+            plugins_file.write("}\n")
+            plugins_file.close()
 
         # if global plugins list contains an orphaned link to a Js package
         # which is not installed (=listed in INSTALLED_APPS) any more,
@@ -126,7 +141,9 @@ class VueEngine(IFrontendEngine):
         logger.info(
             " ⌛ Searching for orphaned plugins in frontend plugins directory..."
         )
-        for link in os.listdir(frontend_plugins_path):
+        for link in [
+            dir for dir in os.listdir(frontend_plugins_path) if os.path.isdir(dir)
+        ]:
             if not plugins_with_frontends or not link in [
                 plugin.label for plugin in plugins_with_frontends
             ]:
