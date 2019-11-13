@@ -1,3 +1,5 @@
+// This is the main entry point of the {{plugin_name}} plugin.
+
 module.exports = {
 
 }
