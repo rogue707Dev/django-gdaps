@@ -45,6 +45,8 @@ Add ``gdaps.frontend`` (before  ``gdaps``), and ``webpack_loader`` to Django.
 
 .. code-block:: python
 
+    # settings.py
+
     from gdaps.pluginmanager import PluginManager
 
     INSTALLED_APPS = [
@@ -59,9 +61,15 @@ Now, to satisfy webpack-loader, add a section to settings.py:
 
 .. code-block:: python
 
-    WEBPACK_LOADER = {}
+    WEBPACK_LOADER = {
+        'DEFAULT': {
+            'STATS_FILE': os.path.join(BASE_DIR, "frontend", 'webpack-stats.json'),
+        }
+    }
+This is because django(-webpack-loader) needs to find the info file webpack creates at
+each compile, so that files can be recognized by django's reloading mechanism.
 
-You can leave that empty by now, it's just that it has to exist. Another section is needed for GDAPS:
+Another section is needed for GDAPS:
 
 .. code-block:: python
 
@@ -80,6 +88,16 @@ FRONTEND_ENGINE
 
 FRONTEND_PKG_MANAGER
     This is the package manager used to init/install packages. ATM you can use "yarn" or "npm". Default is *npm*.
+
+and finally add the URL path for redirecting all to the frontend engine:
+
+.. code-block:: python
+    # urls.py
+    from gdaps.pluginmanager import PluginManager
+
+    urlpatterns = PluginManager.urlpatterns() + [
+        # ... add your fixed URL patterns here, like "admin/", etc.
+    ]
 
 Now you can initialize the frontend with
 
