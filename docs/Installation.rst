@@ -66,6 +66,7 @@ Now, to satisfy webpack-loader, add a section to settings.py:
             'STATS_FILE': os.path.join(BASE_DIR, "frontend", 'webpack-stats.json'),
         }
     }
+
 This is because django(-webpack-loader) needs to find the info file webpack creates at
 each compile, so that files can be recognized by django's reloading mechanism.
 
@@ -92,6 +93,7 @@ FRONTEND_PKG_MANAGER
 and finally add the URL path for redirecting all to the frontend engine:
 
 .. code-block:: python
+
     # urls.py
     from gdaps.pluginmanager import PluginManager
 
@@ -101,7 +103,7 @@ and finally add the URL path for redirecting all to the frontend engine:
 
 Now you can initialize the frontend with
 
-.. code-block::bash
+.. code-block:: bash
 
     ./manage.py initfrontend
 
