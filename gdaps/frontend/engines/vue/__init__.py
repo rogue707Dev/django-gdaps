@@ -94,9 +94,10 @@ class VueEngine(IFrontendEngine):
         frontend_plugins_path = os.path.join(global_frontend_path, "src", "plugins")
         plugins_file_path = os.path.join(frontend_plugins_path, "plugins.js")
         with open(plugins_file_path, "w") as plugins_file:
-            plugins_file.write("export default {\n")
+            plugins_file.write("export default {")
             # check if plugin frontend is listed in global /frontend/plugins.
             # If not, install this plugin frontend package via link
+            first = True
             for plugin in plugins_with_frontends:
                 plugin_path = os.path.join(plugin.path, "frontend")
 
@@ -130,9 +131,17 @@ class VueEngine(IFrontendEngine):
                         os.path.join(frontend_plugins_path, plugin.label),
                         target_is_directory=True,
                     )
-                plugins_file.write(f"  {plugin.label}: '@/plugins/{plugin.label}',\n")
+                if first:
+                    plugins_file.write(
+                        f"\n  {plugin.label}: () => import('@/plugins/{plugin.label}')"
+                    )
+                    first = False
+                else:
+                    plugins_file.write(
+                        f",\n  {plugin.label}: () => import('@/plugins/{plugin.label}')"
+                    )
 
-            plugins_file.write("}\n")
+            plugins_file.write("\n}\n")
             plugins_file.close()
 
         # if global plugins list contains an orphaned link to a Js package
