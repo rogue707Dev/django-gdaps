@@ -28,5 +28,6 @@ def current_engine() -> IFrontendEngine:
             return engine
     else:
         raise PluginError(
-            "No frontend engine is selected. Please select one in settings.py using GDAPS['FRONTEND_ENGINE']"
+            "No frontend engine is selected. Please select one in settings.py using GDAPS['FRONTEND_ENGINE']. "
+            f"Available engines are: {[engine.name for engine in IFrontendEngine]}"
         )

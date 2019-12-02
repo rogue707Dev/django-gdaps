@@ -84,7 +84,7 @@ class VueEngine(IFrontendEngine):
                 continue
             else:
                 if os.path.exists(
-                    os.path.join(plugin.path, "frontend", "package.json")
+                    os.path.join(plugin.path, "frontend-vue", "package.json")
                 ):
                     plugins_with_frontends.append(plugin)
 
@@ -99,7 +99,7 @@ class VueEngine(IFrontendEngine):
             # If not, install this plugin frontend package via link
             first = True
             for plugin in plugins_with_frontends:
-                plugin_path = os.path.join(plugin.path, "frontend")
+                plugin_path = os.path.join(plugin.path, "frontend-vue")
 
                 # replace/update js package version with gdaps plugin version
                 with open(

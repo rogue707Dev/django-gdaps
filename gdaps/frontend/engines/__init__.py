@@ -1,1 +1,1 @@
-from . import vue
+from . import vue, pyside

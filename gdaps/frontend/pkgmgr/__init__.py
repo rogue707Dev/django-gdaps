@@ -69,3 +69,19 @@ class YarnPackageManager(IPackageManager):
 
     def uninstall(self, pkg, cwd):
         self._exec(f"yarn remove {pkg}", cwd)
+
+
+class PipenvPackageManager(IPackageManager):
+    name = "pipenv"
+
+    def init(self, cwd, version=gdaps.__version__, description="", license=None) -> None:
+        self._exec(f"pipenv install", cwd)
+
+    def install(self, pkg, cwd):
+        self._exec(f"pipenv install {pkg}", cwd)
+
+    def installglobal(self, pkg, cwd):
+        self._exec(f"pipenv install {pkg}")
+
+    def uninstall(self, pkg, cwd):
+        self._exec(f"pipenv uninstall {pkg}", cwd)

@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 
 
 class Command(TemplateCommand):
-    """This command creates a Javascript frontend from a boilerplate code."""
+    """This command creates a frontend from a boilerplate code."""
 
-    help = "Initializes a Django GDAPS application with a Javascript frontend."
+    help = "Initializes a Django GDAPS application with a frontend."
 
     def handle(self, *args, **options):
         super().handle(*args, **options)
@@ -65,6 +65,7 @@ class Command(TemplateCommand):
                 "engines",
                 current_engine().name,
                 "templates",
+                "global"  # the directory for the "global" frontend code.
             )
         )
 
