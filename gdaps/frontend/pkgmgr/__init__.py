@@ -65,7 +65,7 @@ class YarnPackageManager(IPackageManager):
         self._exec(f"yarn add {pkg}", cwd)
 
     def installglobal(self, pkg, cwd):
-        self._exec(f"yarn global add {pkg}")
+        self._exec(f"yarn global add {pkg}", cwd)
 
     def uninstall(self, pkg, cwd):
         self._exec(f"yarn remove {pkg}", cwd)
@@ -81,7 +81,7 @@ class PipenvPackageManager(IPackageManager):
         self._exec(f"pipenv install {pkg}", cwd)
 
     def installglobal(self, pkg, cwd):
-        self._exec(f"pipenv install {pkg}")
+        self._exec(f"pipenv install {pkg}", cwd)
 
     def uninstall(self, pkg, cwd):
         self._exec(f"pipenv uninstall {pkg}", cwd)
