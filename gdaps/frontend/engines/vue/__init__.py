@@ -10,6 +10,7 @@ from nltk import PorterStemmer
 
 from gdaps.frontend.api import IFrontendEngine, IPackageManager
 from gdaps.frontend.conf import frontend_settings
+from gdaps.frontend.pkgmgr import NpmPackageManager
 from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__name__)
@@ -42,18 +43,17 @@ class VueEngine(IFrontendEngine):
         return f"{cls.__stemmed_group}-{plugin.label}"
 
     @classmethod
-    def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
-        """Initializes an already created frontend using 'npm/yarn install'.
-        """
+    def initialize(cls, frontend_dir: str):
+        """Initializes an already created frontend using 'npm/yarn install'."""
 
-        cls.__package_manager = package_manager
+        cls.__package_manager = frontend_settings.FRONTEND_PKG_MANAGER
 
-        if shutil.which(package_manager.name) is None:
+        if shutil.which(cls.__package_manager.name) is None:
             raise CommandError(
-                f"'{package_manager.name}' command is not available. Aborting."
+                f"'{cls.__package_manager.name}' command is not available. Aborting."
             )
         if shutil.which("vue") is None:
-            package_manager.installglobal(
+            cls.__package_manager.installglobal(
                 "@vue/cli @vue/cli-service-global", cwd=settings.BASE_DIR
             ),
 
@@ -61,12 +61,12 @@ class VueEngine(IFrontendEngine):
         frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
 
         subprocess.check_call(
-            f"vue create --packageManager {package_manager.name} --no-git --force {frontend_dir}",
+            f"vue create --packageManager {cls.__package_manager.name} --no-git --force {frontend_dir}",
             cwd=settings.BASE_DIR,
             shell=True,
         )
 
-        package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
+        cls.__package_manager.install("webpack-bundle-tracker", cwd=frontend_path)
 
     @classmethod
     def update_plugins_list(cls) -> None:

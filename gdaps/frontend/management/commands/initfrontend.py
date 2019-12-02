@@ -40,7 +40,7 @@ class Command(TemplateCommand):
         self.create_directory(self.target_path)
 
         # run initialisation of engine
-        current_engine().initialize(frontend_dir, current_package_manager())
+        current_engine().initialize(frontend_dir)
 
         project_name = self._django_root
         project_title = self._django_root.title().replace("_", " ")

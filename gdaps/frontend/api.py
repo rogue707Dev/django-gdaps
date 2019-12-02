@@ -55,14 +55,14 @@ class IFrontendEngine:
     __package_manager = None
 
     @classmethod
-    def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
+    def initialize(cls, frontend_dir: str):
         """Initializes engine.
 
         This method is called when the frontend is created, and will be only called once.
         It should install all frontend specific stuff, e.g. using Js libraries using 'yarn/npm install' etc.
-        It can assume that the BASE_DIR/frontend_dir/ exists.
+        It can assume that the BASE_DIR/frontend_dir/ exists, and uses the package manager
+        defined in settings.FRONTEND_PKG_MANAGER.
         :param frontend_dir: relative directory within BASE_DIR where the frontend lives.
-        :param package_manager: the package manager to be used.
         """
 
     @staticmethod
