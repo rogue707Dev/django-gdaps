@@ -5,7 +5,8 @@ from django.conf import settings
 from django.core.management import CommandError
 from nltk import PorterStemmer
 
-from gdaps.frontend import IFrontendEngine, IPackageManager
+from gdaps.frontend import IFrontendEngine
+from gdaps.frontend.pkgmgr import PipenvPackageManager, current_package_manager
 from gdaps.pluginmanager import PluginManager
 
 
@@ -15,6 +16,7 @@ class PySideEngine(IFrontendEngine):
     rewrite_template_suffixes = ((".py-tpl", ".py"), )
     extra_files = []
     __stemmed_group = None
+    package_managers = [PipenvPackageManager]
 
     @classmethod
     def _singular_plugin_name(cls, plugin):
@@ -25,20 +27,20 @@ class PySideEngine(IFrontendEngine):
         return f"{cls.__stemmed_group}_{plugin.label}"
 
     @classmethod
-    def initialize(cls, frontend_dir: str, package_manager: IPackageManager):
+    def initialize(cls, frontend_dir: str):
         """Initializes an already created frontend using 'pip install'."""
 
-        cls.__package_manager = package_manager
+        cls.__package_manager = current_package_manager()
 
-        if shutil.which(package_manager.name) is None:
+        if shutil.which(cls.__package_manager.name) is None:
             raise CommandError(
-                f"'{package_manager.name}' command is not available. Aborting."
+                f"'{cls.__package_manager.name}' command is not available. Aborting."
             )
 
         # this method can assume that the frontend_path exists
         frontend_path = os.path.join(settings.BASE_DIR, frontend_dir)
 
-        package_manager.install("pyside2", cwd=frontend_path)
+        cls.__package_manager.install("pyside2", cwd=frontend_path)
 
     @classmethod
     def update_plugins_list(cls) -> None:

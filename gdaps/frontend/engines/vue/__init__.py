@@ -8,9 +8,9 @@ from django.conf import settings
 from django.core.management import CommandError
 from nltk import PorterStemmer
 
-from gdaps.frontend.api import IFrontendEngine, IPackageManager
+from gdaps.frontend.api import IFrontendEngine
 from gdaps.frontend.conf import frontend_settings
-from gdaps.frontend.pkgmgr import NpmPackageManager
+from gdaps.frontend.pkgmgr import NpmPackageManager, YarnPackageManager
 from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__name__)
@@ -33,6 +33,7 @@ class VueEngine(IFrontendEngine):
     extra_files = []
     __package_manager = None
     __stemmed_group = None
+    package_managers = [NpmPackageManager, YarnPackageManager]
 
     @classmethod
     def _singular_plugin_name(cls, plugin):

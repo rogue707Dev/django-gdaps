@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- let frontend set default package manager
 
 ## [0.4.4] - 2019-11-13
 - automatically link frontend plugins for dynamic import

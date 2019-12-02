@@ -52,6 +52,9 @@ class IFrontendEngine:
 
     extensions = ()
 
+    """A list of package managers that are supported by this engine"""
+    package_managers = []
+
     __package_manager = None
 
     @classmethod

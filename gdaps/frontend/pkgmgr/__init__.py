@@ -11,19 +11,18 @@ def current_package_manager() -> IPackageManager:
 
     It caches the result for faster access.
     """
-    name = frontend_settings.FRONTEND_PKG_MANAGER
     global __current_pm
     if __current_pm:
         return __current_pm
 
     assert len(IPackageManager) > 0, "No Package manager plugins found."
     for pm in IPackageManager:
-        if pm.name == name:
+        if pm.name == frontend_settings.FRONTEND_PKG_MANAGER:
             __current_pm = pm
             return pm
     else:
         raise CommandError(
-            f"'FRONTEND_PKG_MANAGER' settings has invalid value: '{name}' not found."
+            "Invalid package manager selected in GDAPS['FRONTEND_PKG_MANAGER']. "
         )
 
 
