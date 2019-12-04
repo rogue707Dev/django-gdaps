@@ -14,7 +14,8 @@ module.exports = {
             postcss: {
                 config: {
                     path: __dirname
-                }
+                },
+                options: {}
             }
         }
     },
