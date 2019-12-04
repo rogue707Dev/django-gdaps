@@ -337,7 +337,7 @@ So all you have to do is:
 #. start ``yarn serve`` in the *frontend* directory
 #. start Django server using ``./manage.py runserver``
 
-To remove a plugin from the frontend, just remove tha backend part (remove it from INSTALLED_APPS or uninstall it using pip/pipenv) and call ``manage.py syncplugins`` afterwords. It will take caer of the database models, and the npm/yarn uninstallation of the frontend part.
+To remove a plugin from the frontend, just remove the backend part (remove it from INSTALLED_APPS or uninstall it using pip/pipenv) and call ``manage.py syncplugins`` afterwords. It will take care of the database models, and the npm/yarn uninstallation of the frontend part.
 
 
 Signals
