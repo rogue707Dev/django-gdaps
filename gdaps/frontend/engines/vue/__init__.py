@@ -10,7 +10,8 @@ from nltk import PorterStemmer
 
 from gdaps.frontend.api import IFrontendEngine
 from gdaps.frontend.conf import frontend_settings
-from gdaps.frontend.pkgmgr import NpmPackageManager, YarnPackageManager
+from gdaps.frontend.pkgmgr import NpmPackageManager, YarnPackageManager, \
+    current_package_manager
 from gdaps.pluginmanager import PluginManager
 
 logger = logging.getLogger(__name__)
@@ -47,7 +48,7 @@ class VueEngine(IFrontendEngine):
     def initialize(cls, frontend_dir: str):
         """Initializes an already created frontend using 'npm/yarn install'."""
 
-        cls.__package_manager = frontend_settings.FRONTEND_PKG_MANAGER
+        cls.__package_manager = current_package_manager()
 
         if shutil.which(cls.__package_manager.name) is None:
             raise CommandError(
