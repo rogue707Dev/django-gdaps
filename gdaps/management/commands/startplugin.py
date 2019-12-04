@@ -143,7 +143,7 @@ class Command(TemplateCommand):
 
         logger.info(f"Successfully created plugin: {self.target_path}\n")
         logger.info(
-            f"Add '{PluginManager.group}.{name}.{camel_cased_name}Config' "
+            f"Add '{PluginManager.group}.{name}.apps.{camel_cased_name}Config' "
             "to your INSTALLED_APPS or install it via pip/pipenv and call './manage.py syncplugins'"
         )
         logger.info(
