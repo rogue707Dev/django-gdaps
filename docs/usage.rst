@@ -291,13 +291,13 @@ ATM only Vue.js ist supported, but PRs are welcome to add more (Angular,
 React?).
 
 Just add ``gdaps.frontend`` to ``INSTALLED_APPS``, **before** ``gdaps``. Afterwords, there is a new
-management command available. Set the ``GDAPS["FRONTEND_ENGINE"]`` to your desired engine (ATM only "vue"), and call:
+management command available. Set the ``GDAPS["FRONTEND_ENGINE"]`` to your desired engine ("vue", "pyside"), and call:
 
 .. code-block:: bash
 
     ./manage.py initfrontend
 
-This creates a /frontend/ directory in the project root, and installs a Javascript application there.
+This creates a /frontend/ directory in the project root, and installs a frontend application there, depending on what you have selected in `GDAPS["FRONTEND_ENGINE"]`
 
 Vue.js
     It is recommended to install vue globally, you can do that with
@@ -308,7 +308,7 @@ Now you can start ``yarn serve`` (or ``npm run serve``, depending on your choice
 in the frontend directory. This starts
 a development web server that bundles the frontend app using webpack
 automatically. You then need to start Django using
-``./manage.py runserver`` to enable the Django backend. GDAPS manages
+``./manage.py runserver`` as usual to enable the Django backend. GDAPS manages
 all the needed background tasks to transparently enable hot-reloading
 when you change anything in the frontend source code now.
 
@@ -323,7 +323,7 @@ This API then should be consumed by a monolithic Javascript frontend, built by w
 At least I didn't find anything else on the internet. So I created my own solution:
 
 GDAPS is a plugin system. It provides backend plugins (Django apps). But using ``gdaps.frontend``, each
-GDAPS app can use a *frontend* directory which contains an installable npm module, that is automatically installed when the app is added to the system.
+GDAPS app can use a *frontend* directory which contains an installable module, that is automatically installed when the app is added to the system.
 
 When the ``gdaps.frontend`` app is activated in
 ``INSTALLED_APPS``, the ``startplugin`` management command is extended by a frontend part: When a new plugin is created, a *frontend/myproject-plugin-fooplugin* directory wth some boilerplate files in that plugin is
